@@ -134,6 +134,7 @@ class Run:
     def enter(player, e):
         if shift_down(e):
             player.shift = True
+            player.wait_time = get_time()
         elif shift_up(e):
             player.shift = False
 
@@ -165,9 +166,9 @@ class Run:
         player.frame = (player.frame + 1) % 8
 
         if player.shift and player.dir != 0:
-            player.x += (player.dir + 1) * 5
+            player.x += (player.dir + get_time() - player.wait_time) * 5
             if player.x >= 400:
-                player.camera_x += (player.dir + 1) * 5
+                player.camera_x += (player.dir + get_time() - player.wait_time) * 5
         else:
             player.x += player.dir * 5
             if player.x >= 400:
