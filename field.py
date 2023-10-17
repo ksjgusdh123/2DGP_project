@@ -30,7 +30,8 @@ class Running_track:
             Running_track.line.clip_composite_draw(0, 365, 840, 130, math.pi / 2, '', 200 - self.player.camera_x, 190, 250, 100)
             Running_track.line.clip_composite_draw(0, 365, 840, 130, math.pi / 2, '', 5000 - self.player.camera_x, 190, 250, 100)
             for i in range(1000, 5000 - 1, 500):
-                Running_track.obstacle.draw(i - self.player.camera_x, 120, 100, 100)
+                for j in range(0, 4):
+                    Running_track.obstacle.draw(i - self.player.camera_x, 120 + 50 * j + j * 10, 100, 100)
             self.arrow_draw()
 
     def arrow_draw(self):
