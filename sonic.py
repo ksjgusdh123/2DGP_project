@@ -1,6 +1,6 @@
 from pico2d import *
 
-from field import Running_track
+from field import Running_track, Clock
 from player import Player
 
 
@@ -20,12 +20,15 @@ def reset_world():
     global running
     global player
     global running_track
+    global clock
     global world
     running = True
     world = []
+    clock = Clock()
     player = Player()
     running_track = [Running_track(player) for i in range(21)]
     world += running_track
+    world.append(clock)
     world.append(player)
 
 def update_world():
