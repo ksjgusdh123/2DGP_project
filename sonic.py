@@ -19,14 +19,33 @@ def handle_event():
         elif event.type == SDL_KEYDOWN and event.key == SDLK_ESCAPE:
             running = False
 
-running = True
+def reset_world():
+    global running
+    global player
+    global world
+    running = True
+    world = []
+    player = Player()
+    world.append(player)
+
+def update_world():
+    for o in world:
+        o.update()
+
+def render_world():
+    clear_canvas()
+    for o in world:
+        o.draw()
+    update_canvas()
 
 open_canvas()
-player = Player()
+
+reset_world()
+
 while running:
-    player.draw()
     handle_event()
-    update_canvas()
-    pass
+    update_world()
+    render_world()
+    delay(0.05)
 
 close_canvas()
