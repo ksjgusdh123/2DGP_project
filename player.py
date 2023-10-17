@@ -1,6 +1,9 @@
 from pico2d import *
 
 sonic_run = [7, 31, 56, 82, 105, 130, 154, 180]
+sonic_slip = [4, 68, 95, 35]
+sonic_jump = [6, 34, 55, 84, 109, 137, 165, 193, 219, 246]
+sonic_jump_w = [21, 19, 24, 19, 25, 25, 23, 24, 24, 26]
 
 def a_down(e):
     return e[0] == 'INPUT' and e[1].type == SDL_KEYDOWN and e[1].key == SDLK_a
@@ -14,6 +17,31 @@ def d_down(e):
 def d_up(e):
     return e[0] == 'INPUT' and e[1].type == SDL_KEYUP and e[1].key == SDLK_d
 
+def right_down(e):
+    return e[0] == 'INPUT' and e[1].type == SDL_KEYDOWN and e[1].key == SDLK_RIGHT
+
+
+def left_down(e):
+    return e[0] == 'INPUT' and e[1].type == SDL_KEYDOWN and e[1].key == SDLK_LEFT
+
+
+def up_down(e):
+    return e[0] == 'INPUT' and e[1].type == SDL_KEYDOWN and e[1].key == SDLK_UP
+
+
+def down_down(e):
+    return e[0] == 'INPUT' and e[1].type == SDL_KEYDOWN and e[1].key == SDLK_DOWN
+
+
+def time_out(e):
+    return e[0] == 'TIME_OUT'
+
+
+def go_jump(e):
+    return e[0] == 'JUMP'
+
+def fail_out(e):
+    return e[0] == 'FAIL'
 
 class Idle:
     @staticmethod
@@ -30,6 +58,59 @@ class Idle:
     @staticmethod
     def draw(player):
         player.image.clip_draw(player.frame // 2 * 22 + 5, 249, 18, 30, player.x - player.camera_x, player.y, 50, 100)
+
+class Slip:
+    @staticmethod
+    def enter(player, e):
+        player.frame = 0
+        player.wait_time = get_time()
+
+    @staticmethod
+    def exit(player, e):
+        player.success = False
+
+    @staticmethod
+    def do(player):
+        player.frame = (player.frame + 1) % 16
+        player.x -= 8
+        if get_time() - player.wait_time < 0.4:
+            player.y += 10
+        elif get_time() - player.wait_time > 0.4 and get_time() - player.wait_time < 0.8:
+            player.y -= 10
+        if get_time() - player.wait_time > 0.8:
+            player.state_machine.handle_event(('TIME_OUT', 0))
+
+    @staticmethod
+    def draw(player):
+        player.image.clip_draw(sonic_slip[player.frame // 4], 5, 28, 30, player.x - player.camera_x, player.y, 50, 100)
+
+class Jump:
+    @staticmethod
+    def enter(player, e):
+        player.frame = 0
+        player.wait_time = get_time()
+
+    @staticmethod
+    def exit(player, e):
+        player.success = False
+        pass
+
+    @staticmethod
+    def do(player):
+        player.frame = (player.frame + 1) % 10
+        player.x += 8
+        if get_time() - player.wait_time < 0.4:
+            player.y += 10
+        elif get_time() - player.wait_time > 0.4 and get_time() - player.wait_time < 0.8:
+            player.y -= 10
+        if get_time() - player.wait_time > 0.8:
+            player.state_machine.handle_event(('TIME_OUT', 0))
+
+    @staticmethod
+    def draw(player):
+        player.image.clip_draw(sonic_jump[player.frame], 215, sonic_jump_w[player.frame], 30,
+                               player.x - player.camera_x, player.y, 50, 100)
+
 
 class Run:
     @staticmethod
@@ -49,6 +130,9 @@ class Run:
 
         if player.x >= 400:
             player.camera_x += player.dir * 5
+        if player.x >= 300:
+            player.state_machine.handle_event(('JUMP', 0))
+            # player.state_machine.handle_event(('FAIL', 0))
 
     @staticmethod
     def draw(player):
@@ -62,8 +146,11 @@ class StateMachine:
         self.player = player
         self.cur_state = Idle
         self.transitions = {
-            Idle: {a_down: Run, d_down: Run, a_up: Idle, d_up: Idle},
-            Run: {a_down: Idle, d_down: Idle, a_up: Idle, d_up: Idle}
+            Idle: {a_down: Run, d_down: Run, left_down: Run, right_down: Run, down_down: Run, up_down: Run},
+            Run: {a_down: Run, d_down: Run, a_up: Idle, d_up: Idle, left_down: Run, right_down: Run, fail_out: Slip,
+                  down_down: Run, up_down: Run, go_jump: Jump},
+            Slip: {time_out: Idle},
+            Jump: {time_out: Idle}
         }
 
     def start(self):
