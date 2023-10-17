@@ -48,11 +48,14 @@ class Running_track:
             Running_track.command.clear()
             self.player.input_command.clear()
             self.player.success = False
+            self.player.perfect = True
 
         if(len(Running_track.command) != 0 and len(self.player.input_command) !=0):
-            if Running_track.command[0] == self.player.input_command[0]:
+            if Running_track.command[0] == self.player.input_command[0] and self.player.perfect:
                 del Running_track.command[0]
                 self.player.input_command.clear()
-            if len(Running_track.command) == 0:
+            else:
+                self.player.perfect = False
+            if len(Running_track.command) == 0 and self.player.perfect == True:
                 self.player.success = True
             

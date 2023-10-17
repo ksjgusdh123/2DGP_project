@@ -206,6 +206,7 @@ class Player:
         self.input_command = []
         self.success = False
         self.exceed_point = 250
+        self.perfect = True
 
     def update(self):
         self.state_machine.update()
