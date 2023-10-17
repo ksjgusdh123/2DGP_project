@@ -167,17 +167,22 @@ class Run:
 
         if player.shift and player.dir != 0:
             add_speed = get_time() - player.wait_time
-            player.x += (player.dir + min(add_speed, 1)) * 5
-            if player.x >= 400:
+            if player.x <= 5150:
+                player.x += (player.dir + min(add_speed, 1)) * 5
+            if player.x >= 400 and player.x <= 4800:
                 player.camera_x += (player.dir + min(add_speed, 1)) * 5
         else:
-            player.x += player.dir * 5
-            if player.x >= 400:
+            if player.x <= 5150:
+                player.x += player.dir * 5
+            if player.x >= 400 and player.x <= 4800:
                 player.camera_x += player.dir * 5
 
         if player.x >= player.exceed_point and player.success == True:
             player.state_machine.handle_event(('JUMP', 0))
-            player.exceed_point += 500
+            if player.exceed_point + 500 < 4600:
+                player.exceed_point += 500
+            else:
+                player.exceed_point = 10000
         elif player.x >= player.exceed_point and player.success == False:
             player.state_machine.handle_event(('FAIL', 0))
 
@@ -233,7 +238,7 @@ class Player:
         self.camera_x = 0
         self.input_command = []
         self.success = False
-        self.exceed_point = 450
+        self.exceed_point = 950
         self.perfect = True
         self.shift = False
 
