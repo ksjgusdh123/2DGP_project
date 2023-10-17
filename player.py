@@ -47,17 +47,24 @@ class Idle:
     @staticmethod
     def enter(player, e):
         player.frame = 0
-        player.action = 1
-        pass
+        if player.action == 0:
+            player.action = 2
+        elif player.action == 1:
+            player.action = 3
     @staticmethod
     def exit(player, e):
-        pass
+        player.dir = 0
     @staticmethod
     def do(player):
         player.frame = (player.frame + 1) % 10
     @staticmethod
     def draw(player):
-        player.image.clip_draw(player.frame // 2 * 22 + 5, 249, 18, 30, player.x - player.camera_x, player.y, 50, 100)
+        if player.action == 3:
+            player.image.clip_draw(player.frame // 2 * 22 + 5, 249, 18, 30, player.x - player.camera_x, player.y, 50, 100)
+        else:
+            player.image.clip_composite_draw(player.frame // 2 * 22 + 5, 249, 18, 30, 0, 'h',
+                                             player.x - player.camera_x, player.y, 50, 100)
+
 
 class Slip:
     @staticmethod
@@ -163,6 +170,9 @@ class Run:
         elif player.dir < 0:
             player.image.clip_composite_draw(sonic_run[player.frame], 149, 23, 27, 0, 'h', player.x - player.camera_x,
                                              player.y, 50, 100)
+        else:
+            player.image.clip_draw(player.frame // 2 * 22 + 5, 249, 18, 30, player.x - player.camera_x, player.y, 50, 100)
+
 class StateMachine:
     def __init__(self, player):
         self.player = player
