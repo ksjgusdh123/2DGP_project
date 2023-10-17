@@ -29,7 +29,7 @@ class Idle:
         player.frame = (player.frame + 1) % 10
     @staticmethod
     def draw(player):
-        player.image.clip_draw(player.frame // 2 * 22 + 5, 249, 18, 30, player.x, player.y, 50, 100)
+        player.image.clip_draw(player.frame // 2 * 22 + 5, 249, 18, 30, player.x - player.camera_x, player.y, 50, 100)
 
 class Run:
     @staticmethod
@@ -46,12 +46,16 @@ class Run:
     def do(player):
         player.frame = (player.frame + 1) % 8
         player.x += player.dir * 5
+
+        if player.x >= 400:
+            player.camera_x += player.dir * 5
+
     @staticmethod
     def draw(player):
         if player.dir > 0:
-            player.image.clip_draw(sonic_run[player.frame], 149, 23, 27, player.x, player.y, 50, 100)
+            player.image.clip_draw(sonic_run[player.frame], 149, 23, 27, player.x - player.camera_x, player.y, 50, 100)
         elif player.dir < 0:
-            player.image.clip_composite_draw(sonic_run[player.frame], 149, 23, 27, 0, 'h', player.x,
+            player.image.clip_composite_draw(sonic_run[player.frame], 149, 23, 27, 0, 'h', player.x - player.camera_x,
                                              player.y, 50, 100)
 class StateMachine:
     def __init__(self, player):
@@ -86,9 +90,10 @@ class Player:
         self.frame = 0
         self.action = 1
         self.dir = 0
-        self.x, self.y = 100, 100
+        self.x, self.y = 100, 140
         self.state_machine = StateMachine(self)
         self.state_machine.start()
+        self.camera_x = 0
 
     def update(self):
         self.state_machine.update()
