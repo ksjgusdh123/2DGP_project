@@ -12,6 +12,7 @@ class Running_track:
         Running_track.num += 1
         self.track_num = Running_track.num
         self.player = player
+        self.mode = 2
 
     def draw(self):
         self.image.clip_draw(26, 126, 254, 100, 254 * self.track_num - self.player.camera_x, 200, 254, 500)
@@ -42,7 +43,7 @@ class Running_track:
     def update(self):
         if self.player.x + 100 > self.player.exceed_point and self.player.success == False:
             if len(Running_track.command) == 0:
-                Running_track.command= [random.randint(0, 3) for n in range(2)]
+                Running_track.command= [random.randint(0, 3) for n in range(self.mode + 1)]
         elif self.player.x < self.player.exceed_point - 100:
             Running_track.command.clear()
             self.player.input_command.clear()
