@@ -2,6 +2,7 @@ from pico2d import *
 
 from field import Running_track, Clock
 from player import Player
+from AI_player import AI
 
 
 def handle_event():
@@ -19,16 +20,19 @@ def handle_event():
 def reset_world():
     global running
     global player
+    global ai
     global running_track
     global clock
     global world
     running = True
     world = []
     player = Player()
+    ai = AI(player)
     clock = Clock(player)
     running_track = Running_track(player)
     world.append(running_track)
     world.append(clock)
+    world.append(ai)
     world.append(player)
 
 def update_world():
