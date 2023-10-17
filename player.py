@@ -166,9 +166,10 @@ class Run:
         player.frame = (player.frame + 1) % 8
 
         if player.shift and player.dir != 0:
-            player.x += (player.dir + get_time() - player.wait_time) * 5
+            add_speed = get_time() - player.wait_time
+            player.x += (player.dir + min(add_speed, 1)) * 5
             if player.x >= 400:
-                player.camera_x += (player.dir + get_time() - player.wait_time) * 5
+                player.camera_x += (player.dir + min(add_speed, 1)) * 5
         else:
             player.x += player.dir * 5
             if player.x >= 400:
