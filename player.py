@@ -32,6 +32,11 @@ def up_down(e):
 def down_down(e):
     return e[0] == 'INPUT' and e[1].type == SDL_KEYDOWN and e[1].key == SDLK_DOWN
 
+def shift_down(e):
+    return e[0] == 'INPUT' and e[1].type == SDL_KEYDOWN and (e[1].key == SDLK_LSHIFT or e[1].key == SDLK_RSHIFT)
+
+def shift_up(e):
+    return e[0] == 'INPUT' and e[1].type == SDL_KEYUP and (e[1].key == SDLK_LSHIFT or e[1].key == SDLK_RSHIFT)
 
 def time_out(e):
     return e[0] == 'TIME_OUT'
@@ -46,6 +51,7 @@ def fail_out(e):
 class Idle:
     @staticmethod
     def enter(player, e):
+        player.shift = False
         player.frame = 0
         if player.action == 0:
             player.action = 2
@@ -126,6 +132,11 @@ class Jump:
 class Run:
     @staticmethod
     def enter(player, e):
+        if shift_down(e):
+            player.shift = True
+        elif shift_up(e):
+            player.shift = False
+
         if d_down(e):
             player.dir, player.action = 1, 1
         elif a_down(e):
@@ -152,10 +163,15 @@ class Run:
     @staticmethod
     def do(player):
         player.frame = (player.frame + 1) % 8
-        player.x += player.dir * 5
 
-        if player.x >= 400:
-            player.camera_x += player.dir * 5
+        if player.shift and player.dir != 0:
+            player.x += (player.dir + 1) * 5
+            if player.x >= 400:
+                player.camera_x += (player.dir + 1) * 5
+        else:
+            player.x += player.dir * 5
+            if player.x >= 400:
+                player.camera_x += player.dir * 5
 
         if player.x >= player.exceed_point and player.success == True:
             player.state_machine.handle_event(('JUMP', 0))
@@ -180,7 +196,7 @@ class StateMachine:
         self.transitions = {
             Idle: {a_down: Run, d_down: Run, left_down: Run, right_down: Run, down_down: Run, up_down: Run},
             Run: {a_down: Run, d_down: Run, a_up: Idle, d_up: Idle, left_down: Run, right_down: Run, fail_out: Slip,
-                  down_down: Run, up_down: Run, go_jump: Jump},
+                  down_down: Run, up_down: Run, go_jump: Jump, shift_down: Run, shift_up: Run},
             Slip: {time_out: Idle},
             Jump: {time_out: Idle}
         }
@@ -217,6 +233,7 @@ class Player:
         self.success = False
         self.exceed_point = 250
         self.perfect = True
+        self.shift = False
 
     def update(self):
         self.state_machine.update()
