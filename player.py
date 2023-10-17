@@ -119,10 +119,25 @@ class Run:
             player.dir, player.action = 1, 1
         elif a_down(e):
             player.dir, player.action = -1, 0
-        pass
+
+        if left_down(e):
+            player.input_command.insert(0, 0)
+        elif right_down(e):
+            player.input_command.insert(0, 1)
+        elif down_down(e):
+            player.input_command.insert(0, 2)
+        elif up_down(e):
+            player.input_command.insert(0, 3)
     @staticmethod
     def exit(player, e):
-        pass
+        if left_down(e):
+            player.input_command.insert(0, 0)
+        elif right_down(e):
+            player.input_command.insert(0, 1)
+        elif down_down(e):
+            player.input_command.insert(0, 2)
+        elif up_down(e):
+            player.input_command.insert(0, 3)
     @staticmethod
     def do(player):
         player.frame = (player.frame + 1) % 8
@@ -130,9 +145,11 @@ class Run:
 
         if player.x >= 400:
             player.camera_x += player.dir * 5
-        if player.x >= 300:
+
+        if player.x >= 300 and player.success == True:
             player.state_machine.handle_event(('JUMP', 0))
-            # player.state_machine.handle_event(('FAIL', 0))
+        elif player.x >= 300 and player.success == False:
+            player.state_machine.handle_event(('FAIL', 0))
 
     @staticmethod
     def draw(player):
@@ -181,6 +198,8 @@ class Player:
         self.state_machine = StateMachine(self)
         self.state_machine.start()
         self.camera_x = 0
+        self.input_command = []
+        self.success = False
 
     def update(self):
         self.state_machine.update()

@@ -12,6 +12,7 @@ class Running_track:
         Running_track.num += 1
         self.track_num = Running_track.num
         self.player = player
+
     def draw(self):
         self.image.clip_draw(26, 126, 254, 100, 254 * self.track_num - self.player.camera_x, 200, 254, 500)
         self.image.clip_draw(28, 236, 208, 64, 1024 * (self.track_num // 4) - self.player.camera_x, 500, 1024, 200)
@@ -31,6 +32,14 @@ class Running_track:
                                                self.player.y + 100, 100, 100)
 
     def update(self):
-        if self.player.x + 100 > 300:
+        if self.player.x + 100 > 300 and self.player.success == False:
             if len(Running_track.command) == 0:
                 Running_track.command= [random.randint(0, 3) for n in range(2)]
+
+        if(len(Running_track.command) != 0 and len(self.player.input_command) !=0):
+            if Running_track.command[0] == self.player.input_command[0]:
+                del Running_track.command[0]
+                self.player.input_command.clear()
+            if len(Running_track.command) == 0:
+                self.player.success = True
+            
