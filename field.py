@@ -9,6 +9,7 @@ class Running_track:
         self.image = load_image('running_track.png')
         self.obstacle = load_image('obstacle.png')
         self.arrow = load_image('arrow.png')
+        self.line = load_image('finishline1.png')
         Running_track.num += 1
         self.track_num = Running_track.num
         self.player = player
@@ -17,8 +18,10 @@ class Running_track:
     def draw(self):
         self.image.clip_draw(26, 126, 254, 100, 254 * self.track_num - self.player.camera_x, 200, 254, 500)
         self.image.clip_draw(28, 236, 208, 64, 1024 * (self.track_num // 4) - self.player.camera_x, 500, 1024, 200)
-        for i in range(300 , 2000, 500):
-            self.obstacle.draw(i - self.player.camera_x, 120, 100, 100)
+        self.line.clip_composite_draw(0, 365, 840, 130, math.pi / 2, '', 200 - self.player.camera_x, 190, 250, 100)
+        self.line.clip_composite_draw(0, 365, 840, 130, math.pi / 2, '', 2000 - self.player.camera_x, 190, 250, 100)
+        for i in range(500, 3000, 500):
+           self.obstacle.draw(i - self.player.camera_x, 120, 100, 100)
         self.arrow_draw()
 
     def arrow_draw(self):

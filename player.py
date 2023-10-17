@@ -233,7 +233,7 @@ class Player:
         self.camera_x = 0
         self.input_command = []
         self.success = False
-        self.exceed_point = 250
+        self.exceed_point = 450
         self.perfect = True
         self.shift = False
 
