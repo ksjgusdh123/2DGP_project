@@ -73,6 +73,8 @@ class Slip:
     def do(player):
         player.frame = (player.frame + 1) % 16
         player.x -= 8
+        if player.x >= 400:
+            player.camera_x -= player.dir * 8
         if get_time() - player.wait_time < 0.4:
             player.y += 10
         elif get_time() - player.wait_time > 0.4 and get_time() - player.wait_time < 0.8:
@@ -99,6 +101,8 @@ class Jump:
     def do(player):
         player.frame = (player.frame + 1) % 10
         player.x += 8
+        if player.x >= 400:
+            player.camera_x += player.dir * 8
         if get_time() - player.wait_time < 0.4:
             player.y += 10
         elif get_time() - player.wait_time > 0.4 and get_time() - player.wait_time < 0.8:
