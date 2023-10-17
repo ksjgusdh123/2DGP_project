@@ -32,10 +32,10 @@ class Running_track:
                                                self.player.y + 100, 100, 100)
 
     def update(self):
-        if self.player.x + 100 > 300 and self.player.success == False:
+        if self.player.x + 100 > self.player.exceed_point and self.player.success == False:
             if len(Running_track.command) == 0:
                 Running_track.command= [random.randint(0, 3) for n in range(2)]
-        elif self.player.x < 300 - 100:
+        elif self.player.x < self.player.exceed_point - 100:
             Running_track.command.clear()
             self.player.input_command.clear()
             self.player.success = False

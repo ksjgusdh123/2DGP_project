@@ -146,9 +146,10 @@ class Run:
         if player.x >= 400:
             player.camera_x += player.dir * 5
 
-        if player.x >= 300 and player.success == True:
+        if player.x >= player.exceed_point and player.success == True:
             player.state_machine.handle_event(('JUMP', 0))
-        elif player.x >= 300 and player.success == False:
+            player.exceed_point += 500
+        elif player.x >= player.exceed_point and player.success == False:
             player.state_machine.handle_event(('FAIL', 0))
 
     @staticmethod
@@ -200,6 +201,7 @@ class Player:
         self.camera_x = 0
         self.input_command = []
         self.success = False
+        self.exceed_point = 250
 
     def update(self):
         self.state_machine.update()
