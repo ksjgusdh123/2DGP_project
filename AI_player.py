@@ -9,14 +9,17 @@ tails_jump = [104, 223, 258, 298, 258, 223, 184, 151, 104, 104]
 tails_jump_w = [32, 25, 30, 30, 30, 25, 24, 25, 32, 32]
 
 class AI:
-    def __init__(self, player, num):
-        if num == 0:
+    ai_num = 0
+    def __init__(self, player):
+        if AI.ai_num == 0:
             self.image = load_image('sonic_animation.png')
-        elif num == 1:
+            AI.ai_num += 1
+        elif AI.ai_num == 1:
             self.image = load_image('tails.png')
-        self.ch_id = num
+            AI.ai_num += 1
+        self.ch_id = AI.ai_num - 1
         self.frame = 0
-        self.x, self.y = 100, 200
+        self.x, self.y = 100, 320 - self.ch_id * 60
         self.exceed_point = 950
         self.player = player
         self.jump = False
@@ -89,43 +92,3 @@ class AI:
 
             else:
                 self.frame = (self.frame + 1) % 14
-# class AI:
-#     def __init__(self, player):
-#         self.image = load_image('sonic_animation.png')
-#         self.frame = 0
-#         self.x, self.y = 100, 200
-#         self.exceed_point = 950
-#         self.player = player
-#         self.jump = False
-#         pass
-#     def draw(self):
-#         if self.player.start == False:
-#             self.image.clip_draw(self.frame // 2 * 22 + 5, 249, 18, 30, self.x - self.player.camera_x, self.y, 50, 100)
-#         else:
-#             if self.jump:
-#                 self.image.clip_draw(sonic_jump[self.frame], 215, sonic_jump_w[self.frame], 30,
-#                            self.x - self.player.camera_x, self.y, 50, 100)
-#             else:
-#                 self.image.clip_draw(sonic_run[self.frame], 149, 23, 27, self.x - self.player.camera_x, self.y, 50, 100)
-#
-#         pass
-#     def update(self):
-#         # 게임 시작 시
-#         if self.player.start:
-#             if self.jump:
-#                 self.x += 10
-#             else:
-#                 self.x += 5
-#             if self.jump == False and self.x >= self.exceed_point:
-#                 self.jump = True
-#                 self.frame = 0
-#             elif self.jump and self.x - self.exceed_point < 50:
-#                 self.y += 10
-#             elif self.jump and self.x - self.exceed_point >= 100:
-#                 self.jump = False
-#                 self.frame = 0
-#                 self.exceed_point += 500
-#             elif self.jump and self.x - self.exceed_point > 50:
-#                 self.y -= 10
-#
-#         self.frame = (self.frame + 1) % 10
