@@ -241,11 +241,12 @@ class Player:
         self.exceed_point = 950
         self.perfect = True
         self.shift = False
+        self.start = False
 
     def update(self):
         self.state_machine.update()
     def handle_event(self,event):
-        self.state_machine.handle_event(('INPUT', event))
-        pass
+        if self.start:
+            self.state_machine.handle_event(('INPUT', event))
     def draw(self):
         self.state_machine.draw()

@@ -24,8 +24,8 @@ def reset_world():
     global world
     running = True
     world = []
-    clock = Clock()
     player = Player()
+    clock = Clock(player)
     running_track = [Running_track(player) for i in range(21)]
     world += running_track
     world.append(clock)
