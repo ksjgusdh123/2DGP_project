@@ -35,6 +35,10 @@ class Running_track:
         if self.player.x + 100 > 300 and self.player.success == False:
             if len(Running_track.command) == 0:
                 Running_track.command= [random.randint(0, 3) for n in range(2)]
+        elif self.player.x < 300 - 100:
+            Running_track.command.clear()
+            self.player.input_command.clear()
+            self.player.success = False
 
         if(len(Running_track.command) != 0 and len(self.player.input_command) !=0):
             if Running_track.command[0] == self.player.input_command[0]:
