@@ -20,9 +20,13 @@ class AI:
         self.ch_id = AI.ai_num - 1
         self.frame = 0
         self.x, self.y = 100, 320 - self.ch_id * 60
+        self.speed = 5 + self.ch_id * 3
         self.exceed_point = 950
         self.player = player
         self.jump = False
+        self.time = get_time()
+        self.finish = False
+
         pass
     def draw(self):
         self.draw_character()
@@ -51,12 +55,12 @@ class AI:
 
     def update(self):
         if self.ch_id == 0:
-            # 게임 시작 시
+            # 게임 시작 시 sonic
             if self.player.start:
                 if self.jump:
                     self.x += 10
                 else:
-                    self.x += 5
+                    self.x += self.speed
                 if self.jump == False and self.x >= self.exceed_point:
                      self.jump = True
                      self.frame = 0
@@ -71,14 +75,15 @@ class AI:
 
             self.frame = (self.frame + 1) % 10
         elif self.ch_id == 1:
-            # 게임 시작 시
+            # 게임 시작 시 tails
             if self.player.start:
                 if self.jump:
                     self.x += 10
                 else:
-                    self.x += 5
+                    self.x += self.speed
                 if self.jump == False and self.x >= self.exceed_point:
                     self.jump = True
+                    self.y += 10
                     self.frame = 0
                 elif self.jump and self.x - self.exceed_point < 50:
                     self.y += 10
@@ -92,3 +97,7 @@ class AI:
 
             else:
                 self.frame = (self.frame + 1) % 14
+
+        if self.x >= 5000 and self.finish == False:
+            self.finish = True
+            print(get_time() - self.time)
