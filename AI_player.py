@@ -13,10 +13,9 @@ class AI:
     def __init__(self, player):
         if AI.ai_num == 0:
             self.image = load_image('sonic_animation.png')
-            AI.ai_num += 1
         elif AI.ai_num == 1:
             self.image = load_image('tails.png')
-            AI.ai_num += 1
+        AI.ai_num += 1
         self.ch_id = AI.ai_num - 1
         self.frame = 0
         self.x, self.y = 100, 320 - self.ch_id * 60
@@ -34,7 +33,7 @@ class AI:
     def draw_character(self):
         if self.ch_id == 0:
             if self.player.start == False:
-                 self.image.clip_draw(self.frame // 2 * 22 + 5, 249, 18, 30, self.x - self.player.camera_x, self.y, 50, 100)
+                 self.image.clip_draw(self.frame // 2 * 22 +5 , 249, 18, 30, self.x - self.player.camera_x, self.y, 50, 100)
             else:
                 if self.jump:
                      self.image.clip_draw(sonic_jump[self.frame], 215, sonic_jump_w[self.frame], 30,

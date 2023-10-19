@@ -1,5 +1,6 @@
 from pico2d import *
 
+import game_world
 from field import Running_track, Clock
 from player import Player
 from AI_player import AI
@@ -22,27 +23,24 @@ def reset_world():
     global player
     global ai
     global running_track
-    global clock
-    global world
+    # global clock
     running = True
-    world = []
+
     player = Player()
     ai = [AI(player) for i in range(2)]
-    clock = Clock(player)
+    # clock = Clock(player)
     running_track = Running_track(player)
-    world.append(running_track)
-    world.append(clock)
-    world += ai
-    world.append(player)
+    game_world.add_object(running_track, 0)
+    # game_world.add_object(clock, 1)
+    game_world.add_objects(ai, 1)
+    game_world.add_object(player, 1)
 
 def update_world():
-    for o in world:
-        o.update()
+    game_world.update()
 
 def render_world():
     clear_canvas()
-    for o in world:
-        o.draw()
+    game_world.render()
     update_canvas()
 
 open_canvas()

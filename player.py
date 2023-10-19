@@ -1,5 +1,8 @@
 from pico2d import *
 
+import game_world
+from field import Clock
+
 sonic_run = [7, 31, 56, 82, 105, 130, 154, 180]
 sonic_slip = [4, 68, 95, 35]
 sonic_jump = [6, 34, 55, 84, 109, 137, 165, 193, 219, 246]
@@ -38,6 +41,9 @@ def shift_down(e):
 def shift_up(e):
     return e[0] == 'INPUT' and e[1].type == SDL_KEYUP and (e[1].key == SDLK_LSHIFT or e[1].key == SDLK_RSHIFT)
 
+def game_start(e):
+    return e[0] == 'INPUT' and e[1].type == SDL_KEYDOWN and e[1].key == SDLK_SPACE
+
 def time_out(e):
     return e[0] == 'TIME_OUT'
 
@@ -48,9 +54,12 @@ def go_jump(e):
 def fail_out(e):
     return e[0] == 'FAIL'
 
+
 class Idle:
     @staticmethod
     def enter(player, e):
+        if game_start(e):
+            player.start_clock()
         player.shift = False
         player.frame = 0
         if player.action == 0:
@@ -201,7 +210,7 @@ class StateMachine:
         self.player = player
         self.cur_state = Idle
         self.transitions = {
-            Idle: {a_down: Run, d_down: Run, left_down: Run, right_down: Run, down_down: Run, up_down: Run},
+            Idle: {a_down: Run, d_down: Run, left_down: Run, right_down: Run, down_down: Run, up_down: Run, game_start: Idle},
             Run: {a_down: Run, d_down: Run, a_up: Idle, d_up: Idle, left_down: Run, right_down: Run, fail_out: Slip,
                   down_down: Run, up_down: Run, go_jump: Jump, shift_down: Run, shift_up: Run},
             Slip: {time_out: Idle},
@@ -213,7 +222,7 @@ class StateMachine:
 
     def handle_event(self, e):
         for check_event, next_state in self.transitions[self.cur_state].items():
-            if check_event(e):
+            if check_event(e) and (self.player.start or game_start(e)):
                 self.cur_state.exit(self.player, e)
                 self.cur_state = next_state
                 self.cur_state.enter(self.player, e)
@@ -236,17 +245,26 @@ class Player:
         self.state_machine = StateMachine(self)
         self.state_machine.start()
         self.camera_x = 0
+        self.start = False
+        self.ready = False
+        # running_track
         self.input_command = []
         self.success = False
         self.exceed_point = 950
         self.perfect = True
         self.shift = False
-        self.start = False
 
     def update(self):
         self.state_machine.update()
     def handle_event(self,event):
-        if self.start:
-            self.state_machine.handle_event(('INPUT', event))
+        self.state_machine.handle_event(('INPUT', event))
     def draw(self):
         self.state_machine.draw()
+
+
+    def start_clock(self):
+        if not self.start and not self.ready:
+            clock = Clock(self)
+            game_world.add_object(clock, 0)
+            self.ready = True
+            print('clock spone')
