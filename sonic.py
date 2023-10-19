@@ -27,13 +27,13 @@ def reset_world():
     running = True
 
     player = Player()
-    ai = [AI(player) for i in range(2)]
+    ai = [AI(player) for i in range(4)]
     # clock = Clock(player)
     running_track = Running_track(player)
     game_world.add_object(running_track, 0)
     # game_world.add_object(clock, 1)
-    game_world.add_objects(ai, 1)
     game_world.add_object(player, 1)
+    game_world.add_objects(ai, 1)
 
 def update_world():
     game_world.update()
