@@ -68,11 +68,21 @@ class Idle:
         player.dir = 0
     @staticmethod
     def do(player):
-        player.frame = (player.frame + 1) % 10
+        if player.character_id == 1:
+            player.frame = (player.frame + 1) % 14
+        else:
+            player.frame = (player.frame + 1) % 10
     @staticmethod
     def draw(player):
         if player.action == 3:
-            player.image.clip_draw(player.frame // 2 * 22 + 5, 249, 18, 30, player.x - player.camera_x, player.y, 50, 100)
+            if player.character_id == 0:
+                player.image.clip_draw(player.frame // 2 * 22 + 5, 249, 18, 30, player.x - player.camera_x, player.y, 50, 100)
+            elif player.character_id == 1:
+                player.image.clip_draw(player.frame // 2 * 32 + 107, 960, 21, 35, player.x - player.camera_x, player.y, 50, 100)
+            elif player.character_id == 2:
+                player.image.clip_draw(player.frame // 2 * 26 + 6, 467, 23, 33, player.x - player.camera_x, player.y, 50, 100)
+            elif player.character_id == 3:
+                player.image.clip_draw(player.frame // 2 * 31 + 117, 262, 29, 42, player.x - player.camera_x, player.y, 50, 100)
         else:
             player.image.clip_composite_draw(player.frame // 2 * 22 + 5, 249, 18, 30, 0, 'h',
                                              player.x - player.camera_x, player.y, 50, 100)
@@ -103,7 +113,14 @@ class Slip:
 
     @staticmethod
     def draw(player):
-        player.image.clip_draw(sonic_slip[player.frame // 4], 5, 28, 30, player.x - player.camera_x, player.y, 50, 100)
+        if player.character_id == 0:
+            player.image.clip_draw(sonic_slip[player.frame // 4], 5, 28, 30, player.x - player.camera_x, player.y, 50, 100)
+        elif player.character_id == 1:
+            player.image.clip_draw(tails_slip[player.frame // 4], 480, 30, 31, player.x - player.camera_x, player.y, 50, 100)
+        elif player.character_id == 2:
+            player.image.clip_draw(shadow_slip[player.frame // 4], 319, 32, 32, player.x - player.camera_x, player.y, 50, 100)
+        elif player.character_id == 3:
+            player.image.clip_draw(ech_slip[player.frame // 4], 3, 35, 41, player.x - player.camera_x, player.y, 50, 100)
 
 class Jump:
     @staticmethod
@@ -131,8 +148,18 @@ class Jump:
 
     @staticmethod
     def draw(player):
-        player.image.clip_draw(sonic_jump[player.frame], 215, sonic_jump_w[player.frame], 30,
-                               player.x - player.camera_x, player.y, 50, 100)
+        if player.character_id == 0:
+            player.image.clip_draw(sonic_jump[player.frame], 215, sonic_jump_w[player.frame], 30,
+                                   player.x - player.camera_x, player.y, 50, 100)
+        elif player.character_id == 1:
+            player.image.clip_draw(tails_jump[player.frame], 736, tails_jump_w[player.frame], 32,
+                                 player.x - player.camera_x, player.y, 50, 100)
+        elif player.character_id == 2:
+            player.image.clip_draw(shadow_jump[player.frame], 317, shadow_jump_w[player.frame], 39,
+                                 player.x - player.camera_x, player.y, 50, 100)
+        elif player.character_id == 3:
+            player.image.clip_draw(ech_jump[player.frame], 214, ech_jump_w[player.frame], 45,
+                                 player.x - player.camera_x, player.y, 50, 100)
 
 
 class Run:
@@ -194,14 +221,29 @@ class Run:
 
     @staticmethod
     def draw(player):
-        if player.dir > 0:
-            player.image.clip_draw(sonic_run[player.frame], 149, 23, 27, player.x - player.camera_x, player.y, 50, 100)
-        elif player.dir < 0:
-            player.image.clip_composite_draw(sonic_run[player.frame], 149, 23, 27, 0, 'h', player.x - player.camera_x,
-                                             player.y, 50, 100)
-        else:
-            player.image.clip_draw(player.frame // 2 * 22 + 5, 249, 18, 30, player.x - player.camera_x, player.y, 50, 100)
-
+        if player.character_id == 0:
+            if player.dir > 0:
+                player.image.clip_draw(sonic_run[player.frame], 149, 23, 27, player.x - player.camera_x, player.y, 50, 100)
+            elif player.dir < 0:
+                player.image.clip_composite_draw(sonic_run[player.frame], 149, 23, 27, 0, 'h', player.x - player.camera_x,
+                                                 player.y, 50, 100)
+            else:
+                player.image.clip_draw(player.frame // 2 * 22 + 5, 249, 18, 30, player.x - player.camera_x, player.y, 50, 100)
+        elif player.character_id == 1:
+            if player.dir > 0:
+                player.image.clip_draw(tails_run[player.frame], 784, 36, 35, player.x - player.camera_x, player.y, 50, 100)
+            elif player.dir == 0:
+                player.image.clip_draw(player.frame // 2 * 32 + 107, 960, 21, 35, player.x - player.camera_x, player.y, 50, 100)
+        elif player.character_id == 2:
+            if player.dir >0:
+                player.image.clip_draw(shadow_run[player.frame], 431, shadow_run_w[player.frame], 32, player.x - player.camera_x, player.y, 50, 100)
+            else:
+                player.image.clip_draw(player.frame // 2 * 26 + 6, 467, 23, 33, player.x - player.camera_x, player.y, 50, 100)
+        elif player.character_id == 3:
+            if player.dir > 0:
+                player.image.clip_draw(ech_run[player.frame], 218, ech_run_w[player.frame], 40, player.x - player.camera_x, player.y, 50, 100)
+            else:
+                player.image.clip_draw(player.frame // 2 * 31 + 117, 262, 29, 42, player.x - player.camera_x, player.y, 50, 100)
 class StateMachine:
     def __init__(self, player):
         self.player = player
@@ -234,7 +276,8 @@ class StateMachine:
 
 class Player:
     def __init__(self):
-        self.image = load_image('sonic_animation.png')
+        self.image = load_image('echidna.png')
+        self.character_id = 3
         self.frame = 0
         self.action = 1
         self.dir = 0
