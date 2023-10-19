@@ -1,27 +1,51 @@
 from pico2d import *
 from character_sprite import *
 
-
 class AI:
     ai_num = 0
-
+    num = -1
     def __init__(self, player):
-        if AI.ai_num == 0:
-            self.image = load_image('sonic_animation.png')
-        elif AI.ai_num == 1:
-            self.image = load_image('tails.png')
-        elif AI.ai_num == 2:
-            self.image = load_image('shadow.png')
-        elif AI.ai_num == 3:
-            self.image = load_image('echidna.png')
+        self.player = player
+
+        if self.player.character_id == 0:
+            if AI.ai_num == 0:
+                AI.ai_num += 1
+                self.image = load_image('tails.png')
+            elif AI.ai_num == 2:
+                self.image = load_image('shadow.png')
+            elif AI.ai_num == 3:
+                self.image = load_image('echidna.png')
+        elif self.player.character_id == 1:
+            if AI.ai_num == 0:
+                self.image = load_image('sonic_animation.png')
+            elif AI.ai_num == 1:
+                AI.ai_num += 1
+                self.image = load_image('shadow.png')
+            elif AI.ai_num == 3:
+                self.image = load_image('echidna.png')
+        elif self.player.character_id == 2:
+            if AI.ai_num == 0:
+                self.image = load_image('sonic_animation.png')
+            elif AI.ai_num == 1:
+                self.image = load_image('tails.png')
+            elif AI.ai_num == 2:
+                AI.ai_num += 1
+                self.image = load_image('echidna.png')
+        elif self.player.character_id == 3:
+            if AI.ai_num == 0:
+                self.image = load_image('sonic_animation.png')
+            elif AI.ai_num == 1:
+                self.image = load_image('tails.png')
+            elif AI.ai_num == 2:
+                self.image = load_image('shadow.png')
         AI.ai_num += 1
+        AI.num += 1
         self.ch_id = AI.ai_num - 1
         self.frame = 0
-        self.x, self.y = 100, 320 - self.ch_id * 60
+        self.x, self.y = 100, 320 - AI.num * 60
         # self.speed = 5 + self.ch_id * 3
         self.speed = 5
         self.exceed_point = 950
-        self.player = player
         self.jump = False
         self.time = get_time()
         self.finish = False
