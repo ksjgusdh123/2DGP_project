@@ -275,9 +275,17 @@ class StateMachine:
         self.cur_state.draw(self.player)
 
 class Player:
-    def __init__(self):
-        self.image = load_image('echidna.png')
-        self.character_id = 3
+    def __init__(self, character_num):
+        self.character_id = character_num
+        if self.character_id == 0:
+            self.image = load_image('sonic_animation.png')
+        if self.character_id == 1:
+            self.image = load_image('tails.png')
+        if self.character_id == 2:
+            self.image = load_image('shadow.png')
+        if self.character_id == 3:
+            self.image = load_image('echidna.png')
+
         self.frame = 0
         self.action = 1
         self.dir = 0
