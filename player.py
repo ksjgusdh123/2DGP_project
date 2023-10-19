@@ -1,12 +1,9 @@
 from pico2d import *
 
 import game_world
+from character_sprite import *
 from field import Clock
 
-sonic_run = [7, 31, 56, 82, 105, 130, 154, 180]
-sonic_slip = [4, 68, 95, 35]
-sonic_jump = [6, 34, 55, 84, 109, 137, 165, 193, 219, 246]
-sonic_jump_w = [21, 19, 24, 19, 25, 25, 23, 24, 24, 26]
 
 def a_down(e):
     return e[0] == 'INPUT' and e[1].type == SDL_KEYDOWN and e[1].key == SDLK_a
@@ -172,7 +169,7 @@ class Run:
             player.input_command.insert(0, 3)
     @staticmethod
     def do(player):
-        player.frame = (player.frame + 1) % 8
+        player.frame = (player.frame + 1) % 10
 
         if player.shift and player.dir != 0:
             add_speed = get_time() - player.wait_time
