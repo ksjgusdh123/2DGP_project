@@ -10,7 +10,7 @@ HEIGHT = 600
 def menu():
     global character_num
     global running
-    image = load_image('banner.png')
+    image = load_image('image/banner.png')
     while True and running:
         clear_canvas()
         image.clip_draw(584, 1202, 288, 72, 400, 525, 800, 150)

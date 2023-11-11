@@ -8,7 +8,7 @@ import game_world
 class Clock:
     def __init__(self, player):
         self.start_time = get_time()
-        self.number = load_image('number.png')
+        self.number = load_image('image/number.png')
         self.idx = 0
         self.player = player
 
@@ -33,10 +33,10 @@ class Clock:
 
 class Running_track:
     def __init__(self, player):
-        self.image = load_image('running_track.png')
-        self.obstacle = load_image('obstacle.png')
-        self.arrow = load_image('arrow.png')
-        self.line = load_image('finishline.png')
+        self.image = load_image('image/running_track.png')
+        self.obstacle = load_image('image/obstacle.png')
+        self.arrow = load_image('image/arrow.png')
+        self.line = load_image('image/finishline.png')
         self.command = []
         self.player = player
         self.mode = 2
