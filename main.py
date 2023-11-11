@@ -1,12 +1,12 @@
 import pico2d
-import play_mode
+import character_select_mode
 
 pico2d.open_canvas()
-play_mode.init()
-while play_mode.running:
-    play_mode.handle_event()
-    play_mode.update()
-    play_mode.draw()
+character_select_mode.init()
+while character_select_mode.running:
+    character_select_mode.handle_event()
+    character_select_mode.update()
+    character_select_mode.draw()
     pico2d.delay(0.05)
-play_mode.finish()
+character_select_mode.finish()
 pico2d.close_canvas()
