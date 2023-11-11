@@ -68,18 +68,15 @@ def init():
     game_world.add_objects(ai, 1)
     game_world.add_object(player, 1)
 
-open_canvas()
+def finish():
+    pass
 
-init()
-
-
-
-while running:
-    handle_event()
+def update():
     game_world.update()
+
+def draw():
     clear_canvas()
     game_world.render()
     update_canvas()
-    delay(0.05)
 
-close_canvas()
+
