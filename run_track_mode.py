@@ -2,6 +2,7 @@ import random
 
 from pico2d import *
 import game_framework
+import character_select_mode
 import game_world
 from player import Player
 from AI_player import AI
@@ -37,16 +38,23 @@ def init():
     command = []
 
     running = True
-    # player = Player(character_select_mode.character_num)
-    player = Player(0)
+    player = Player(character_select_mode.character_num)
+    # player = Player(0)
     ai = [AI(player) for _ in range(3)]
     game_world.add_objects(ai, 1)
     game_world.add_object(player, 1)
 
 
 def finish():
+    global track_image
+    global line_image
+    global arrow_image
+    global obstacle_image
+    del track_image
+    del line_image
+    del arrow_image
+    del obstacle_image
     game_world.clear()
-    pass
 
 
 def update():

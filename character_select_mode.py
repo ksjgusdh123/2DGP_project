@@ -1,7 +1,7 @@
 from pico2d import *
 import game_framework
 
-import play_mode
+import run_track_mode
 
 HEIGHT = 600
 character_num = 100
@@ -19,16 +19,16 @@ def handle_events():
         elif event.type == SDL_MOUSEBUTTONDOWN:
             if HEIGHT - event.y < 150:
                 character_num = 3
-                game_framework.change_mode(play_mode)
+                game_framework.change_mode(run_track_mode)
             elif HEIGHT - event.y < 300 and HEIGHT - event.y > 150:
                 character_num = 2
-                game_framework.change_mode(play_mode)
+                game_framework.change_mode(run_track_mode)
             elif HEIGHT - event.y < 450 and HEIGHT - event.y > 300:
                 character_num = 1
-                game_framework.change_mode(play_mode)
+                game_framework.change_mode(run_track_mode)
             elif HEIGHT - event.y < 600 and HEIGHT - event.y > 450:
                 character_num = 0
-                game_framework.change_mode(play_mode)
+                game_framework.change_mode(run_track_mode)
 
 
 def init():

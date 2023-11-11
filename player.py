@@ -1,21 +1,36 @@
 from pico2d import *
 
+import game_framework
 import game_world
 from character_sprite import *
 from field import Clock
+
+PIXEL_PER_METER = 10 / 0.3
+RUN_SPEED_KMPH = 20
+RUN_SPEED_MPM = RUN_SPEED_KMPH * 1000 / 60
+RUN_SPEED_MPS = RUN_SPEED_MPM / 60
+RUN_SPEED_PPS = RUN_SPEED_MPS * PIXEL_PER_METER
+
+TIME_PER_ACTION = 0.5
+ACTION_PER_TIME = 1.0 / TIME_PER_ACTION
+FRAMES_PER_ACTION = 8
 
 
 def a_down(e):
     return e[0] == 'INPUT' and e[1].type == SDL_KEYDOWN and e[1].key == SDLK_a
 
+
 def a_up(e):
     return e[0] == 'INPUT' and e[1].type == SDL_KEYUP and e[1].key == SDLK_a
+
 
 def d_down(e):
     return e[0] == 'INPUT' and e[1].type == SDL_KEYDOWN and e[1].key == SDLK_d
 
+
 def d_up(e):
     return e[0] == 'INPUT' and e[1].type == SDL_KEYUP and e[1].key == SDLK_d
+
 
 def right_down(e):
     return e[0] == 'INPUT' and e[1].type == SDL_KEYDOWN and e[1].key == SDLK_RIGHT
@@ -32,14 +47,18 @@ def up_down(e):
 def down_down(e):
     return e[0] == 'INPUT' and e[1].type == SDL_KEYDOWN and e[1].key == SDLK_DOWN
 
+
 def shift_down(e):
     return e[0] == 'INPUT' and e[1].type == SDL_KEYDOWN and (e[1].key == SDLK_LSHIFT or e[1].key == SDLK_RSHIFT)
+
 
 def shift_up(e):
     return e[0] == 'INPUT' and e[1].type == SDL_KEYUP and (e[1].key == SDLK_LSHIFT or e[1].key == SDLK_RSHIFT)
 
+
 def game_start(e):
     return e[0] == 'INPUT' and e[1].type == SDL_KEYDOWN and e[1].key == SDLK_SPACE
+
 
 def time_out(e):
     return e[0] == 'TIME_OUT'
@@ -47,6 +66,7 @@ def time_out(e):
 
 def go_jump(e):
     return e[0] == 'JUMP'
+
 
 def fail_out(e):
     return e[0] == 'FAIL'
@@ -63,29 +83,33 @@ class Idle:
             player.action = 2
         elif player.action == 1:
             player.action = 3
+
     @staticmethod
     def exit(player, e):
         player.dir = 0
+
     @staticmethod
     def do(player):
         if player.character_id == 1:
-            player.frame = (player.frame + 1) % 14
+            player.frame = (player.frame + 14 * ACTION_PER_TIME * game_framework.frame_time) % 14
         else:
-            player.frame = (player.frame + 1) % 10
+            player.frame = (player.frame + 10 * ACTION_PER_TIME * game_framework.frame_time) % 10
+
     @staticmethod
     def draw(player):
         if player.action == 3:
             if player.character_id == 0:
-                player.image.clip_draw(player.frame // 2 * 22 + 5, 249, 18, 30, player.x - player.camera_x, player.y, 50, 100)
+                player.image.clip_draw(int(player.frame) // 2 * 22 + 5, 249, 18, 30, player.x - player.camera_x,
+                                       player.y, 50, 100)
             elif player.character_id == 1:
-                player.image.clip_draw(player.frame // 2 * 32 + 107, 960, 21, 35, player.x - player.camera_x, player.y, 50, 100)
+                player.image.clip_draw(int(player.frame) // 2 * 32 + 107, 960, 21, 35, player.x - player.camera_x,
+                                       player.y, 50, 100)
             elif player.character_id == 2:
-                player.image.clip_draw(player.frame // 2 * 26 + 6, 467, 23, 33, player.x - player.camera_x, player.y, 50, 100)
+                player.image.clip_draw(int(player.frame) // 2 * 26 + 6, 467, 23, 33, player.x - player.camera_x,
+                                       player.y, 50, 100)
             elif player.character_id == 3:
-                player.image.clip_draw(player.frame // 2 * 31 + 117, 262, 29, 42, player.x - player.camera_x, player.y, 50, 100)
-        else:
-            player.image.clip_composite_draw(player.frame // 2 * 22 + 5, 249, 18, 30, 0, 'h',
-                                             player.x - player.camera_x, player.y, 50, 100)
+                player.image.clip_draw(int(player.frame) // 2 * 31 + 117, 262, 29, 42, player.x - player.camera_x,
+                                       player.y, 50, 100)
 
 
 class Slip:
@@ -100,27 +124,32 @@ class Slip:
 
     @staticmethod
     def do(player):
-        player.frame = (player.frame + 1) % 16
-        player.x -= 8
+        player.frame = (player.frame + 16 * ACTION_PER_TIME * game_framework.frame_time) % 16
+        player.x -= 1 * RUN_SPEED_PPS * game_framework.frame_time
         if player.x >= 400:
-            player.camera_x -= player.dir * 8
+            player.camera_x -= player.dir * 1 * RUN_SPEED_PPS * game_framework.frame_time
         if get_time() - player.wait_time < 0.4:
-            player.y += 10
+            player.y += 1 * RUN_SPEED_PPS * game_framework.frame_time
         elif get_time() - player.wait_time > 0.4 and get_time() - player.wait_time < 0.8:
-            player.y -= 10
+            player.y -= 1 * RUN_SPEED_PPS * game_framework.frame_time
         if get_time() - player.wait_time > 0.8:
             player.state_machine.handle_event(('TIME_OUT', 0))
 
     @staticmethod
     def draw(player):
         if player.character_id == 0:
-            player.image.clip_draw(sonic_slip[player.frame // 4], 5, 28, 30, player.x - player.camera_x, player.y, 50, 100)
+            player.image.clip_draw(sonic_slip[int(player.frame) // 4], 5, 28, 30, player.x - player.camera_x, player.y,
+                                   50, 100)
         elif player.character_id == 1:
-            player.image.clip_draw(tails_slip[player.frame // 4], 480, 30, 31, player.x - player.camera_x, player.y, 50, 100)
+            player.image.clip_draw(tails_slip[int(player.frame) // 4], 480, 30, 31, player.x - player.camera_x,
+                                   player.y, 50, 100)
         elif player.character_id == 2:
-            player.image.clip_draw(shadow_slip[player.frame // 4], 319, 32, 32, player.x - player.camera_x, player.y, 50, 100)
+            player.image.clip_draw(shadow_slip[int(player.frame) // 4], 319, 32, 32, player.x - player.camera_x,
+                                   player.y, 50, 100)
         elif player.character_id == 3:
-            player.image.clip_draw(ech_slip[player.frame // 4], 3, 35, 41, player.x - player.camera_x, player.y, 50, 100)
+            player.image.clip_draw(ech_slip[int(player.frame) // 4], 3, 35, 41, player.x - player.camera_x, player.y,
+                                   50, 100)
+
 
 class Jump:
     @staticmethod
@@ -131,40 +160,40 @@ class Jump:
     @staticmethod
     def exit(player, e):
         player.success = False
-        pass
 
     @staticmethod
     def do(player):
-        player.frame = (player.frame + 1) % 10
-        player.x += 8
+        player.frame = (player.frame + 10 * ACTION_PER_TIME * game_framework.frame_time) % 10
+        player.x += 1 * RUN_SPEED_PPS * game_framework.frame_time
         if player.x >= 400:
-            player.camera_x += player.dir * 8
+            player.camera_x += player.dir * 1 * RUN_SPEED_PPS * game_framework.frame_time
         if get_time() - player.wait_time < 0.4:
-            player.y += 10
+            player.y += 1 * RUN_SPEED_PPS * game_framework.frame_time
         elif get_time() - player.wait_time > 0.4 and get_time() - player.wait_time < 0.8:
-            player.y -= 10
+            player.y -= 1 * RUN_SPEED_PPS * game_framework.frame_time
         if get_time() - player.wait_time > 0.8:
             player.state_machine.handle_event(('TIME_OUT', 0))
 
     @staticmethod
     def draw(player):
         if player.character_id == 0:
-            player.image.clip_draw(sonic_jump[player.frame], 215, sonic_jump_w[player.frame], 30,
+            player.image.clip_draw(sonic_jump[int(player.frame)], 215, sonic_jump_w[int(player.frame)], 30,
                                    player.x - player.camera_x, player.y, 50, 100)
         elif player.character_id == 1:
-            player.image.clip_draw(tails_jump[player.frame], 736, tails_jump_w[player.frame], 32,
-                                 player.x - player.camera_x, player.y, 50, 100)
+            player.image.clip_draw(tails_jump[int(player.frame)], 736, tails_jump_w[int(player.frame)], 32,
+                                   player.x - player.camera_x, player.y, 50, 100)
         elif player.character_id == 2:
-            player.image.clip_draw(shadow_jump[player.frame], 317, shadow_jump_w[player.frame], 39,
-                                 player.x - player.camera_x, player.y, 50, 100)
+            player.image.clip_draw(shadow_jump[int(player.frame)], 317, shadow_jump_w[int(player.frame)], 39,
+                                   player.x - player.camera_x, player.y, 50, 100)
         elif player.character_id == 3:
-            player.image.clip_draw(ech_jump[player.frame], 214, ech_jump_w[player.frame], 45,
-                                 player.x - player.camera_x, player.y, 50, 100)
+            player.image.clip_draw(ech_jump[int(player.frame)], 214, ech_jump_w[int(player.frame)], 45,
+                                   player.x - player.camera_x, player.y, 50, 100)
 
 
 class Run:
     @staticmethod
     def enter(player, e):
+
         if shift_down(e):
             player.shift = True
             player.wait_time = get_time()
@@ -184,6 +213,8 @@ class Run:
             player.input_command.insert(0, 2)
         elif up_down(e):
             player.input_command.insert(0, 3)
+
+
     @staticmethod
     def exit(player, e):
         if left_down(e):
@@ -194,21 +225,23 @@ class Run:
             player.input_command.insert(0, 2)
         elif up_down(e):
             player.input_command.insert(0, 3)
+
+
     @staticmethod
     def do(player):
-        player.frame = (player.frame + 1) % 10
+        player.frame = (player.frame + 10 * ACTION_PER_TIME * game_framework.frame_time) % 10
 
         if player.shift and player.dir != 0:
             add_speed = get_time() - player.wait_time
             if player.x <= 5150:
-                player.x += (player.dir + min(add_speed, 1)) * 5
+                player.x += (player.dir + min(add_speed, 1)) * RUN_SPEED_PPS * game_framework.frame_time
             if player.x >= 400 and player.x <= 4800:
-                player.camera_x += (player.dir + min(add_speed, 1)) * 5
+                player.camera_x += (player.dir + min(add_speed, 1)) * RUN_SPEED_PPS * game_framework.frame_time
         else:
             if player.x <= 5150:
-                player.x += player.dir * 5
+                player.x += player.dir * RUN_SPEED_PPS * game_framework.frame_time
             if player.x >= 400 and player.x <= 4800:
-                player.camera_x += player.dir * 5
+                player.camera_x += player.dir * RUN_SPEED_PPS * game_framework.frame_time
 
         if player.x >= player.exceed_point and player.success == True:
             player.state_machine.handle_event(('JUMP', 0))
@@ -219,37 +252,50 @@ class Run:
         elif player.x >= player.exceed_point and player.success == False:
             player.state_machine.handle_event(('FAIL', 0))
 
+
     @staticmethod
     def draw(player):
         if player.character_id == 0:
             if player.dir > 0:
-                player.image.clip_draw(sonic_run[player.frame], 149, 23, 27, player.x - player.camera_x, player.y, 50, 100)
+                player.image.clip_draw(sonic_run[int(player.frame)], 149, 23, 27, player.x - player.camera_x, player.y, 50,
+                                       100)
             elif player.dir < 0:
-                player.image.clip_composite_draw(sonic_run[player.frame], 149, 23, 27, 0, 'h', player.x - player.camera_x,
+                player.image.clip_composite_draw(sonic_run[int(player.frame)], 149, 23, 27, 0, 'h',
+                                                 player.x - player.camera_x,
                                                  player.y, 50, 100)
             else:
-                player.image.clip_draw(player.frame // 2 * 22 + 5, 249, 18, 30, player.x - player.camera_x, player.y, 50, 100)
+                player.image.clip_draw(int(player.frame) // 2 * 22 + 5, 249, 18, 30, player.x - player.camera_x, player.y,
+                                       50, 100)
         elif player.character_id == 1:
             if player.dir > 0:
-                player.image.clip_draw(tails_run[player.frame], 784, 36, 35, player.x - player.camera_x, player.y, 50, 100)
+                player.image.clip_draw(tails_run[int(player.frame)], 784, 36, 35, player.x - player.camera_x, player.y, 50,
+                                       100)
             elif player.dir == 0:
-                player.image.clip_draw(player.frame // 2 * 32 + 107, 960, 21, 35, player.x - player.camera_x, player.y, 50, 100)
+                player.image.clip_draw(int(player.frame) // 2 * 32 + 107, 960, 21, 35, player.x - player.camera_x, player.y,
+                                       50, 100)
         elif player.character_id == 2:
-            if player.dir >0:
-                player.image.clip_draw(shadow_run[player.frame], 431, shadow_run_w[player.frame], 32, player.x - player.camera_x, player.y, 50, 100)
+            if player.dir > 0:
+                player.image.clip_draw(shadow_run[int(player.frame)], 431, shadow_run_w[int(player.frame)], 32,
+                                       player.x - player.camera_x, player.y, 50, 100)
             else:
-                player.image.clip_draw(player.frame // 2 * 26 + 6, 467, 23, 33, player.x - player.camera_x, player.y, 50, 100)
+                player.image.clip_draw(int(player.frame) // 2 * 26 + 6, 467, 23, 33, player.x - player.camera_x, player.y,
+                                       50, 100)
         elif player.character_id == 3:
             if player.dir > 0:
-                player.image.clip_draw(ech_run[player.frame], 218, ech_run_w[player.frame], 40, player.x - player.camera_x, player.y, 50, 100)
+                player.image.clip_draw(ech_run[int(player.frame)], 218, ech_run_w[int(player.frame)], 40,
+                                       player.x - player.camera_x, player.y, 50, 100)
             else:
-                player.image.clip_draw(player.frame // 2 * 31 + 117, 262, 29, 42, player.x - player.camera_x, player.y, 50, 100)
+                player.image.clip_draw(int(player.frame) // 2 * 31 + 117, 262, 29, 42, player.x - player.camera_x, player.y,
+                                       50, 100)
+
+
 class StateMachine:
     def __init__(self, player):
         self.player = player
         self.cur_state = Idle
         self.transitions = {
-            Idle: {a_down: Run, d_down: Run, left_down: Run, right_down: Run, down_down: Run, up_down: Run, game_start: Idle},
+            Idle: {a_down: Run, d_down: Run, left_down: Run, right_down: Run, down_down: Run, up_down: Run,
+                   game_start: Idle},
             Run: {a_down: Run, d_down: Run, a_up: Idle, d_up: Idle, left_down: Run, right_down: Run, fail_out: Slip,
                   down_down: Run, up_down: Run, go_jump: Jump, shift_down: Run, shift_up: Run},
             Slip: {time_out: Idle},
@@ -273,6 +319,7 @@ class StateMachine:
 
     def draw(self):
         self.cur_state.draw(self.player)
+
 
 class Player:
     def __init__(self, character_num):
@@ -304,11 +351,12 @@ class Player:
 
     def update(self):
         self.state_machine.update()
-    def handle_event(self,event):
+
+    def handle_event(self, event):
         self.state_machine.handle_event(('INPUT', event))
+
     def draw(self):
         self.state_machine.draw()
-
 
     def start_clock(self):
         if not self.start and not self.ready:
