@@ -1,14 +1,11 @@
 from pico2d import *
 import game_framework
 
-import game_world
 import play_mode
-from field import Running_track, Clock
-from player import Player
-from AI_player import AI
 
 HEIGHT = 600
 character_num = 100
+
 def handle_events():
     global running
     global character_num
@@ -56,7 +53,6 @@ def draw():
     banner_image.clip_draw(875, 1202, 288, 72, 400, 375, 800, 150)
     banner_image.clip_draw(2, 1052, 288, 72, 400, 225, 800, 150)
     banner_image.clip_draw(2, 1127, 288, 72, 400, 75, 800, 150)
-
     update_canvas()
 
 

@@ -25,7 +25,6 @@ def init():
     global ai
     global running_track
     running = True
-    # player = Player(0)
     player = Player(character_select_mode.character_num)
     ai = [AI(player) for _ in range(3)]
     running_track = Running_track(player)
