@@ -1,35 +1,37 @@
 from pico2d import *
+import game_framework
 
 import game_world
+import play_mode
 from field import Running_track, Clock
 from player import Player
 from AI_player import AI
 
 HEIGHT = 600
 
-def handle_event():
+def handle_events():
     global running
     global character_num
 
     events = get_events()
     for event in events:
         if event.type == SDL_QUIT:
-            running = False
+            game_framework.quit()
         elif event.type == SDL_KEYDOWN and event.key == SDLK_ESCAPE:
-            running = False
+            game_framework.quit()
         elif event.type == SDL_MOUSEBUTTONDOWN:
             if HEIGHT - event.y < 150:
                 character_num = 3
-                running = False
+                game_framework.change_mode(play_mode)
             elif HEIGHT - event.y < 300 and HEIGHT - event.y > 150:
                 character_num = 2
-                running = False
+                game_framework.change_mode(play_mode)
             elif HEIGHT - event.y < 450 and HEIGHT - event.y > 300:
                 character_num = 1
-                running = False
+                game_framework.change_mode(play_mode)
             elif HEIGHT - event.y < 600 and HEIGHT - event.y > 450:
                 character_num = 0
-                running = False
+                game_framework.change_mode(play_mode)
 
 
 def init():
