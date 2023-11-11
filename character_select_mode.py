@@ -8,7 +8,7 @@ from player import Player
 from AI_player import AI
 
 HEIGHT = 600
-
+character_num = 100
 def handle_events():
     global running
     global character_num
