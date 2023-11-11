@@ -109,21 +109,22 @@ def arrow_draw():
 
 def track_update():
     global command
+    global player
     if player.x + 100 > player.exceed_point and player.success == False:
         if len(command) == 0:
-            command = [random.randint(0, 3) for n in
+            command = [random.randint(0, 3) for _ in
                             range(random.randint(3, 3))]
-        elif player.x < player.exceed_point - 100:
-            command.clear()
-            player.input_command.clear()
-            player.success = False
-            player.perfect = True
+    elif player.x < player.exceed_point - 100:
+        command.clear()
+        player.input_command.clear()
+        player.success = False
+        player.perfect = True
 
-        if (len(command) != 0 and len(player.input_command) != 0):
-            if command[0] == player.input_command[0] and player.perfect:
-                del command[0]
-                player.input_command.clear()
-            else:
-                player.perfect = False
-            if len(command) == 0 and player.perfect == True:
-                player.success = True
+    if (len(command) != 0 and len(player.input_command) != 0):
+        if command[0] == player.input_command[0] and player.perfect:
+            del command[0]
+            player.input_command.clear()
+        else:
+            player.perfect = False
+        if len(command) == 0 and player.perfect == True:
+            player.success = True
