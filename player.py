@@ -74,6 +74,9 @@ def fail_out(e):
 def go_swim(e):
     return e[0] == 'GO_SWIM'
 
+def stun(e):
+    return e[0] == 'STUN'
+
 class Idle:
     @staticmethod
     def enter(player, e):
@@ -201,10 +204,43 @@ class Jump:
             player.image.clip_draw(ech_jump[int(player.frame)], 214, ech_jump_w[int(player.frame)], 45,
                                    player.x - player.camera_x, player.y, 50, 100)
 
+
+class Stun:
+    @staticmethod
+    def enter(player, e):
+        player.wait_time = get_time()
+
+    @staticmethod
+    def exit(player, e):
+        player.stun = False
+        player.speed = 1
+        player.life = 1
+
+    @staticmethod
+    def do(player):
+        player.frame = (player.frame + 10 * ACTION_PER_TIME * game_framework.frame_time) % 10
+        if get_time() - player.wait_time >= 1:
+            player.state_machine.handle_event(('TIME_OUT', 0))
+
+    @staticmethod
+    def draw(player):
+        player.image.clip_draw(sonic_stun[int(player.frame)], 6, 28, 31, player.x - player.camera_x, player.y - 20, 50, 100)
+
+
 class Swim:
     @staticmethod
     def enter(player, e):
         player.dir, player.action = 1, 1
+        player.wait_time = get_time()
+
+        if left_down(e):
+            player.input_command.insert(0, 0)
+        elif right_down(e):
+            player.input_command.insert(0, 1)
+        elif down_down(e):
+            player.input_command.insert(0, 2)
+        elif up_down(e):
+            player.input_command.insert(0, 3)
 
     @staticmethod
     def exit(player, e):
@@ -214,9 +250,17 @@ class Swim:
     def do(player):
         player.frame = (player.frame + 10 * ACTION_PER_TIME * game_framework.frame_time) % 10
         if player.x <= 5150:
-            player.x += player.dir * RUN_SPEED_PPS * game_framework.frame_time
+            player.x += player.dir * RUN_SPEED_PPS * game_framework.frame_time * player.speed
         if 400 <= player.x <= 4800:
-            player.camera_x += player.dir * RUN_SPEED_PPS * game_framework.frame_time
+            player.camera_x += player.dir * RUN_SPEED_PPS * game_framework.frame_time * player.speed
+
+        if get_time() - player.wait_time >= 1:
+            player.wait_time = get_time()
+            player.timing_ok = True
+            print('호출')
+
+        if player.stun:
+            player.state_machine.handle_event(('STUN', 0))
 
     @staticmethod
     def draw(player):
@@ -334,7 +378,8 @@ class StateMachine:
                    game_start: Idle, go_swim: Swim},
             Run: {a_down: Run, d_down: Run, a_up: Idle, d_up: Idle, left_down: Run, right_down: Run, fail_out: Slip,
                   down_down: Run, up_down: Run, go_jump: Jump, shift_down: Run, shift_up: Run},
-            Swim: {},
+            Swim: {left_down: Swim, right_down: Swim, down_down: Swim, up_down: Swim, stun: Stun},
+            Stun: {time_out: Swim},
             Slip: {time_out: Idle},
             Jump: {time_out: Idle}
         }
@@ -386,6 +431,11 @@ class Player:
         self.exceed_point = 950
         self.perfect = True
         self.shift = False
+        # swimming_mode
+        self.timing_ok = False
+        self.speed = 1
+        self.stun = False
+        self.life = 1
 
     def update(self):
         self.state_machine.update()

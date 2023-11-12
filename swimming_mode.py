@@ -102,7 +102,10 @@ def track_update():
     if player.timing_ok:
         command.append(random.randint(0, 3))
         player.timing_ok = False
-        pass
+
+    if len(command) == 0 and len(player.input_command) != 0:
+        player.input_command.clear()
+
     if len(command) != 0 and len(player.input_command) != 0:
         if command[0] == player.input_command[0]:
             del command[0]
@@ -113,6 +116,7 @@ def track_update():
             player.life -= 0.3
             if player.life <= 0:
                 player.stun = True
+                print('stun')
             else:
                 player.speed = player.life
 
