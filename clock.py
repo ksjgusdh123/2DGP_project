@@ -19,7 +19,6 @@ class Clock:
         interval = get_time() - self.start_time
         if interval > 3:
             self.player.start = True
-
             game_world.remove_object(self)
 
         elif interval >= 2:
