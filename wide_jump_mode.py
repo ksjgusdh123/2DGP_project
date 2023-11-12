@@ -27,12 +27,19 @@ def init():
     global ai
     global track_image
     global line_image
+    global angle_image
+    global arrow_image
     global command
+    global angle
+    global angle_flip
     track_image = load_image('image/running_track.png')
     line_image = load_image('image/finishline.png')
+    angle_image = load_image('image/angle.png')
+    arrow_image = load_image('image/arrow_flip.png')
     command = []
-
+    angle = 0
     running = True
+    angle_flip = False
     # player = Player(character_select_mode.character_num)
     player = Player(0)
     # ai = [AI(player) for _ in range(3)]
@@ -55,14 +62,42 @@ def finish():
 
 
 def update():
+    global player
+    global angle
+    global angle_flip
+
+    if angle_flip:
+        angle -= 0.1
+    else:
+        angle += 0.1
+    if angle >= 90:
+        angle = 90
+        angle_flip = True
+    if angle <= 0:
+        angle = 0
+        angle_flip = False
+    print(angle)
+    if player.stop:
+        pass
+
     game_world.update()
 
 
 def draw():
     clear_canvas()
+    track_draw()
+    game_world.render()
+    update_canvas()
+
+
+def track_draw():
     for i in range(0, 20 + 1):
         track_image.clip_draw(26, 126, 254, 100, 254 * i - player.camera_x, 200, 254, 500)
         track_image.clip_draw(28, 236, 208, 64, 1024 * (i // 4) - player.camera_x, 500, 1024, 200)
     track_image.clip_draw(396, 442, 92, 50, 2000 - player.camera_x, 190, 1000, 254)
-    game_world.render()
-    update_canvas()
+
+    if player.stop:
+        arrow_image.clip_composite_draw(-100, 0, 620, 373, angle * math.pi / 180.0, '', player.x + 100 - 60 - player.camera_x - angle * 0.25,
+                                        player.y + 80 - (90 - angle) * 0.1, 100, 50)
+        angle_image.draw(player.x + 100 - 50 - player.camera_x, player.y + 100, 100, 100)
+        print('stop')

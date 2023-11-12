@@ -63,6 +63,9 @@ def shift_up(e):
 def game_start(e):
     return e[0] == 'INPUT' and e[1].type == SDL_KEYDOWN and e[1].key == SDLK_SPACE
 
+def wait_wide_jump(e):
+    return e[0] == 'INPUT' and e[1].type == SDL_KEYDOWN and e[1].key == SDLK_f
+
 
 def time_out(e):
     return e[0] == 'TIME_OUT'
@@ -80,6 +83,8 @@ def go_swim(e):
 
 def stun(e):
     return e[0] == 'STUN'
+
+
 
 class Idle:
     @staticmethod
@@ -283,6 +288,23 @@ class Swim:
         elif player.character_id == ECHDNA:
             player.image.clip_draw(ech_swim[int(player.frame)], 51, 50, 25, player.x - player.camera_x, player.y, 50, 100)
 
+class Wide_Jump:
+    @staticmethod
+    def enter(player, e):
+        if wait_wide_jump(e):
+            player.stop = True
+
+    @staticmethod
+    def exit(player, e):
+        pass
+
+    @staticmethod
+    def do(player):
+        pass
+
+    @staticmethod
+    def draw(player):
+        pass
 
 class Run:
     @staticmethod
@@ -329,7 +351,7 @@ class Run:
             add_speed = get_time() - player.wait_time
             if player.x <= 5150:
                 player.x += (player.dir + min(add_speed, 1)) * RUN_SPEED_PPS * game_framework.frame_time
-            if player.x >= 400 and player.x <= 4800:
+            if 400 <= player.x <= 4800:
                 player.camera_x += (player.dir + min(add_speed, 1)) * RUN_SPEED_PPS * game_framework.frame_time
         else:
             if player.x <= 5150:
@@ -337,7 +359,7 @@ class Run:
             if 400 <= player.x <= 4800:
                 player.camera_x += player.dir * RUN_SPEED_PPS * game_framework.frame_time
         if player.game_mode == 'run':
-            if player.x >= player.exceed_point and player.success == True:
+            if player.x >= player.exceed_point and player.success:
                 player.state_machine.handle_event(('JUMP', 0))
                 if player.exceed_point + 500 < 4600:
                     player.exceed_point += 500
@@ -391,13 +413,14 @@ class StateMachine:
         self.cur_state = Idle
         self.transitions = {
             Idle: {a_down: Run, d_down: Run, left_down: Run, right_down: Run, down_down: Run, up_down: Run,
-                   game_start: Idle, go_swim: Swim},
+                   game_start: Idle, go_swim: Swim, wait_wide_jump: Wide_Jump},
             Run: {a_down: Run, d_down: Run, a_up: Idle, d_up: Idle, left_down: Run, right_down: Run, fail_out: Slip,
-                  down_down: Run, up_down: Run, go_jump: Jump, shift_down: Run, shift_up: Run},
+                  down_down: Run, up_down: Run, go_jump: Jump, shift_down: Run, shift_up: Run, wait_wide_jump: Wide_Jump},
             Swim: {left_down: Swim, right_down: Swim, down_down: Swim, up_down: Swim, stun: Stun},
             Stun: {time_out: Swim},
             Slip: {time_out: Idle},
-            Jump: {time_out: Idle}
+            Jump: {time_out: Idle},
+            Wide_Jump: {}
         }
 
     def start(self):
@@ -452,6 +475,8 @@ class Player:
         self.speed = 1
         self.stun = False
         self.life = 1
+        # wide_jump_mode
+        self.stop = False
 
     def update(self):
         self.state_machine.update()
