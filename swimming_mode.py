@@ -42,18 +42,25 @@ def init():
 
     running = True
     player = Player(character_select_mode.character_num)
-    player = Player(3)
     ai = [AI(player) for _ in range(3)]
     game_world.add_objects(ai, 1)
     game_world.add_object(player, 1)
-    player.y = 100
-    ai[0].y = 400
-    ai[1].y = 300
-    ai[2].y = 200
-    player.game_mode = 'swim'
+    basic_player_init(player)
     for i in range(0, 3):
-        ai[i].y = 400 - i * 100
+        ai[i].y = 400 - 100 * i
+        ai[i].x = 100
         ai[i].mode = 'swim'
+
+
+def basic_player_init(player):
+    player.y = 100
+    player.x = 100
+    player.start = False
+    player.ready = False
+    player.camera_x = 0
+    player.speed = 1
+    player.life = 1
+    player.game_mode = 'swim'
 
 
 def finish():

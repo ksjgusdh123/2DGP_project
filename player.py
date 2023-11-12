@@ -122,7 +122,7 @@ class Idle:
             player.frame = (player.frame + 10 * ACTION_PER_TIME * game_framework.frame_time) % 10
         if player.start and player.game_mode == 'swim':
             player.state_machine.handle_event(('GO_SWIM', 0))
-        if player.start and player.game_mode == 'jump':
+        if player.start and player.game_mode == 'jump' and not player.jump_ok:
             player.state_machine.handle_event(('WIDE_JUMP_RUN', 0))
 
     @staticmethod
@@ -290,7 +290,6 @@ class Swim:
         if get_time() - player.wait_time >= 1:
             player.wait_time = get_time()
             player.timing_ok = True
-            print('호출')
 
         if player.stun:
             player.state_machine.handle_event(('STUN', 0))
@@ -343,8 +342,8 @@ class Wide_Jump:
             player.start_pos = player.x
     @staticmethod
     def exit(player, e):
+        player.jump_ok = True
         print(player.x - player.start_pos)
-        pass
 
     @staticmethod
     def do(player):
@@ -414,6 +413,8 @@ class Run:
     def do(player):
         player.frame = (player.frame + 10 * ACTION_PER_TIME * game_framework.frame_time) % 10
         if player.game_mode == 'run':
+            if player.x >= 5000:
+                player.next_map = 'swim'
             if player.shift and player.dir != 0:
                 add_speed = get_time() - player.wait_time
                 if player.x <= 5150:
@@ -520,13 +521,13 @@ class StateMachine:
 class Player:
     def __init__(self, character_num):
         self.character_id = character_num
-        if self.character_id == 0:
+        if self.character_id == SONIC:
             self.image = load_image('image/sonic_animation.png')
-        if self.character_id == 1:
+        if self.character_id == TAILS:
             self.image = load_image('image/tails.png')
-        if self.character_id == 2:
+        if self.character_id == SHADOW:
             self.image = load_image('image/shadow.png')
-        if self.character_id == 3:
+        if self.character_id == ECHDNA:
             self.image = load_image('image/echidna.png')
 
         self.frame = 0
@@ -539,6 +540,7 @@ class Player:
         self.state_machine = StateMachine(self)
         self.state_machine.start()
         self.camera_x = 0
+        self.next_map = None
         # running_track
         self.input_command = []
         self.success = False
@@ -554,6 +556,7 @@ class Player:
         self.stop = False
         self.angle = 0
         self.angle_check = False
+        self.jump_ok = False
 
     def update(self):
         self.state_machine.update()

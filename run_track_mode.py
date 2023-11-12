@@ -4,6 +4,7 @@ from pico2d import *
 import game_framework
 import character_select_mode
 import game_world
+import swimming_mode
 from player import Player
 from AI_player import AI
 
@@ -43,23 +44,33 @@ def init():
     ai = [AI(player) for _ in range(3)]
     game_world.add_objects(ai, 1)
     game_world.add_object(player, 1)
-    player.y = 140
-    player.game_mode = 'run'
+    basic_player_init(player)
     for i in range(0, 3):
+        ai[i].x = 100
         ai[i].y = 320 - 60 * i
         ai[i].mode = 'run'
 
 
+def basic_player_init(player):
+    player.y = 140
+    player.x = 100
+    player.start = False
+    player.ready = False
+    player.exceed_point = 950
+    player.input_command = []
+    player.game_mode = 'run'
+
+
 def finish():
     global track_image
-    # global line_image
-    # global arrow_image
-    # global obstacle_image
+    global line_image
+    global arrow_image
+    global obstacle_image
     del track_image
-    # del line_image
-    # del arrow_image
-    # del obstacle_image
-    # game_world.clear()
+    del line_image
+    del arrow_image
+    del obstacle_image
+    game_world.clear()
 
 
 def update():
@@ -123,3 +134,7 @@ def track_update():
             player.perfect = False
         if len(command) == 0 and player.perfect == True:
             player.success = True
+
+    if player.next_map == 'swim':
+        finish()
+        game_framework.change_mode(swimming_mode)

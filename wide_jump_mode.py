@@ -46,6 +46,7 @@ def init():
     # game_world.add_objects(ai, 1)
     game_world.add_object(player, 1)
     player.y = 240
+    player.x = 100
     player.game_mode = 'jump'
 
 
