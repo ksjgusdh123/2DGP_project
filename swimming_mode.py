@@ -28,14 +28,14 @@ def init():
     global ai
     global track_image
     global people_image
-    global line_image
     global arrow_image
-    global obstacle_image
     global rectangle_image
     global command
     track_image = load_image('image/swimming_track.png')
     people_image = load_image('image/running_track.png')
     rectangle_image = load_image('image/rectangle.png')
+    arrow_image = load_image('image/arrow.png')
+
     command = []
 
     running = True
@@ -60,6 +60,7 @@ def finish():
 
 
 def update():
+    track_update()
     game_world.update()
 
 
@@ -98,20 +99,38 @@ def arrow_draw():
 def track_update():
     global command
     global player
-    if player.x + 100 > player.exceed_point and player.success == False:
-        if len(command) == 0:
-            command = [random.randint(0, 3) for _ in range(random.randint(3, 3))]
-    elif player.x < player.exceed_point - 100:
-        command.clear()
-        player.input_command.clear()
-        player.success = False
-        player.perfect = True
-
+    if player.timing_ok:
+        command.append(random.randint(0, 3))
+        player.timing_ok = False
+        pass
     if len(command) != 0 and len(player.input_command) != 0:
-        if command[0] == player.input_command[0] and player.perfect:
+        if command[0] == player.input_command[0]:
             del command[0]
             player.input_command.clear()
-        else:
-            player.perfect = False
-        if len(command) == 0 and player.perfect:
-            player.success = True
+            player.speed += 0.1
+        elif command[0] != player.input_command[0]:
+            player.input_command.clear()
+            player.life -= 0.3
+            if player.life <= 0:
+                player.stun = True
+            else:
+                player.speed = player.life
+
+
+    # if player.x + 100 > player.exceed_point and player.success == False:
+    #     if len(command) == 0:
+    #         command = [random.randint(0, 3) for _ in range(random.randint(3, 3))]
+    # elif player.x < player.exceed_point - 100:
+    #     command.clear()
+    #     player.input_command.clear()
+    #     player.success = False
+    #     player.perfect = True
+    #
+    # if len(command) != 0 and len(player.input_command) != 0:
+    #     if command[0] == player.input_command[0] and player.perfect:
+    #         del command[0]
+    #         player.input_command.clear()
+    #     else:
+    #         player.perfect = False
+    #     if len(command) == 0 and player.perfect:
+    #         player.success = True
