@@ -89,6 +89,10 @@ def go_swim(e):
     return e[0] == 'GO_SWIM'
 
 
+def wide_jump_run(e):
+    return e[0] == 'WIDE_JUMP_RUN'
+
+
 def stun(e):
     return e[0] == 'STUN'
 
@@ -118,6 +122,8 @@ class Idle:
             player.frame = (player.frame + 10 * ACTION_PER_TIME * game_framework.frame_time) % 10
         if player.start and player.game_mode == 'swim':
             player.state_machine.handle_event(('GO_SWIM', 0))
+        if player.start and player.game_mode == 'jump':
+            player.state_machine.handle_event(('WIDE_JUMP_RUN', 0))
 
     @staticmethod
     def draw(player):
@@ -343,9 +349,12 @@ class Wide_Jump:
     @staticmethod
     def do(player):
         player.frame = (player.frame + 10 * ACTION_PER_TIME * game_framework.frame_time) % 5
-        player.x += RUN_SPEED_PPS * game_framework.frame_time * (math.cos(player.angle) - (1 - math.sin(player.angle))) / 2 * 5
+        player.x += (RUN_SPEED_PPS * game_framework.frame_time * player.speed * 3
+                     * (math.cos(player.angle) - (1 - math.sin(player.angle))) / 2)
+
         if 400 <= player.x <= 4800:
-            player.camera_x += RUN_SPEED_PPS * game_framework.frame_time * (math.cos(player.angle) - (1 - math.sin(player.angle))) / 2 * 5
+            player.camera_x += (RUN_SPEED_PPS * game_framework.frame_time * player.speed * 3
+                                * (math.cos(player.angle) - (1 - math.sin(player.angle))) / 2)
 
         if get_time() - player.wait_time < 0.5:
             player.y += RUN_SPEED_PPS * game_framework.frame_time * math.sin(player.angle) * 5
@@ -365,52 +374,57 @@ class Wide_Jump:
 class Run:
     @staticmethod
     def enter(player, e):
-        if shift_down(e):
-            player.shift = True
-            player.wait_time = get_time()
-        elif shift_up(e):
-            player.shift = False
+        if player.game_mode == 'run':
+            if shift_down(e):
+                player.shift = True
+                player.wait_time = get_time()
+            elif shift_up(e):
+                player.shift = False
 
-        if d_down(e):
+            if d_down(e):
+                player.dir, player.action = 1, 1
+            elif a_down(e):
+                player.dir, player.action = -1, 0
+
+            if left_down(e):
+                player.input_command.insert(0, 0)
+            elif right_down(e):
+                player.input_command.insert(0, 1)
+            elif down_down(e):
+                player.input_command.insert(0, 2)
+            elif up_down(e):
+                player.input_command.insert(0, 3)
+        elif player.game_mode == 'jump':
             player.dir, player.action = 1, 1
-        elif a_down(e):
-            player.dir, player.action = -1, 0
-
-        if left_down(e):
-            player.input_command.insert(0, 0)
-        elif right_down(e):
-            player.input_command.insert(0, 1)
-        elif down_down(e):
-            player.input_command.insert(0, 2)
-        elif up_down(e):
-            player.input_command.insert(0, 3)
-
+            if d_down(e):
+                player.speed += 0.1
     @staticmethod
     def exit(player, e):
-        if left_down(e):
-            player.input_command.insert(0, 0)
-        elif right_down(e):
-            player.input_command.insert(0, 1)
-        elif down_down(e):
-            player.input_command.insert(0, 2)
-        elif up_down(e):
-            player.input_command.insert(0, 3)
+        if player.game_mode == 'run':
+            if left_down(e):
+                player.input_command.insert(0, 0)
+            elif right_down(e):
+                player.input_command.insert(0, 1)
+            elif down_down(e):
+                player.input_command.insert(0, 2)
+            elif up_down(e):
+                player.input_command.insert(0, 3)
 
     @staticmethod
     def do(player):
         player.frame = (player.frame + 10 * ACTION_PER_TIME * game_framework.frame_time) % 10
-        if player.shift and player.dir != 0:
-            add_speed = get_time() - player.wait_time
-            if player.x <= 5150:
-                player.x += (player.dir + min(add_speed, 1)) * RUN_SPEED_PPS * game_framework.frame_time
-            if 400 <= player.x <= 4800:
-                player.camera_x += (player.dir + min(add_speed, 1)) * RUN_SPEED_PPS * game_framework.frame_time
-        else:
-            if player.x <= 5150:
-                player.x += player.dir * RUN_SPEED_PPS * game_framework.frame_time
-            if 400 <= player.x <= 4800:
-                player.camera_x += player.dir * RUN_SPEED_PPS * game_framework.frame_time
         if player.game_mode == 'run':
+            if player.shift and player.dir != 0:
+                add_speed = get_time() - player.wait_time
+                if player.x <= 5150:
+                    player.x += (player.dir + min(add_speed, 1)) * RUN_SPEED_PPS * game_framework.frame_time
+                if 400 <= player.x <= 4800:
+                    player.camera_x += (player.dir + min(add_speed, 1)) * RUN_SPEED_PPS * game_framework.frame_time
+            else:
+                if player.x <= 5150:
+                    player.x += player.dir * RUN_SPEED_PPS * game_framework.frame_time
+                if 400 <= player.x <= 4800:
+                    player.camera_x += player.dir * RUN_SPEED_PPS * game_framework.frame_time
             if player.x >= player.exceed_point and player.success:
                 player.state_machine.handle_event(('JUMP', 0))
                 if player.exceed_point + 500 < 4600:
@@ -419,6 +433,13 @@ class Run:
                     player.exceed_point = 10000
             elif player.x >= player.exceed_point and player.success == False:
                 player.state_machine.handle_event(('FAIL', 0))
+
+        elif player.game_mode == 'jump':
+            player.speed -= 0.0005
+            if player.x <= 5150:
+                player.x += RUN_SPEED_PPS * game_framework.frame_time * max(player.speed, 0.5)
+            if 400 <= player.x <= 4800:
+                player.camera_x += RUN_SPEED_PPS * game_framework.frame_time * max(player.speed, 0.5)
 
     @staticmethod
     def draw(player):
@@ -465,7 +486,7 @@ class StateMachine:
         self.cur_state = Idle
         self.transitions = {
             Idle: {a_down: Run, d_down: Run, left_down: Run, right_down: Run, down_down: Run, up_down: Run,
-                   game_start: Idle, go_swim: Swim, wait_wide_jump: Wait_Wide_Jump},
+                   game_start: Idle, go_swim: Swim, wide_jump_run: Run},
             Run: {a_down: Run, d_down: Run, a_up: Idle, d_up: Idle, left_down: Run, right_down: Run, fail_out: Slip,
                   down_down: Run, up_down: Run, go_jump: Jump, shift_down: Run, shift_up: Run,
                   wait_wide_jump: Wait_Wide_Jump},
@@ -526,7 +547,7 @@ class Player:
         self.shift = False
         # swimming_mode
         self.timing_ok = False
-        self.speed = 1
+        self.speed = 1  # wide_jump_mode
         self.stun = False
         self.life = 1
         # wide_jump_mode
