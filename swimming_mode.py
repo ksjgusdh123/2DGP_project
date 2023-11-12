@@ -31,12 +31,14 @@ def init():
     global arrow_image
     global rectangle_image
     global command
+    global command_timer
     track_image = load_image('image/swimming_track.png')
     people_image = load_image('image/running_track.png')
     rectangle_image = load_image('image/rectangle.png')
     arrow_image = load_image('image/arrow.png')
 
     command = []
+    command_timer = []
 
     running = True
     player = Player(character_select_mode.character_num)
@@ -94,13 +96,26 @@ def arrow_draw():
         elif command[i] == 3:
             arrow_image.clip_composite_draw(0, 0, 670, 373, math.pi / 2, 'h', player.x + i * 100 - 50 - player.camera_x,
                                             player.y + 100, 100, 100)
-
+        rectangle_image.draw(player.x + i * 100 - 50 - player.camera_x, player.y + 100, 100 * command_timer[i] / 10, 100 * command_timer[i] / 10)
 
 def track_update():
     global command
     global player
+    global command_timer
+
+    if len(command_timer) != 0:
+        for i in range(0, len(command_timer)):
+            command_timer[i] -= 0.01
+            if command_timer[i] <= 0:
+                player.stun = True
+                command.clear()
+                command_timer.clear()
+                print('stun')
+                break
+
     if player.timing_ok:
         command.append(random.randint(0, 3))
+        command_timer.append(10.0)
         player.timing_ok = False
 
     if len(command) == 0 and len(player.input_command) != 0:
@@ -108,14 +123,17 @@ def track_update():
 
     if len(command) != 0 and len(player.input_command) != 0:
         if command[0] == player.input_command[0]:
-            del command[0]
+            player.speed += 0.01 * (10 - command_timer[0])
             player.input_command.clear()
-            player.speed += 0.1
+            del command_timer[0]
+            del command[0]
         elif command[0] != player.input_command[0]:
             player.input_command.clear()
             player.life -= 0.3
             if player.life <= 0:
                 player.stun = True
+                command.clear()
+                command_timer.clear()
                 print('stun')
             else:
                 player.speed = player.life
