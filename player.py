@@ -20,6 +20,7 @@ TAILS = 1
 SHADOW = 2
 ECHDNA = 3
 
+
 def a_down(e):
     return e[0] == 'INPUT' and e[1].type == SDL_KEYDOWN and e[1].key == SDLK_a
 
@@ -63,8 +64,13 @@ def shift_up(e):
 def game_start(e):
     return e[0] == 'INPUT' and e[1].type == SDL_KEYDOWN and e[1].key == SDLK_SPACE
 
+
 def wait_wide_jump(e):
     return e[0] == 'INPUT' and e[1].type == SDL_KEYDOWN and e[1].key == SDLK_f
+
+
+def wide_jump_go(e):
+    return e[0] == 'INPUT' and e[1].type == SDL_KEYDOWN and e[1].key == SDLK_r
 
 
 def time_out(e):
@@ -78,12 +84,13 @@ def go_jump(e):
 def fail_out(e):
     return e[0] == 'FAIL'
 
+
 def go_swim(e):
     return e[0] == 'GO_SWIM'
 
+
 def stun(e):
     return e[0] == 'STUN'
-
 
 
 class Idle:
@@ -234,13 +241,18 @@ class Stun:
     @staticmethod
     def draw(player):
         if player.character_id == SONIC:
-            player.image.clip_draw(sonic_stun[int(player.frame)], 6, 28, 31, player.x - player.camera_x, player.y - 20, 50, 100)
+            player.image.clip_draw(sonic_stun[int(player.frame)], 6, 28, 31, player.x - player.camera_x, player.y - 20,
+                                   50, 100)
         elif player.character_id == TAILS:
-            player.image.clip_draw(tails_stun[int(player.frame)], 224, 40, 31, player.x - player.camera_x, player.y - 20, 50, 100)
+            player.image.clip_draw(tails_stun[int(player.frame)], 224, 40, 31, player.x - player.camera_x,
+                                   player.y - 20, 50, 100)
         elif player.character_id == SHADOW:
-            player.image.clip_draw(shadow_stun[int(player.frame)], 319, 30, 31, player.x - player.camera_x, player.y - 20, 50, 100)
+            player.image.clip_draw(shadow_stun[int(player.frame)], 319, 30, 31, player.x - player.camera_x,
+                                   player.y - 20, 50, 100)
         elif player.character_id == ECHDNA:
-            player.image.clip_draw(ech_stun[int(player.frame)], 3, 35, 41, player.x - player.camera_x, player.y - 20, 50, 100)
+            player.image.clip_draw(ech_stun[int(player.frame)], 3, 35, 41, player.x - player.camera_x, player.y - 20,
+                                   50, 100)
+
 
 class Swim:
     @staticmethod
@@ -280,19 +292,27 @@ class Swim:
     @staticmethod
     def draw(player):
         if player.character_id == SONIC:
-            player.image.clip_draw(sonic_swim[int(player.frame)], 57, 36, 20, player.x - player.camera_x, player.y, 50, 100)
+            player.image.clip_draw(sonic_swim[int(player.frame)], 57, 36, 20, player.x - player.camera_x, player.y, 50,
+                                   100)
         elif player.character_id == TAILS:
-            player.image.clip_composite_draw(tails_swim[int(player.frame)], 264, 40, 30, 3.14 * 30, 'h', player.x - player.camera_x, player.y, 50, 100)
+            player.image.clip_composite_draw(tails_swim[int(player.frame)], 264, 40, 30, 3.14 * 30, 'h',
+                                             player.x - player.camera_x, player.y, 50, 100)
         elif player.character_id == SHADOW:
-            player.image.clip_composite_draw(shadow_swim[int(player.frame)], 284, 38, 30, 3.14 * 30, 'h', player.x - player.camera_x, player.y, 50, 100)
+            player.image.clip_composite_draw(shadow_swim[int(player.frame)], 284, 38, 30, 3.14 * 30, 'h',
+                                             player.x - player.camera_x, player.y, 50, 100)
         elif player.character_id == ECHDNA:
-            player.image.clip_draw(ech_swim[int(player.frame)], 51, 50, 25, player.x - player.camera_x, player.y, 50, 100)
+            player.image.clip_draw(ech_swim[int(player.frame)], 51, 50, 25, player.x - player.camera_x, player.y, 50,
+                                   100)
 
-class Wide_Jump:
+
+class Wait_Wide_Jump:
     @staticmethod
     def enter(player, e):
         if wait_wide_jump(e):
             player.stop = True
+
+        if wide_jump_go(e):
+            player.stop = False
 
     @staticmethod
     def exit(player, e):
@@ -304,7 +324,43 @@ class Wide_Jump:
 
     @staticmethod
     def draw(player):
+        if player.character_id == SONIC:
+            player.image.clip_draw(333, 149, 26, 25, player.x - player.camera_x, player.y, 50, 100)
+
+
+class Wide_Jump:
+    @staticmethod
+    def enter(player, e):
+        if wide_jump_go(e):
+            player.angle_check = True
+            player.wait_time = get_time()
+            player.start_pos = player.x
+    @staticmethod
+    def exit(player, e):
+        print(player.x - player.start_pos)
         pass
+
+    @staticmethod
+    def do(player):
+        player.frame = (player.frame + 10 * ACTION_PER_TIME * game_framework.frame_time) % 5
+        player.x += RUN_SPEED_PPS * game_framework.frame_time * (math.cos(player.angle) - (1 - math.sin(player.angle))) / 2 * 5
+        if 400 <= player.x <= 4800:
+            player.camera_x += RUN_SPEED_PPS * game_framework.frame_time * (math.cos(player.angle) - (1 - math.sin(player.angle))) / 2 * 5
+
+        if get_time() - player.wait_time < 0.5:
+            player.y += RUN_SPEED_PPS * game_framework.frame_time * math.sin(player.angle) * 5
+        elif 0.5 < get_time() - player.wait_time < 1.0:
+            player.y -= RUN_SPEED_PPS * game_framework.frame_time * math.sin(player.angle) * 5
+        if get_time() - player.wait_time > 1.0:
+            player.state_machine.handle_event(('TIME_OUT', 0))
+
+    @staticmethod
+    def draw(player):
+
+        if player.character_id == SONIC:
+            player.image.clip_draw(sonic_wide_jump[int(player.frame)], 149, 26, 28, player.x - player.camera_x,
+                                   player.y, 50, 100)
+
 
 class Run:
     @staticmethod
@@ -329,9 +385,6 @@ class Run:
         elif up_down(e):
             player.input_command.insert(0, 3)
 
-
-
-
     @staticmethod
     def exit(player, e):
         if left_down(e):
@@ -342,7 +395,6 @@ class Run:
             player.input_command.insert(0, 2)
         elif up_down(e):
             player.input_command.insert(0, 3)
-
 
     @staticmethod
     def do(player):
@@ -368,7 +420,6 @@ class Run:
             elif player.x >= player.exceed_point and player.success == False:
                 player.state_machine.handle_event(('FAIL', 0))
 
-
     @staticmethod
     def draw(player):
         Run.run_track_draw(player)
@@ -377,7 +428,8 @@ class Run:
     def run_track_draw(player):
         if player.character_id == 0:
             if player.dir > 0:
-                player.image.clip_draw(sonic_run[int(player.frame)], 149, 23, 27, player.x - player.camera_x, player.y, 50, 100)
+                player.image.clip_draw(sonic_run[int(player.frame)], 149, 23, 27, player.x - player.camera_x, player.y,
+                                       50, 100)
             elif player.dir < 0:
                 player.image.clip_composite_draw(sonic_run[int(player.frame)], 149, 23, 27, 0, 'h',
                                                  player.x - player.camera_x, player.y, 50, 100)
@@ -413,14 +465,16 @@ class StateMachine:
         self.cur_state = Idle
         self.transitions = {
             Idle: {a_down: Run, d_down: Run, left_down: Run, right_down: Run, down_down: Run, up_down: Run,
-                   game_start: Idle, go_swim: Swim, wait_wide_jump: Wide_Jump},
+                   game_start: Idle, go_swim: Swim, wait_wide_jump: Wait_Wide_Jump},
             Run: {a_down: Run, d_down: Run, a_up: Idle, d_up: Idle, left_down: Run, right_down: Run, fail_out: Slip,
-                  down_down: Run, up_down: Run, go_jump: Jump, shift_down: Run, shift_up: Run, wait_wide_jump: Wide_Jump},
+                  down_down: Run, up_down: Run, go_jump: Jump, shift_down: Run, shift_up: Run,
+                  wait_wide_jump: Wait_Wide_Jump},
             Swim: {left_down: Swim, right_down: Swim, down_down: Swim, up_down: Swim, stun: Stun},
             Stun: {time_out: Swim},
             Slip: {time_out: Idle},
             Jump: {time_out: Idle},
-            Wide_Jump: {}
+            Wait_Wide_Jump: {wide_jump_go: Wide_Jump},
+            Wide_Jump: {time_out: Idle}
         }
 
     def start(self):
@@ -477,6 +531,8 @@ class Player:
         self.life = 1
         # wide_jump_mode
         self.stop = False
+        self.angle = 0
+        self.angle_check = False
 
     def update(self):
         self.state_machine.update()

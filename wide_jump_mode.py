@@ -66,20 +66,22 @@ def update():
     global angle
     global angle_flip
 
-    if angle_flip:
-        angle -= 0.1
-    else:
-        angle += 0.1
-    if angle >= 90:
-        angle = 90
-        angle_flip = True
-    if angle <= 0:
-        angle = 0
-        angle_flip = False
-    print(angle)
     if player.stop:
-        pass
-
+        if angle_flip:
+            angle -= 0.1
+        else:
+            angle += 0.1
+        if angle >= 90:
+            angle = 90
+            angle_flip = True
+        if angle <= 0:
+            angle = 0
+            angle_flip = False
+    if player.angle_check:
+        player.angle = angle * math.pi / 180.0
+        player.angle_check = False
+        player.stop = False
+        print(angle)
     game_world.update()
 
 
@@ -100,4 +102,3 @@ def track_draw():
         arrow_image.clip_composite_draw(-100, 0, 620, 373, angle * math.pi / 180.0, '', player.x + 100 - 60 - player.camera_x - angle * 0.25,
                                         player.y + 80 - (90 - angle) * 0.1, 100, 50)
         angle_image.draw(player.x + 100 - 50 - player.camera_x, player.y + 100, 100, 100)
-        print('stop')
