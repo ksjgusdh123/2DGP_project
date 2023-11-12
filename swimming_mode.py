@@ -48,6 +48,7 @@ def init():
     ai[2].y = 200
     player.game_mode = 'swim'
     for i in range(0, 3):
+        ai[i].y = 400 - i * 100
         ai[i].mode = 'swim'
 
 
@@ -71,3 +72,4 @@ def draw_simming_track():
     for i in range(1, 20 + 1):
         track_image.clip_composite_draw(0, 400, 870, 550, math.pi / 2, '', 500 * i - player.camera_x, 205, 400, 500)
         people_image.clip_draw(28, 236, 208, 64, 1024 * (i // 4) - player.camera_x, 500, 1024, 200)
+    track_image.clip_composite_draw(0, 0, 870, 300, math.pi / 2, '', 5100 - player.camera_x, 205, 400, 300)
