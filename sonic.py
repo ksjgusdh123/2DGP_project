@@ -1,7 +1,7 @@
 from pico2d import *
 
 import game_world
-from field import Running_track, Clock
+from clock import Running_track, Clock
 from player import Player
 from AI_player import AI
 

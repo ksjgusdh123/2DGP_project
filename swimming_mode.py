@@ -31,9 +31,11 @@ def init():
     global line_image
     global arrow_image
     global obstacle_image
+    global rectangle_image
     global command
     track_image = load_image('image/swimming_track.png')
     people_image = load_image('image/running_track.png')
+    rectangle_image = load_image('image/rectangle.png')
     command = []
 
     running = True
@@ -63,13 +65,53 @@ def update():
 
 def draw():
     clear_canvas()
-    draw_simming_track()
+    draw_swimming_track()
     game_world.render()
     update_canvas()
 
-def draw_simming_track():
+
+def draw_swimming_track():
     track_image.clip_composite_draw(0, 650, 870, 1300, math.pi / 2, '', 250 - player.camera_x, 205, 400, 500)
     for i in range(1, 20 + 1):
         track_image.clip_composite_draw(0, 400, 870, 550, math.pi / 2, '', 500 * i - player.camera_x, 205, 400, 500)
         people_image.clip_draw(28, 236, 208, 64, 1024 * (i // 4) - player.camera_x, 500, 1024, 200)
     track_image.clip_composite_draw(0, 0, 870, 300, math.pi / 2, '', 5100 - player.camera_x, 205, 400, 300)
+    arrow_draw()
+
+
+def arrow_draw():
+    for i in range(0, len(command)):
+        if command[i] == 0:
+            arrow_image.clip_composite_draw(0, 0, 670, 373, 0, ' ', player.x + i * 100 - 50 - player.camera_x,
+                                            player.y + 100, 100, 100)
+        elif command[i] == 1:
+            arrow_image.clip_composite_draw(0, 0, 670, 373, 0, 'h', player.x + i * 100 - 50 - player.camera_x,
+                                            player.y + 100, 100, 100)
+        elif command[i] == 2:
+            arrow_image.clip_composite_draw(0, 0, 670, 373, math.pi / 2, '', player.x + i * 100 - 50 - player.camera_x,
+                                            player.y + 100, 100, 100)
+        elif command[i] == 3:
+            arrow_image.clip_composite_draw(0, 0, 670, 373, math.pi / 2, 'h', player.x + i * 100 - 50 - player.camera_x,
+                                            player.y + 100, 100, 100)
+
+
+def track_update():
+    global command
+    global player
+    if player.x + 100 > player.exceed_point and player.success == False:
+        if len(command) == 0:
+            command = [random.randint(0, 3) for _ in range(random.randint(3, 3))]
+    elif player.x < player.exceed_point - 100:
+        command.clear()
+        player.input_command.clear()
+        player.success = False
+        player.perfect = True
+
+    if len(command) != 0 and len(player.input_command) != 0:
+        if command[0] == player.input_command[0] and player.perfect:
+            del command[0]
+            player.input_command.clear()
+        else:
+            player.perfect = False
+        if len(command) == 0 and player.perfect:
+            player.success = True

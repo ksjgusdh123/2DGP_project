@@ -71,8 +71,7 @@ class AI:
     def draw_character(self):
         if self.ch_id == 0:
             if not self.player.start:
-                self.image.clip_draw(int(self.frame) // 2 * 22 + 5, 249, 18, 30, self.x - self.player.camera_x, self.y,
-                                     50, 100)
+                self.image.clip_draw(int(self.frame) // 2 * 22 + 5, 249, 18, 30, self.x - self.player.camera_x, self.y, 50, 100)
             else:
                 if self.jump:
                     self.image.clip_draw(sonic_jump[int(self.frame)], 215, sonic_jump_w[int(self.frame)], 30,

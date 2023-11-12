@@ -40,10 +40,14 @@ def init():
     running = True
     player = Player(character_select_mode.character_num)
     # player = Player(0)
-    player.game_mode = 'run'
     ai = [AI(player) for _ in range(3)]
     game_world.add_objects(ai, 1)
     game_world.add_object(player, 1)
+    player.y = 100
+    player.game_mode = 'run'
+    for i in range(0, 3):
+        ai[i].y = 320 - 60 * i
+        ai[i].mode = 'run'
 
 
 def finish():
@@ -71,8 +75,6 @@ def draw():
 
 
 def running_track_draw():
-    global player
-
     for i in range(0, 21):
         track_image.clip_draw(26, 126, 254, 100, 254 * i - player.camera_x, 200, 254, 500)
         track_image.clip_draw(28, 236, 208, 64, 1024 * (i // 4) - player.camera_x, 500, 1024, 200)
@@ -86,23 +88,18 @@ def running_track_draw():
 
 
 def arrow_draw():
-    global player
     for i in range(0, len(command)):
         if command[i] == 0:
-            arrow_image.clip_composite_draw(0, 0, 670, 373, 0, ' ',
-                                            player.x + i * 100 - 50 - player.camera_x,
+            arrow_image.clip_composite_draw(0, 0, 670, 373, 0, ' ', player.x + i * 100 - 50 - player.camera_x,
                                             player.y + 100, 100, 100)
         elif command[i] == 1:
-            arrow_image.clip_composite_draw(0, 0, 670, 373, 0, 'h',
-                                            player.x + i * 100 - 50 - player.camera_x,
+            arrow_image.clip_composite_draw(0, 0, 670, 373, 0, 'h', player.x + i * 100 - 50 - player.camera_x,
                                             player.y + 100, 100, 100)
         elif command[i] == 2:
-            arrow_image.clip_composite_draw(0, 0, 670, 373, math.pi / 2, '',
-                                            player.x + i * 100 - 50 - player.camera_x,
+            arrow_image.clip_composite_draw(0, 0, 670, 373, math.pi / 2, '', player.x + i * 100 - 50 - player.camera_x,
                                             player.y + 100, 100, 100)
         elif command[i] == 3:
-            arrow_image.clip_composite_draw(0, 0, 670, 373, math.pi / 2, 'h',
-                                            player.x + i * 100 - 50 - player.camera_x,
+            arrow_image.clip_composite_draw(0, 0, 670, 373, math.pi / 2, 'h', player.x + i * 100 - 50 - player.camera_x,
                                             player.y + 100, 100, 100)
 
 
@@ -111,15 +108,14 @@ def track_update():
     global player
     if player.x + 100 > player.exceed_point and player.success == False:
         if len(command) == 0:
-            command = [random.randint(0, 3) for _ in
-                            range(random.randint(3, 3))]
+            command = [random.randint(0, 3) for _ in range(random.randint(3, 3))]
     elif player.x < player.exceed_point - 100:
         command.clear()
         player.input_command.clear()
         player.success = False
         player.perfect = True
 
-    if (len(command) != 0 and len(player.input_command) != 0):
+    if len(command) != 0 and len(player.input_command) != 0:
         if command[0] == player.input_command[0] and player.perfect:
             del command[0]
             player.input_command.clear()
