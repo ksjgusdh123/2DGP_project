@@ -35,10 +35,10 @@ def init():
     running = True
     # player = Player(character_select_mode.character_num)
     player = Player(0)
-    ai = [AI(player) for _ in range(3)]
-    game_world.add_objects(ai, 1)
+    # ai = [AI(player) for _ in range(3)]
+    # game_world.add_objects(ai, 1)
     game_world.add_object(player, 1)
-    player.y = 140
+    player.y = 240
     player.game_mode = 'jump'
 
 
@@ -60,5 +60,9 @@ def update():
 
 def draw():
     clear_canvas()
+    for i in range(0, 20 + 1):
+        track_image.clip_draw(26, 126, 254, 100, 254 * i - player.camera_x, 200, 254, 500)
+        track_image.clip_draw(28, 236, 208, 64, 1024 * (i // 4) - player.camera_x, 500, 1024, 200)
+    track_image.clip_draw(396, 442, 92, 50, 2000 - player.camera_x, 190, 1000, 254)
     game_world.render()
     update_canvas()

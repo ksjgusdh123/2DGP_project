@@ -109,7 +109,7 @@ class Idle:
 
     @staticmethod
     def draw(player):
-        if player.game_mode == 'run':
+        if player.game_mode == 'run' or player.game_mode == 'jump':
             Idle.running_track_idle_draw(player)
         elif player.game_mode == 'swim':
             Idle.running_track_idle_draw(player)
@@ -336,15 +336,15 @@ class Run:
                 player.x += player.dir * RUN_SPEED_PPS * game_framework.frame_time
             if 400 <= player.x <= 4800:
                 player.camera_x += player.dir * RUN_SPEED_PPS * game_framework.frame_time
-
-        if player.x >= player.exceed_point and player.success == True:
-            player.state_machine.handle_event(('JUMP', 0))
-            if player.exceed_point + 500 < 4600:
-                player.exceed_point += 500
-            else:
-                player.exceed_point = 10000
-        elif player.x >= player.exceed_point and player.success == False:
-            player.state_machine.handle_event(('FAIL', 0))
+        if player.game_mode == 'run':
+            if player.x >= player.exceed_point and player.success == True:
+                player.state_machine.handle_event(('JUMP', 0))
+                if player.exceed_point + 500 < 4600:
+                    player.exceed_point += 500
+                else:
+                    player.exceed_point = 10000
+            elif player.x >= player.exceed_point and player.success == False:
+                player.state_machine.handle_event(('FAIL', 0))
 
 
     @staticmethod
