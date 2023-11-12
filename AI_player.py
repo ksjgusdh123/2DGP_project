@@ -70,6 +70,10 @@ class AI:
         self.finish = False
         self.mode = None
 
+    def delete_ai(self):
+        AI.num = -1
+        AI.ai_num = 0
+
     def draw(self):
         self.draw_character()
 

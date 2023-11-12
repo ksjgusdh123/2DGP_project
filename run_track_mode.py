@@ -62,14 +62,16 @@ def basic_player_init(player):
 
 
 def finish():
-    global track_image
-    global line_image
-    global arrow_image
-    global obstacle_image
-    del track_image
-    del line_image
-    del arrow_image
-    del obstacle_image
+    # global track_image
+    # global line_image
+    # global arrow_image
+    # global obstacle_image
+    # del track_image
+    # del line_image
+    # del arrow_image
+    # del obstacle_image
+    global ai
+    ai[0].delete_ai()
     game_world.clear()
 
 
