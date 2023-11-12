@@ -3,7 +3,7 @@ from pico2d import *
 import game_framework
 import game_world
 from character_sprite import *
-from field import Clock
+from clock import Clock
 
 PIXEL_PER_METER = 10 / 0.3
 RUN_SPEED_KMPH = 20
@@ -71,12 +71,15 @@ def go_jump(e):
 def fail_out(e):
     return e[0] == 'FAIL'
 
+def go_swim(e):
+    return e[0] == 'GO_SWIM'
 
 class Idle:
     @staticmethod
     def enter(player, e):
         if game_start(e):
             player.start_clock()
+
         player.shift = False
         player.frame = 0
         if player.action == 0:
@@ -94,16 +97,18 @@ class Idle:
             player.frame = (player.frame + 14 * ACTION_PER_TIME * game_framework.frame_time) % 14
         else:
             player.frame = (player.frame + 10 * ACTION_PER_TIME * game_framework.frame_time) % 10
+        if player.start and player.game_mode == 'swim':
+            player.state_machine.handle_event(('GO_SWIM', 0))
 
     @staticmethod
     def draw(player):
         if player.game_mode == 'run':
-            Idle.run_idle_draw(player)
+            Idle.running_track_idle_draw(player)
         elif player.game_mode == 'swim':
-            Idle.run_idle_draw(player)
+            Idle.running_track_idle_draw(player)
 
     @staticmethod
-    def run_idle_draw(player):
+    def running_track_idle_draw(player):
         if player.action == 3:
             if player.character_id == 0:
                 player.image.clip_draw(int(player.frame) // 2 * 22 + 5, 249, 18, 30, player.x - player.camera_x,
@@ -137,7 +142,7 @@ class Slip:
             player.camera_x -= player.dir * 1 * RUN_SPEED_PPS * game_framework.frame_time
         if get_time() - player.wait_time < 0.4:
             player.y += 1 * RUN_SPEED_PPS * game_framework.frame_time
-        elif get_time() - player.wait_time > 0.4 and get_time() - player.wait_time < 0.8:
+        elif 0.4 < get_time() - player.wait_time < 0.8:
             player.y -= 1 * RUN_SPEED_PPS * game_framework.frame_time
         if get_time() - player.wait_time > 0.8:
             player.state_machine.handle_event(('TIME_OUT', 0))
@@ -176,7 +181,7 @@ class Jump:
             player.camera_x += player.dir * 1 * RUN_SPEED_PPS * game_framework.frame_time
         if get_time() - player.wait_time < 0.4:
             player.y += 1 * RUN_SPEED_PPS * game_framework.frame_time
-        elif get_time() - player.wait_time > 0.4 and get_time() - player.wait_time < 0.8:
+        elif 0.4 < get_time() - player.wait_time < 0.8:
             player.y -= 1 * RUN_SPEED_PPS * game_framework.frame_time
         if get_time() - player.wait_time > 0.8:
             player.state_machine.handle_event(('TIME_OUT', 0))
@@ -196,11 +201,32 @@ class Jump:
             player.image.clip_draw(ech_jump[int(player.frame)], 214, ech_jump_w[int(player.frame)], 45,
                                    player.x - player.camera_x, player.y, 50, 100)
 
+class Swim:
+    @staticmethod
+    def enter(player, e):
+        player.dir, player.action = 1, 1
+
+    @staticmethod
+    def exit(player, e):
+        pass
+
+    @staticmethod
+    def do(player):
+        player.frame = (player.frame + 10 * ACTION_PER_TIME * game_framework.frame_time) % 10
+        if player.x <= 5150:
+            player.x += player.dir * RUN_SPEED_PPS * game_framework.frame_time
+        if 400 <= player.x <= 4800:
+            player.camera_x += player.dir * RUN_SPEED_PPS * game_framework.frame_time
+
+    @staticmethod
+    def draw(player):
+        if player.character_id == 0:
+            player.image.clip_draw(sonic_swim[int(player.frame)], 57, 36, 20, player.x - player.camera_x, player.y, 50, 100)
+
 
 class Run:
     @staticmethod
     def enter(player, e):
-
         if shift_down(e):
             player.shift = True
             player.wait_time = get_time()
@@ -222,6 +248,8 @@ class Run:
             player.input_command.insert(0, 3)
 
 
+
+
     @staticmethod
     def exit(player, e):
         if left_down(e):
@@ -237,7 +265,6 @@ class Run:
     @staticmethod
     def do(player):
         player.frame = (player.frame + 10 * ACTION_PER_TIME * game_framework.frame_time) % 10
-
         if player.shift and player.dir != 0:
             add_speed = get_time() - player.wait_time
             if player.x <= 5150:
@@ -247,7 +274,7 @@ class Run:
         else:
             if player.x <= 5150:
                 player.x += player.dir * RUN_SPEED_PPS * game_framework.frame_time
-            if player.x >= 400 and player.x <= 4800:
+            if 400 <= player.x <= 4800:
                 player.camera_x += player.dir * RUN_SPEED_PPS * game_framework.frame_time
 
         if player.x >= player.exceed_point and player.success == True:
@@ -262,38 +289,40 @@ class Run:
 
     @staticmethod
     def draw(player):
+        Run.run_track_draw(player)
+
+    @staticmethod
+    def run_track_draw(player):
         if player.character_id == 0:
             if player.dir > 0:
-                player.image.clip_draw(sonic_run[int(player.frame)], 149, 23, 27, player.x - player.camera_x, player.y, 50,
-                                       100)
+                player.image.clip_draw(sonic_run[int(player.frame)], 149, 23, 27, player.x - player.camera_x, player.y, 50, 100)
             elif player.dir < 0:
                 player.image.clip_composite_draw(sonic_run[int(player.frame)], 149, 23, 27, 0, 'h',
-                                                 player.x - player.camera_x,
-                                                 player.y, 50, 100)
+                                                 player.x - player.camera_x, player.y, 50, 100)
             else:
-                player.image.clip_draw(int(player.frame) // 2 * 22 + 5, 249, 18, 30, player.x - player.camera_x, player.y,
-                                       50, 100)
+                player.image.clip_draw(int(player.frame) // 2 * 22 + 5, 249, 18, 30, player.x - player.camera_x,
+                                       player.y, 50, 100)
         elif player.character_id == 1:
             if player.dir > 0:
-                player.image.clip_draw(tails_run[int(player.frame)], 784, 36, 35, player.x - player.camera_x, player.y, 50,
-                                       100)
-            elif player.dir == 0:
-                player.image.clip_draw(int(player.frame) // 2 * 32 + 107, 960, 21, 35, player.x - player.camera_x, player.y,
+                player.image.clip_draw(tails_run[int(player.frame)], 784, 36, 35, player.x - player.camera_x, player.y,
                                        50, 100)
+            elif player.dir == 0:
+                player.image.clip_draw(int(player.frame) // 2 * 32 + 107, 960, 21, 35, player.x - player.camera_x,
+                                       player.y, 50, 100)
         elif player.character_id == 2:
             if player.dir > 0:
                 player.image.clip_draw(shadow_run[int(player.frame)], 431, shadow_run_w[int(player.frame)], 32,
                                        player.x - player.camera_x, player.y, 50, 100)
             else:
-                player.image.clip_draw(int(player.frame) // 2 * 26 + 6, 467, 23, 33, player.x - player.camera_x, player.y,
-                                       50, 100)
+                player.image.clip_draw(int(player.frame) // 2 * 26 + 6, 467, 23, 33, player.x - player.camera_x,
+                                       player.y, 50, 100)
         elif player.character_id == 3:
             if player.dir > 0:
                 player.image.clip_draw(ech_run[int(player.frame)], 218, ech_run_w[int(player.frame)], 40,
                                        player.x - player.camera_x, player.y, 50, 100)
             else:
-                player.image.clip_draw(int(player.frame) // 2 * 31 + 117, 262, 29, 42, player.x - player.camera_x, player.y,
-                                       50, 100)
+                player.image.clip_draw(int(player.frame) // 2 * 31 + 117, 262, 29, 42, player.x - player.camera_x,
+                                       player.y, 50, 100)
 
 
 class StateMachine:
@@ -302,9 +331,10 @@ class StateMachine:
         self.cur_state = Idle
         self.transitions = {
             Idle: {a_down: Run, d_down: Run, left_down: Run, right_down: Run, down_down: Run, up_down: Run,
-                   game_start: Idle},
+                   game_start: Idle, go_swim: Swim},
             Run: {a_down: Run, d_down: Run, a_up: Idle, d_up: Idle, left_down: Run, right_down: Run, fail_out: Slip,
                   down_down: Run, up_down: Run, go_jump: Jump, shift_down: Run, shift_up: Run},
+            Swim: {},
             Slip: {time_out: Idle},
             Jump: {time_out: Idle}
         }
@@ -344,12 +374,12 @@ class Player:
         self.action = 1
         self.dir = 0
         self.x, self.y = 100, 140
-        self.state_machine = StateMachine(self)
-        self.state_machine.start()
-        self.camera_x = 0
         self.start = False
         self.ready = False
         self.game_mode = None
+        self.state_machine = StateMachine(self)
+        self.state_machine.start()
+        self.camera_x = 0
         # running_track
         self.input_command = []
         self.success = False
