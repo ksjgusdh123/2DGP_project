@@ -15,6 +15,10 @@ TIME_PER_ACTION = 0.5
 ACTION_PER_TIME = 1.0 / TIME_PER_ACTION
 FRAMES_PER_ACTION = 8
 
+SONIC = 0
+TAILS = 1
+SHADOW = 2
+ECHDNA = 3
 
 def a_down(e):
     return e[0] == 'INPUT' and e[1].type == SDL_KEYDOWN and e[1].key == SDLK_a
@@ -224,7 +228,10 @@ class Stun:
 
     @staticmethod
     def draw(player):
-        player.image.clip_draw(sonic_stun[int(player.frame)], 6, 28, 31, player.x - player.camera_x, player.y - 20, 50, 100)
+        if player.character_id == SONIC:
+            player.image.clip_draw(sonic_stun[int(player.frame)], 6, 28, 31, player.x - player.camera_x, player.y - 20, 50, 100)
+        elif player.character_id == TAILS:
+            player.image.clip_draw(tails_stun[int(player.frame)], 224, 40, 31, player.x - player.camera_x, player.y - 20, 50, 100)
 
 
 class Swim:
@@ -264,8 +271,10 @@ class Swim:
 
     @staticmethod
     def draw(player):
-        if player.character_id == 0:
+        if player.character_id == SONIC:
             player.image.clip_draw(sonic_swim[int(player.frame)], 57, 36, 20, player.x - player.camera_x, player.y, 50, 100)
+        elif player.character_id == TAILS:
+            player.image.clip_composite_draw(tails_swim[int(player.frame)], 264, 40, 30, 3.14 * 30, 'h', player.x - player.camera_x, player.y, 50, 100)
 
 
 class Run:

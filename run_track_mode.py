@@ -43,7 +43,7 @@ def init():
     ai = [AI(player) for _ in range(3)]
     game_world.add_objects(ai, 1)
     game_world.add_object(player, 1)
-    player.y = 100
+    player.y = 140
     player.game_mode = 'run'
     for i in range(0, 3):
         ai[i].y = 320 - 60 * i
