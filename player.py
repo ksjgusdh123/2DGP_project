@@ -232,7 +232,10 @@ class Stun:
             player.image.clip_draw(sonic_stun[int(player.frame)], 6, 28, 31, player.x - player.camera_x, player.y - 20, 50, 100)
         elif player.character_id == TAILS:
             player.image.clip_draw(tails_stun[int(player.frame)], 224, 40, 31, player.x - player.camera_x, player.y - 20, 50, 100)
-
+        elif player.character_id == SHADOW:
+            player.image.clip_draw(shadow_stun[int(player.frame)], 319, 30, 31, player.x - player.camera_x, player.y - 20, 50, 100)
+        elif player.character_id == ECHDNA:
+            player.image.clip_draw(ech_stun[int(player.frame)], 3, 35, 41, player.x - player.camera_x, player.y - 20, 50, 100)
 
 class Swim:
     @staticmethod
@@ -275,6 +278,10 @@ class Swim:
             player.image.clip_draw(sonic_swim[int(player.frame)], 57, 36, 20, player.x - player.camera_x, player.y, 50, 100)
         elif player.character_id == TAILS:
             player.image.clip_composite_draw(tails_swim[int(player.frame)], 264, 40, 30, 3.14 * 30, 'h', player.x - player.camera_x, player.y, 50, 100)
+        elif player.character_id == SHADOW:
+            player.image.clip_composite_draw(shadow_swim[int(player.frame)], 284, 38, 30, 3.14 * 30, 'h', player.x - player.camera_x, player.y, 50, 100)
+        elif player.character_id == ECHDNA:
+            player.image.clip_draw(ech_swim[int(player.frame)], 51, 50, 25, player.x - player.camera_x, player.y, 50, 100)
 
 
 class Run:

@@ -42,7 +42,7 @@ def init():
 
     running = True
     player = Player(character_select_mode.character_num)
-    player = Player(1)
+    player = Player(3)
     ai = [AI(player) for _ in range(3)]
     game_world.add_objects(ai, 1)
     game_world.add_object(player, 1)
