@@ -3,7 +3,6 @@ from pico2d import *
 import game_framework
 from character_sprite import *
 
-
 PIXEL_PER_METER = 10 / 0.3
 RUN_SPEED_KMPH = 20
 RUN_SPEED_MPM = RUN_SPEED_KMPH * 1000 / 60
@@ -18,6 +17,7 @@ FRAMES_PER_ACTION = 8
 class AI:
     ai_num = 0
     num = -1
+
     def __init__(self, player):
         self.player = player
 
@@ -63,41 +63,36 @@ class AI:
         self.jump = False
         self.time = get_time()
         self.finish = False
-
-        pass
+        self.mode = None
 
     def draw(self):
         self.draw_character()
 
     def draw_character(self):
         if self.ch_id == 0:
-            if self.player.start == False:
-                self.image.clip_draw(int(self.frame) // 2 * 22 + 5, 249, 18, 30, self.x - self.player.camera_x, self.y, 50,
-                                     100)
+            if not self.player.start:
+                self.image.clip_draw(int(self.frame) // 2 * 22 + 5, 249, 18, 30, self.x - self.player.camera_x, self.y,
+                                     50, 100)
             else:
                 if self.jump:
                     self.image.clip_draw(sonic_jump[int(self.frame)], 215, sonic_jump_w[int(self.frame)], 30,
                                          self.x - self.player.camera_x, self.y, 50, 100)
                 else:
-                    self.image.clip_draw(sonic_run[int(self.frame)], 149, 23, 27, self.x - self.player.camera_x, self.y, 50,
-                                         100)
+                    self.image.clip_draw(sonic_run[int(self.frame)], 149, 23, 27, self.x - self.player.camera_x, self.y, 50, 100)
 
         elif self.ch_id == 1:
-            if self.player.start == False:
-                self.image.clip_draw(int(self.frame) // 2 * 32 + 107, 960, 21, 35, self.x - self.player.camera_x, self.y, 50,
-                                     100)
+            if not self.player.start:
+                self.image.clip_draw(int(self.frame) // 2 * 32 + 107, 960, 21, 35, self.x - self.player.camera_x, self.y, 50, 100)
             else:
                 if self.jump:
                     self.image.clip_draw(tails_jump[int(self.frame)], 736, tails_jump_w[int(self.frame)], 32,
                                          self.x - self.player.camera_x, self.y, 50, 100)
                 else:
-                    self.image.clip_draw(tails_run[int(self.frame)], 784, 36, 35, self.x - self.player.camera_x, self.y, 50,
-                                         100)
+                    self.image.clip_draw(tails_run[int(self.frame)], 784, 36, 35, self.x - self.player.camera_x, self.y, 50, 100)
 
         elif self.ch_id == 2:
-            if self.player.start == False:
-                self.image.clip_draw(int(self.frame) // 2 * 26 + 6, 467, 23, 33, self.x - self.player.camera_x, self.y, 50,
-                                     100)
+            if not self.player.start:
+                self.image.clip_draw(int(self.frame) // 2 * 26 + 6, 467, 23, 33, self.x - self.player.camera_x, self.y, 50, 100)
             else:
                 if self.jump:
                     self.image.clip_draw(shadow_jump[int(self.frame)], 317, shadow_jump_w[int(self.frame)], 39,
@@ -107,16 +102,15 @@ class AI:
                                          self.x - self.player.camera_x, self.y, 50, 100)
 
         if self.ch_id == 3:
-            if self.player.start == False:
-                self.image.clip_draw(int(self.frame) // 2 * 31 + 117, 262, 29, 42, self.x - self.player.camera_x, self.y, 50,
-                                     100)
+            if not self.player.start:
+                self.image.clip_draw(int(self.frame) // 2 * 31 + 117, 262, 29, 42, self.x - self.player.camera_x, self.y, 50, 100)
             else:
                 if self.jump:
                     self.image.clip_draw(ech_jump[int(self.frame)], 214, ech_jump_w[int(self.frame)], 45,
                                          self.x - self.player.camera_x, self.y, 50, 100)
                 else:
-                    self.image.clip_draw(ech_run[int(self.frame)], 218, ech_run_w[int(self.frame)], 40, self.x - self.player.camera_x, self.y, 50,
-                                         100)
+                    self.image.clip_draw(ech_run[int(self.frame)], 218, ech_run_w[int(self.frame)], 40,
+                                         self.x - self.player.camera_x, self.y, 50, 100)
 
     def update(self):
         # 게임 시작 시 sonic
@@ -141,7 +135,6 @@ class AI:
             self.frame = (self.frame + 14 * ACTION_PER_TIME * game_framework.frame_time) % 14
         else:
             self.frame = (self.frame + 10 * ACTION_PER_TIME * game_framework.frame_time) % 10
-
 
         if self.x >= 5000 and self.finish == False:
             self.finish = True

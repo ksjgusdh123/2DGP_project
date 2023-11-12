@@ -40,6 +40,7 @@ def init():
     running = True
     player = Player(character_select_mode.character_num)
     # player = Player(0)
+    player.game_mode = 'run'
     ai = [AI(player) for _ in range(3)]
     game_world.add_objects(ai, 1)
     game_world.add_object(player, 1)
@@ -47,14 +48,14 @@ def init():
 
 def finish():
     global track_image
-    global line_image
-    global arrow_image
-    global obstacle_image
+    # global line_image
+    # global arrow_image
+    # global obstacle_image
     del track_image
-    del line_image
-    del arrow_image
-    del obstacle_image
-    game_world.clear()
+    # del line_image
+    # del arrow_image
+    # del obstacle_image
+    # game_world.clear()
 
 
 def update():
@@ -76,10 +77,8 @@ def running_track_draw():
         track_image.clip_draw(26, 126, 254, 100, 254 * i - player.camera_x, 200, 254, 500)
         track_image.clip_draw(28, 236, 208, 64, 1024 * (i // 4) - player.camera_x, 500, 1024, 200)
 
-    line_image.clip_composite_draw(0, 365, 840, 130, math.pi / 2, '', 200 - player.camera_x, 190, 250,
-                                   100)
-    line_image.clip_composite_draw(0, 365, 840, 130, math.pi / 2, '', 5000 - player.camera_x, 190, 250,
-                                   100)
+    line_image.clip_composite_draw(0, 365, 840, 130, math.pi / 2, '', 200 - player.camera_x, 190, 250, 100)
+    line_image.clip_composite_draw(0, 365, 840, 130, math.pi / 2, '', 5000 - player.camera_x, 190, 250, 100)
     for i in range(1000, 5000 - 1, 500):
         for j in range(0, 4):
             obstacle_image.draw(i - player.camera_x, 120 + 50 * j + j * 10, 100, 100)

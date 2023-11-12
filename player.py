@@ -97,6 +97,13 @@ class Idle:
 
     @staticmethod
     def draw(player):
+        if player.game_mode == 'run':
+            Idle.run_idle_draw(player)
+        elif player.game_mode == 'swim':
+            Idle.run_idle_draw(player)
+
+    @staticmethod
+    def run_idle_draw(player):
         if player.action == 3:
             if player.character_id == 0:
                 player.image.clip_draw(int(player.frame) // 2 * 22 + 5, 249, 18, 30, player.x - player.camera_x,
@@ -342,6 +349,7 @@ class Player:
         self.camera_x = 0
         self.start = False
         self.ready = False
+        self.game_mode = None
         # running_track
         self.input_command = []
         self.success = False
