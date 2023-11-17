@@ -23,9 +23,10 @@ def handle_events():
 def init():
     global main_background_image
     global running
-    main_background_image = load_image('image/test3.png')
+    global font
+    main_background_image = load_image('image/main_background.png')
     running = True
-
+    font = load_font('font/ENCR10B.TTF', 30)
 def finish():
     global main_background_image
     del main_background_image
@@ -36,6 +37,7 @@ def update():
 def draw():
     clear_canvas()
     main_background_image.clip_draw(604, 553, 422, 419, 400, 300, 800, 600)
+    font.draw(330, 100, f'press the space',(0,0,0))
     update_canvas()
 
 
