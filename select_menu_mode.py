@@ -41,6 +41,8 @@ def init():
 def finish():
     global main_background_image
     global sports_pictogram
+    global font
+    del font
     del main_background_image
     del sports_pictogram
 

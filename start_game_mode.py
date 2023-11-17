@@ -29,6 +29,8 @@ def init():
 
 def finish():
     global main_background_image
+    global font
+    del font
     del main_background_image
 
 def update():
