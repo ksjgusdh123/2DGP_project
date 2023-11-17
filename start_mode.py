@@ -1,9 +1,8 @@
 from pico2d import *
 
-import character_select_mode
 import game_framework
 
-import run_track_mode
+import select_menu_mode
 
 HEIGHT = 600
 character_num = 100
@@ -18,7 +17,7 @@ def handle_events():
         elif event.type == SDL_KEYDOWN and event.key == SDLK_ESCAPE:
             game_framework.quit()
         elif event.type == SDL_KEYDOWN and event.key == SDLK_SPACE:
-            game_framework.change_mode(character_select_mode)
+            game_framework.change_mode(select_menu_mode)
 
 def init():
     global main_background_image
@@ -27,6 +26,7 @@ def init():
     main_background_image = load_image('image/main_background.png')
     running = True
     font = load_font('font/ENCR10B.TTF', 30)
+
 def finish():
     global main_background_image
     del main_background_image
