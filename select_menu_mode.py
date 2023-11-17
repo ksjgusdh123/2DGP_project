@@ -4,6 +4,7 @@ import character_select_mode
 import game_framework
 
 import run_track_mode
+import select_level_mode
 import start_game_mode
 
 HEIGHT = 600
@@ -11,7 +12,7 @@ character_num = 100
 picture_size = 75
 pictogram_start_x = 350
 game_map = None
-game_maps = ['Clay-pigeon shooting', 'long-jump', 'swimming', 'hurdle race', 'All']
+game_maps = ['shooting', 'long-jump', 'swimming', 'hurdle race', 'All']
 def handle_events():
     global running
     global game_map
@@ -26,6 +27,7 @@ def handle_events():
             for i in range(1, 5 + 1):
                 if i * 100 - picture_size / 2 <= HEIGHT - event.y <= i * 100 + picture_size / 2:
                     game_map = game_maps[i - 1]
+                    game_framework.change_mode(select_level_mode)
                     print(game_map)
 
 
