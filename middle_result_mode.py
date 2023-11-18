@@ -7,6 +7,9 @@ import swimming_mode
 
 mode = {'Run': run_track_mode, 'Swim': swimming_mode}
 now_map = None
+scores = []
+
+
 def handle_events():
     global running
 
@@ -33,15 +36,21 @@ def init():
 
     records = []
     timer = get_time()
-    fill_records(records)
 
+    fill_records(records)
     records.sort()
+
+    score_plus()
+    fill_scores()
+    scores.sort()
+
     run_track_mode.player.score += 1
 
 
 def finish():
     global records
     records.clear()
+
 def update():
     global show_score
     if get_time() - timer >= 5:
@@ -55,16 +64,33 @@ def draw():
     main_background_image.opacify(200/255)
     main_background_image.clip_draw(510, 620, 90, 350, 400, 300, 600, 300)
     if show_score:
-        pass
+        scores_up_sort_print()
     else:
         records_down_sort_print()
-
     update_canvas()
+
 
 def fill_records(records):
         records.append([mode[now_map].player.record, mode[now_map].player.character_id])
         for i in range(3):
             records.append([mode[now_map].ai[i].record, mode[now_map].ai[i].ch_id])
+def fill_scores():
+    scores.append([mode[now_map].player.score, mode[now_map].player.character_id])
+    for i in range(3):
+        scores.append([mode[now_map].ai[i].score, mode[now_map].ai[i].ch_id])
+
+def scores_up_sort_print():
+    for i in range(0, 3 + 1):
+        font.draw(300, 400 - 66 * i, f"{scores[i][0]}", (0, 0, 0))
+        if scores[i][1] == 0:
+            character_result_image.clip_draw(80, 326, 81, 26, 170, 400 - 66 * i, 100, 50)
+        elif scores[i][1] == 1:
+            character_result_image.clip_draw(80, 301, 81, 26, 170, 400 - 66 * i, 100, 50)
+        elif scores[i][1] == 2:
+            character_result_image.clip_draw(80, 201, 81, 26, 170, 400 - 66 * i, 100, 50)
+        elif scores[i][1] == 3:
+            character_result_image.clip_draw(80, 276, 81, 26, 170, 400 - 66 * i, 100, 50)
+
 
 def records_down_sort_print():
     for i in range(0, 3 + 1):
@@ -79,3 +105,12 @@ def records_down_sort_print():
             character_result_image.clip_draw(80, 276, 81, 26, 170, 400 - 66 * i, 100, 50)
 
 
+def score_plus():
+    for i in range(0, 3 + 1):
+        if records[i][1] == mode[now_map].player.character_id:
+            mode[now_map].player.score += 10 - 3 * i
+
+        for j in range(3):
+            if mode[now_map].ai[j].ch_id == records[i][1]:
+                mode[now_map].ai[j].score += 10 - 3 * i
+                break

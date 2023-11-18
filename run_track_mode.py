@@ -14,6 +14,8 @@ from AI_player import AI
 level = {'easy': 2, 'normal': 3, 'hard': 4}
 player = None
 ai = [None, None, None]
+finish_game = [False, False, False, False]
+show_result_mode = False
 def handle_events():
     global running
     global character_num
@@ -27,9 +29,6 @@ def handle_events():
             player.ready = True
             clock.start = True
             print('clock spone')
-        elif event.type == SDL_KEYDOWN and event.key == SDLK_i:
-            middle_result_mode.map_num += 1
-            game_framework.change_mode(middle_result_mode)
         else:
             player.handle_event(event)
 
@@ -153,6 +152,7 @@ def clock_update():
 
 def track_update():
     global command
+    global show_result_mode
     global player
     if player.x + 100 > player.exceed_point and player.success == False:
         if len(command) == 0:
@@ -175,4 +175,19 @@ def track_update():
     if player.x >= 5000:
         print(get_time() - player.time)
 
+    if player.finish and finish_game[0] == False:
+        finish_game[0] = True
+    for i in range(3):
+        if ai[i].finish and finish_game[i + 1] == False:
+            finish_game[i + 1] = True
 
+    finish_num = 0
+    for i in range(4):
+        if finish_game[i]:
+            finish_num += 1
+    if finish_num == 4:
+        show_result_mode = True
+
+    if show_result_mode:
+        middle_result_mode.map_num += 1
+        game_framework.change_mode(middle_result_mode)
