@@ -4,12 +4,17 @@ from pico2d import *
 import game_framework
 import character_select_mode
 import game_world
+import middle_result_mode
+import run_track_mode
+import select_menu_mode
 from clock import Clock
 from player import Player
 from AI_player import AI
+
 player = None
 ai = [None, None, None]
-
+finish_game = [False, False, False, False]
+show_result_mode = False
 def handle_events():
     global running
     global character_num
@@ -20,6 +25,8 @@ def handle_events():
             game_framework.quit()
         elif event.type == SDL_KEYDOWN and event.key == SDLK_ESCAPE:
             game_framework.quit()
+        elif event.type == SDL_KEYDOWN and event.key == SDLK_i:
+            game_framework.change_mode(middle_result_mode)
         elif not clock is None and event.type == SDL_KEYDOWN and event.key == SDLK_SPACE:
             player.ready = True
             clock.start = True
@@ -44,24 +51,32 @@ def init():
     people_image = load_image('image/running_track.png')
     rectangle_image = load_image('image/rectangle.png')
     arrow_image = load_image('image/arrow.png')
+    middle_result_mode.now_map = 'Swim'
 
     command = []
     command_timer = []
-
-    running = True
-    player = Player(character_select_mode.character_num)
-    ai = [AI(player) for _ in range(3)]
     clock = Clock()
     game_world.add_object(clock, 0)
-    game_world.add_objects(ai, 1)
-    game_world.add_object(player, 1)
-    basic_player_init(player)
-    for i in range(0, 3):
-        ai[i].y = 400 - 100 * i
-        ai[i].x = 100
-        ai[i].mode = 'swim'
-
-
+    running = True
+    if run_track_mode.player == None:
+        player = Player(character_select_mode.character_num)
+        ai = [AI(player) for _ in range(3)]
+        game_world.add_objects(ai, 1)
+        game_world.add_object(player, 1)
+        basic_player_init(player)
+        for i in range(0, 3):
+            ai[i].y = 400 - 100 * i
+            ai[i].x = 100
+            ai[i].mode = 'swim'
+    else:
+        player = run_track_mode.player
+        basic_player_init(player)
+        for i in range(3):
+            ai[i] = run_track_mode.ai[i]
+            ai[i].mode = 'swim'
+            ai[i].y = 400 - 100 * i
+            ai[i].x = 100
+            ai[i].finish = False
 def basic_player_init(player):
     player.y = 100
     player.x = 100
@@ -70,13 +85,16 @@ def basic_player_init(player):
     player.camera_x = 0
     player.speed = 1
     player.life = 1
+    player.finish = False
     player.game_mode = 'swim'
 
 
 def finish():
-    global track_image
-    del track_image
-
+    global clock
+    del clock
+    # global track_image
+    # del track_image
+    pass
 
 def update():
     clock_update()
@@ -99,6 +117,11 @@ def draw_swimming_track():
     track_image.clip_composite_draw(0, 0, 870, 300, math.pi / 2, '', 5100 - player.camera_x, 205, 400, 300)
     arrow_draw()
 
+def result_mode_draw():
+    clear_canvas()
+    draw_swimming_track()
+    game_world.render()
+
 
 def arrow_draw():
     for i in range(0, len(command)):
@@ -116,19 +139,8 @@ def arrow_draw():
                                             player.y + 100, 100, 100)
         rectangle_image.draw(player.x + i * 100 - 50 - player.camera_x, player.y + 100, 100 * command_timer[i] / 10, 100 * command_timer[i] / 10)
 
-def clock_update():
-    global clock
-    if not clock is None:
-        if clock.interval >= 3:
-            player.start = True
-            player.time = get_time()
-            for i in range(0, 3):
-                ai[i].time = player.time
-            game_world.remove_object(clock)
-            clock = None
-
 def track_update():
-    global command
+    global command, show_result_mode
     global player
     global command_timer
 
@@ -167,3 +179,32 @@ def track_update():
             else:
                 player.speed = player.life
 
+    finish_num = 0
+    for i in range(4):
+        if finish_game[i]:
+            finish_num += 1
+    if finish_num == 4:
+        show_result_mode = True
+
+    if player.finish and finish_game[0] == False:
+        finish_game[0] = True
+    for i in range(3):
+        if ai[i].finish and finish_game[i + 1] == False:
+            finish_game[i + 1] = True
+
+    if show_result_mode:
+        middle_result_mode.map_num += 1
+        game_framework.change_mode(middle_result_mode)
+        if select_menu_mode.game_map == 'All':
+            player.next_map = 'long-jump'
+
+def clock_update():
+    global clock
+    if not clock is None:
+        if clock.interval >= 3:
+            player.start = True
+            player.time = get_time()
+            for i in range(0, 3):
+                ai[i].time = player.time
+            game_world.remove_object(clock)
+            clock = None

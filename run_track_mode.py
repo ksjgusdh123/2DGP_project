@@ -6,6 +6,7 @@ import character_select_mode
 import game_world
 import middle_result_mode
 import select_level_mode
+import select_menu_mode
 import swimming_mode
 from clock import Clock
 from player import Player
@@ -25,6 +26,8 @@ def handle_events():
             game_framework.quit()
         elif event.type == SDL_KEYDOWN and event.key == SDLK_ESCAPE:
             game_framework.change_mode(character_select_mode)
+        elif event.type == SDL_KEYDOWN and event.key == SDLK_i:
+            game_framework.change_mode(swimming_mode)
         elif not clock is None and event.type == SDL_KEYDOWN and event.key == SDLK_SPACE:
             player.ready = True
             clock.start = True
@@ -78,6 +81,8 @@ def basic_player_init(player):
 
 
 def finish():
+    global clock
+    del clock
     # global track_image
     # global line_image
     # global arrow_image
@@ -191,3 +196,5 @@ def track_update():
     if show_result_mode:
         middle_result_mode.map_num += 1
         game_framework.change_mode(middle_result_mode)
+        if select_menu_mode.game_map == 'All':
+            player.next_map = 'swim'

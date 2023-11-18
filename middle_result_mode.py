@@ -17,8 +17,10 @@ def handle_events():
     for event in events:
         if event.type == SDL_QUIT:
             game_framework.quit()
-        elif event.type == SDL_KEYDOWN and event.key == SDLK_ESCAPE:
-            game_framework.quit()
+        elif event.type == SDL_KEYDOWN and event.key == SDLK_SPACE:
+            if mode[now_map].player.next_map == 'swim':
+                game_framework.change_mode(swimming_mode)
+
 
 map_num = 0
 
@@ -42,7 +44,7 @@ def init():
 
     score_plus()
     fill_scores()
-    scores.sort()
+    scores.sort(reverse=True)
 
     run_track_mode.player.score += 1
 
@@ -60,7 +62,7 @@ def update():
 
 def draw():
     clear_canvas()
-    run_track_mode.result_mode_draw()
+    mode[now_map].result_mode_draw()
     main_background_image.opacify(200/255)
     main_background_image.clip_draw(510, 620, 90, 350, 400, 300, 600, 300)
     if show_score:
@@ -81,7 +83,7 @@ def fill_scores():
 
 def scores_up_sort_print():
     for i in range(0, 3 + 1):
-        font.draw(300, 400 - 66 * i, f"{scores[i][0]}", (0, 0, 0))
+        font.draw(300, 400 - 66 * i, f'{scores[i][0]}', (0, 0, 0))
         if scores[i][1] == 0:
             character_result_image.clip_draw(80, 326, 81, 26, 170, 400 - 66 * i, 100, 50)
         elif scores[i][1] == 1:
@@ -94,7 +96,7 @@ def scores_up_sort_print():
 
 def records_down_sort_print():
     for i in range(0, 3 + 1):
-        font.draw(300, 400 - 66 * i, f"{records[i][0]}", (0, 0, 0))
+        font.draw(300, 400 - 66 * i, f"{records[i][0]:.4f}", (0, 0, 0))
         if records[i][1] == 0:
             character_result_image.clip_draw(80, 326, 81, 26, 170, 400 - 66 * i, 100, 50)
         elif records[i][1] == 1:

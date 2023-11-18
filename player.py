@@ -292,6 +292,11 @@ class Swim:
         if player.stun:
             player.state_machine.handle_event(('STUN', 0))
 
+        if player.x >= 5000:
+            player.finish = True
+            player.next_map = 'long-jump'
+            player.record = get_time() - player.time
+
     @staticmethod
     def draw(player):
         if player.character_id == SONIC:
