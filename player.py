@@ -98,8 +98,6 @@ def stun(e):
 class Idle:
     @staticmethod
     def enter(player, e):
-        if game_start(e):
-            player.start_clock()
 
         player.shift = False
         player.frame = 0
@@ -348,6 +346,7 @@ class Wide_Jump:
     def exit(player, e):
         player.jump_ok = True
         print(player.x - player.start_pos)
+        player.jump_finish = True
 
     @staticmethod
     def do(player):
@@ -377,6 +376,7 @@ class Wide_Jump:
 class Run:
     @staticmethod
     def enter(player, e):
+        player.frame = 0
         if player.game_mode == 'run':
             if shift_down(e):
                 player.shift = True
@@ -447,7 +447,8 @@ class Run:
                 player.x += RUN_SPEED_PPS * game_framework.frame_time * max(player.speed, 0.5)
             if 400 <= player.x <= 4800:
                 player.camera_x += RUN_SPEED_PPS * game_framework.frame_time * max(player.speed, 0.5)
-
+            if player.stop == False and player.x >= 1480:
+                print('fail')
     @staticmethod
     def draw(player):
         Run.run_track_draw(player)
@@ -567,6 +568,7 @@ class Player:
         self.angle = 0
         self.angle_check = False
         self.jump_ok = False
+        self.jump_finish = False
 
     def update(self):
         self.state_machine.update()

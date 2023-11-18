@@ -41,6 +41,7 @@ def init():
     global angle
     global angle_flip
     global clock
+    global jump_chance
     middle_result_mode.now_map = 'long-jump'
     track_image = load_image('image/running_track.png')
     line_image = load_image('image/finishline.png')
@@ -51,7 +52,7 @@ def init():
     game_world.add_object(clock, 0)
     angle = 0
     angle_flip = False
-
+    jump_chance = 2
     if not select_menu_mode.game_map == 'All':
         running = True
         player = Player(character_select_mode.character_num)
@@ -64,6 +65,18 @@ def init():
 
     player.game_mode = 'jump'
 
+def restart():
+    global clock
+    clock = Clock()
+    game_world.add_object(clock, 0)
+    player.camera_x = 0
+    player.start = False
+    player.y = 240
+    player.x = 100
+    player.stop = False
+    player.jump_ok = False
+    player.jump_finish = False
+    player.angle_check = False
 
 def delete_object():
     global player
@@ -130,6 +143,11 @@ def long_jump_update():
     global player
     global angle
     global angle_flip
+
+    if player.jump_finish and jump_chance > 0:
+        restart()
+        jump_chance -= 1
+
     if player.stop:
         if angle_flip:
             angle -= 0.1
