@@ -4,18 +4,19 @@ from pico2d import *
 import game_framework
 import character_select_mode
 import game_world
+import middle_result_mode
 import select_level_mode
 import swimming_mode
 from clock import Clock
 from player import Player
 from AI_player import AI
 
-level ={'easy': 2, 'normal': 3, 'hard': 4}
-
+level = {'easy': 2, 'normal': 3, 'hard': 4}
+player = None
+ai = [None, None, None]
 def handle_events():
     global running
     global character_num
-
     events = get_events()
     for event in events:
         if event.type == SDL_QUIT:
@@ -26,6 +27,9 @@ def handle_events():
             player.ready = True
             clock.start = True
             print('clock spone')
+        elif event.type == SDL_KEYDOWN and event.key == SDLK_i:
+            middle_result_mode.map_num += 1
+            game_framework.change_mode(middle_result_mode)
         else:
             player.handle_event(event)
 
@@ -40,7 +44,7 @@ def init():
     global obstacle_image
     global command
     global clock
-
+    middle_result_mode.now_map = 'Run'
     track_image = load_image('image/running_track.png')
     line_image = load_image('image/finishline.png')
     arrow_image = load_image('image/arrow.png')
@@ -83,10 +87,10 @@ def finish():
     # del line_image
     # del arrow_image
     # del obstacle_image
-    global ai
-    ai[0].delete_ai()
-    game_world.clear()
-
+    # global ai
+    # ai[0].delete_ai()
+    # game_world.clear()
+    pass
 
 def update():
     clock_update()
@@ -102,6 +106,10 @@ def draw():
     game_world.render()
     update_canvas()
 
+def result_mode_draw():
+    clear_canvas()
+    running_track_draw()
+    game_world.render()
 
 def running_track_draw():
     for i in range(0, 21):

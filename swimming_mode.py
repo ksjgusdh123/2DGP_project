@@ -7,7 +7,8 @@ import game_world
 from clock import Clock
 from player import Player
 from AI_player import AI
-
+player = None
+ai = [None, None, None]
 
 def handle_events():
     global running

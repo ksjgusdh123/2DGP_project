@@ -1,9 +1,7 @@
 from pico2d import *
 
 import game_framework
-import game_world
 from character_sprite import *
-from clock import Clock
 
 PIXEL_PER_METER = 10 / 0.3
 RUN_SPEED_KMPH = 20
@@ -413,8 +411,10 @@ class Run:
     def do(player):
         player.frame = (player.frame + 10 * ACTION_PER_TIME * game_framework.frame_time) % 10
         if player.game_mode == 'run':
-            if player.x >= 5000:
+            if player.x >= 5000 or player.finish:
+                player.finish = True
                 player.next_map = 'swim'
+                player.record = get_time() - player.time
             if player.shift and player.dir != 0:
                 add_speed = get_time() - player.wait_time
                 if player.x <= 5150:
@@ -542,6 +542,9 @@ class Player:
         self.camera_x = 0
         self.next_map = None
         self.time = 0
+        self.record = 4
+        self.finish = False
+        self.score = 0
         # running_track
         self.input_command = []
         self.success = False

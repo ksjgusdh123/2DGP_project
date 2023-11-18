@@ -69,6 +69,8 @@ class AI:
         self.time = get_time()
         self.finish = False
         self.mode = None
+        self.record = self.ch_id
+        self.score = 0
 
     def delete_ai(self):
         AI.num = -1
@@ -168,7 +170,7 @@ class AI:
             if self.jump == False and self.x >= self.exceed_point:
                 self.jump = True
                 self.frame = 0
-            elif self.jump and self.x - self.exceed_point < 50:
+            if self.jump and self.x - self.exceed_point < 50:
                 self.y += 1 * RUN_SPEED_PPS * game_framework.frame_time
             elif self.jump and self.x - self.exceed_point >= 100:
                 self.jump = False
@@ -189,6 +191,7 @@ class AI:
             self.frame = (self.frame + 10 * ACTION_PER_TIME * game_framework.frame_time) % 10
         if self.x >= 5000 and self.finish == False:
             self.finish = True
+            self.record = get_time() - self.time
             self.frame = 0
             print(get_time() - self.time)
 
