@@ -161,6 +161,7 @@ def track_update():
         if len(command) == 0 and player.perfect == True:
             player.success = True
 
-    if player.next_map == 'swim':
-        finish()
-        game_framework.change_mode(swimming_mode)
+    if player.x >= 5000:
+        print(get_time() - player.time)
+
+
