@@ -66,7 +66,7 @@ def init():
         game_world.add_object(player, 1)
         basic_player_init(player)
         for i in range(0, 3):
-            ai[i].y = 400 - 100 * i
+            ai[i].y = 380 - 100 * i
             ai[i].x = 100
             ai[i].mode = 'swim'
     else:
@@ -75,11 +75,11 @@ def init():
         for i in range(3):
             ai[i] = run_track_mode.ai[i]
             ai[i].mode = 'swim'
-            ai[i].y = 400 - 100 * i
+            ai[i].y = 380 - 100 * i
             ai[i].x = 100
             ai[i].finish = False
 def basic_player_init(player):
-    player.y = 100
+    player.y = 80
     player.x = 100
     player.start = False
     player.ready = False
@@ -101,7 +101,8 @@ def finish():
     global clock
     player.start = False
     player.ready = False
-    game_world.remove_object(clock)
+    if clock:
+        game_world.remove_object(clock)
 
     # global track_image
     # del track_image

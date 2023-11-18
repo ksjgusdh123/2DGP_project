@@ -261,6 +261,7 @@ class Stun:
 class Swim:
     @staticmethod
     def enter(player, e):
+        player.frame = 0
         player.dir, player.action = 1, 1
         player.wait_time = get_time()
 
