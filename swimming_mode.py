@@ -47,7 +47,8 @@ def init():
     global command
     global command_timer
     global clock
-
+    global font
+    font = load_font('font/ENCR10B.TTF', 50)
     track_image = load_image('image/swimming_track.png')
     people_image = load_image('image/running_track.png')
     rectangle_image = load_image('image/rectangle.png')
@@ -118,7 +119,15 @@ def draw():
     clear_canvas()
     draw_swimming_track()
     game_world.render()
+    map_timer_draw()
     update_canvas()
+
+
+def map_timer_draw():
+    if player.start == False:
+        font.draw(300, 550, f"0:000", (0, 0, 0))
+    else:
+        font.draw(300, 550, f"{get_time() - player.time:.3f}", (0, 0, 0))
 
 
 def draw_swimming_track():

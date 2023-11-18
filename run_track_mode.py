@@ -47,11 +47,14 @@ def init():
     global obstacle_image
     global command
     global clock
+    global font
     middle_result_mode.now_map = 'Run'
     track_image = load_image('image/running_track.png')
     line_image = load_image('image/finishline.png')
     arrow_image = load_image('image/arrow.png')
     obstacle_image = load_image('image/obstacle.png')
+    font = load_font('font/ENCR10B.TTF', 50)
+
     command = []
 
     running = True
@@ -119,7 +122,16 @@ def draw():
     clear_canvas()
     running_track_draw()
     game_world.render()
+    map_timer_draw()
     update_canvas()
+
+
+def map_timer_draw():
+    if player.start == False:
+        font.draw(300, 550, f"0:000", (0, 0, 0))
+    else:
+        font.draw(300, 550, f"{get_time() - player.time:.3f}", (0, 0, 0))
+
 
 def result_mode_draw():
     clear_canvas()
