@@ -13,8 +13,6 @@ from AI_player import AI
 
 player = None
 ai = [None, None, None]
-finish_game = [False, False, False, False]
-show_result_mode = False
 def handle_events():
     global running
     global character_num
@@ -24,10 +22,8 @@ def handle_events():
         if event.type == SDL_QUIT:
             game_framework.quit()
         elif event.type == SDL_KEYDOWN and event.key == SDLK_ESCAPE:
-            game_framework.quit()
+            game_framework.change_mode(select_menu_mode)
             delete_object()
-        elif event.type == SDL_KEYDOWN and event.key == SDLK_i:
-            game_framework.change_mode(middle_result_mode)
         elif not clock is None and event.type == SDL_KEYDOWN and event.key == SDLK_SPACE:
             player.ready = True
             clock.start = True
@@ -48,6 +44,8 @@ def init():
     global command_timer
     global clock
     global font
+    global finish_game
+    global show_result_mode
     font = load_font('font/ENCR10B.TTF', 50)
     track_image = load_image('image/swimming_track.png')
     people_image = load_image('image/running_track.png')
@@ -60,7 +58,9 @@ def init():
     clock = Clock()
     game_world.add_object(clock, 0)
     running = True
-    if run_track_mode.player == None:
+    finish_game = [False, False, False, False]
+    show_result_mode = False
+    if not select_menu_mode.game_map == 'All':
         player = Player(character_select_mode.character_num)
         ai = [AI(player) for _ in range(3)]
         game_world.add_objects(ai, 1)
@@ -95,6 +95,9 @@ def delete_object():
     ai[0].delete_ai()
     for i in range(3):
         game_world.remove_object(ai[i])
+    for i in range(3):
+        del ai[0]
+
     game_world.remove_object(player)
     player = None
 

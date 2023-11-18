@@ -15,8 +15,6 @@ from AI_player import AI
 level = {'easy': 2, 'normal': 3, 'hard': 4}
 player = None
 ai = [None, None, None]
-finish_game = [False, False, False, False]
-show_result_mode = False
 def handle_events():
     global running
     global character_num
@@ -48,6 +46,8 @@ def init():
     global command
     global clock
     global font
+    global finish_game
+    global show_result_mode
     middle_result_mode.now_map = 'Run'
     track_image = load_image('image/running_track.png')
     line_image = load_image('image/finishline.png')
@@ -73,6 +73,8 @@ def init():
     if select_level_mode.game_level is None:
         select_level_mode.game_level = 'easy'
 
+    finish_game = [False, False, False, False]
+    show_result_mode = False
 
 def basic_player_init(player):
     player.y = 140
@@ -85,11 +87,15 @@ def basic_player_init(player):
 
 def delete_object():
     global player
+    global ai
     ai[0].delete_ai()
     for i in range(3):
         game_world.remove_object(ai[i])
+    for i in range(3):
+        del ai[0]
     game_world.remove_object(player)
     player = None
+    del player
 
 def finish():
     global clock

@@ -1,11 +1,12 @@
 from pico2d import *
 
 import game_framework
+import long_jump_mode
 import run_track_mode
 import select_menu_mode
 import swimming_mode
 
-mode = {'Run': run_track_mode, 'Swim': swimming_mode}
+mode = {'Run': run_track_mode, 'Swim': swimming_mode, 'long-jump': long_jump_mode}
 now_map = None
 scores = []
 
@@ -18,9 +19,14 @@ def handle_events():
         if event.type == SDL_QUIT:
             game_framework.quit()
         elif event.type == SDL_KEYDOWN and event.key == SDLK_SPACE:
-            if mode[now_map].player.next_map == 'swim':
-                game_framework.change_mode(swimming_mode)
-
+            if select_menu_mode.game_map == 'All':
+                if mode[now_map].player.next_map == 'swim':
+                    game_framework.change_mode(swimming_mode)
+                elif mode[now_map].player.next_map == ('long-jump'):
+                    game_framework.change_mode(long_jump_mode)
+            else:
+                mode[now_map].delete_object()
+                game_framework.change_mode(select_menu_mode)
 
 map_num = 0
 
@@ -50,7 +56,9 @@ def init():
 
 def finish():
     global records
+    global scores
     records.clear()
+    scores.clear()
 
 def update():
     global show_score

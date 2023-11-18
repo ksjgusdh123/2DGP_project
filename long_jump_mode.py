@@ -3,6 +3,8 @@ from pico2d import *
 import game_framework
 import character_select_mode
 import game_world
+import middle_result_mode
+import select_menu_mode
 from clock import Clock
 from player import Player
 from AI_player import AI
@@ -17,7 +19,8 @@ def handle_events():
         if event.type == SDL_QUIT:
             game_framework.quit()
         elif event.type == SDL_KEYDOWN and event.key == SDLK_ESCAPE:
-            game_framework.quit()
+            game_framework.change_mode(select_menu_mode)
+            delete_object()
         elif not clock is None and event.type == SDL_KEYDOWN and event.key == SDLK_SPACE:
             player.ready = True
             clock.start = True
@@ -38,37 +41,52 @@ def init():
     global angle
     global angle_flip
     global clock
+    middle_result_mode.now_map = 'long-jump'
     track_image = load_image('image/running_track.png')
     line_image = load_image('image/finishline.png')
     angle_image = load_image('image/angle.png')
     arrow_image = load_image('image/arrow_flip.png')
-    command = []
-    angle = 0
-    running = True
-    angle_flip = False
-    # player = Player(character_select_mode.character_num)
-    player = Player(0)
-    # ai = [AI(player) for _ in range(3)]
-    # game_world.add_objects(ai, 1)
     clock = Clock()
+    command = []
     game_world.add_object(clock, 0)
-    game_world.add_object(player, 1)
-    player.y = 240
-    player.x = 100
+    angle = 0
+    angle_flip = False
+
+    if not select_menu_mode.game_map == 'All':
+        running = True
+        player = Player(character_select_mode.character_num)
+        # player = Player(0)
+        # ai = [AI(player) for _ in range(3)]
+        # game_world.add_objects(ai, 1)
+        game_world.add_object(player, 1)
+        player.y = 240
+        player.x = 100
+
     player.game_mode = 'jump'
 
 
+def delete_object():
+    global player
+    # ai[0].delete_ai()
+    # for i in range(3):
+    #     game_world.remove_object(ai[i])
+    game_world.remove_object(player)
+    player = None
+
 def finish():
-    global track_image
+    global clock
+    player.start = False
+    player.ready = False
+    if clock:
+        game_world.remove_object(clock)
+
     # global line_image
     # global arrow_image
     # global obstacle_image
-    del track_image
     # del line_image
     # del arrow_image
     # del obstacle_image
     # game_world.clear()
-
 
 def update():
     clock_update()
@@ -95,6 +113,7 @@ def track_draw():
         arrow_image.clip_composite_draw(-100, 0, 620, 373, angle * math.pi / 180.0, '', player.x + 100 - 60 - player.camera_x - angle * 0.25,
                                         player.y + 80 - (90 - angle) * 0.1, 100, 50)
         angle_image.draw(player.x + 100 - 50 - player.camera_x, player.y + 100, 100, 100)
+
 
 def clock_update():
     global clock
