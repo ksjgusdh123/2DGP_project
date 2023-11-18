@@ -145,8 +145,10 @@ class AI:
                                                 self.x - self.player.camera_x,
                                                 self.y, 50, 100)
 
+    def get_time(self):
+        self.time = self.player.time
+
     def update(self):
-        # 게임 시작 시 sonic
         if self.mode == 'run':
             self.running_track_update()
         elif self.mode == 'swim':

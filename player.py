@@ -541,6 +541,7 @@ class Player:
         self.state_machine.start()
         self.camera_x = 0
         self.next_map = None
+        self.time = 0
         # running_track
         self.input_command = []
         self.success = False
@@ -567,9 +568,3 @@ class Player:
     def draw(self):
         self.state_machine.draw()
 
-    def start_clock(self):
-        if not self.start and not self.ready:
-            clock = Clock(self)
-            game_world.add_object(clock, 0)
-            self.ready = True
-            print('clock spone')
