@@ -341,10 +341,10 @@ class Wide_Jump:
         if wide_jump_go(e):
             player.angle_check = True
             player.wait_time = get_time()
-            player.start_pos = player.x
     @staticmethod
     def exit(player, e):
         player.jump_ok = True
+        player.record = player.x - player.start_pos
         print(player.x - player.start_pos)
         player.jump_finish = True
 
@@ -569,6 +569,7 @@ class Player:
         self.angle_check = False
         self.jump_ok = False
         self.jump_finish = False
+        self.start_pos = 1480
 
     def update(self):
         self.state_machine.update()

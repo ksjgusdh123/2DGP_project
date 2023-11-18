@@ -19,7 +19,10 @@ def handle_events():
         if event.type == SDL_QUIT:
             game_framework.quit()
         elif event.type == SDL_KEYDOWN and event.key == SDLK_SPACE:
-            if select_menu_mode.game_map == 'All':
+            if now_map == 'long-jump' and long_jump_mode.jump_chance > 0:
+                mode[now_map].delete_object()
+                game_framework.change_mode(long_jump_mode)
+            elif select_menu_mode.game_map == 'All':
                 if mode[now_map].player.next_map == 'swim':
                     game_framework.change_mode(swimming_mode)
                 elif mode[now_map].player.next_map == ('long-jump'):
