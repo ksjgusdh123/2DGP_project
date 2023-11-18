@@ -22,10 +22,12 @@ class Clock:
             if not self.init:
                 self.init = True
                 self.interval = 0
+                self.start_time = get_time()
             self.interval = get_time() - self.start_time
-            if self.interval >= 2:
-                self.idx = 2
-            elif self.interval >= 1:
-                self.idx = 1
-            else:
-                self.idx = 0
+            if self.init:
+                if self.interval >= 2:
+                    self.idx = 2
+                elif self.interval >= 1:
+                    self.idx = 1
+                else:
+                    self.idx = 0

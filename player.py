@@ -292,7 +292,7 @@ class Swim:
         if player.stun:
             player.state_machine.handle_event(('STUN', 0))
 
-        if player.x >= 5000:
+        if player.x >= 5000 and player.finish == False:
             player.finish = True
             player.next_map = 'long-jump'
             player.record = get_time() - player.time

@@ -46,7 +46,6 @@ def init():
     fill_scores()
     scores.sort(reverse=True)
 
-    run_track_mode.player.score += 1
 
 
 def finish():

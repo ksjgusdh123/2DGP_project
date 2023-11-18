@@ -25,6 +25,7 @@ def handle_events():
             game_framework.quit()
         elif event.type == SDL_KEYDOWN and event.key == SDLK_ESCAPE:
             game_framework.quit()
+            delete_object()
         elif event.type == SDL_KEYDOWN and event.key == SDLK_i:
             game_framework.change_mode(middle_result_mode)
         elif not clock is None and event.type == SDL_KEYDOWN and event.key == SDLK_SPACE:
@@ -88,10 +89,20 @@ def basic_player_init(player):
     player.finish = False
     player.game_mode = 'swim'
 
+def delete_object():
+    global player
+    ai[0].delete_ai()
+    for i in range(3):
+        game_world.remove_object(ai[i])
+    game_world.remove_object(player)
+    player = None
 
 def finish():
     global clock
-    del clock
+    player.start = False
+    player.ready = False
+    game_world.remove_object(clock)
+
     # global track_image
     # del track_image
     pass
