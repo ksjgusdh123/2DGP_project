@@ -22,7 +22,7 @@ def handle_events():
             game_framework.quit()
         elif event.type == SDL_KEYDOWN and event.key == SDLK_ESCAPE:
             game_framework.change_mode(character_select_mode)
-        elif event.type == SDL_KEYDOWN and event.key == SDLK_SPACE:
+        elif not clock is None and event.type == SDL_KEYDOWN and event.key == SDLK_SPACE:
             player.ready = True
             clock.start = True
             print('clock spone')
