@@ -3,6 +3,7 @@ from pico2d import *
 import game_framework
 import character_select_mode
 import game_world
+from clock import Clock
 from player import Player
 from AI_player import AI
 
@@ -17,6 +18,10 @@ def handle_events():
             game_framework.quit()
         elif event.type == SDL_KEYDOWN and event.key == SDLK_ESCAPE:
             game_framework.quit()
+        elif event.type == SDL_KEYDOWN and event.key == SDLK_SPACE:
+            player.ready = True
+            clock.start = True
+            print('clock spone')
         else:
             player.handle_event(event)
 
@@ -32,6 +37,7 @@ def init():
     global command
     global angle
     global angle_flip
+    global clock
     track_image = load_image('image/running_track.png')
     line_image = load_image('image/finishline.png')
     angle_image = load_image('image/angle.png')
@@ -44,6 +50,8 @@ def init():
     player = Player(0)
     # ai = [AI(player) for _ in range(3)]
     # game_world.add_objects(ai, 1)
+    clock = Clock()
+    game_world.add_object(clock, 0)
     game_world.add_object(player, 1)
     player.y = 240
     player.x = 100
@@ -63,27 +71,11 @@ def finish():
 
 
 def update():
-    global player
-    global angle
-    global angle_flip
-
-    if player.stop:
-        if angle_flip:
-            angle -= 0.1
-        else:
-            angle += 0.1
-        if angle >= 90:
-            angle = 90
-            angle_flip = True
-        if angle <= 0:
-            angle = 0
-            angle_flip = False
-    if player.angle_check:
-        player.angle = angle * math.pi / 180.0
-        player.angle_check = False
-        player.stop = False
-        print(angle)
+    clock_update()
+    long_jump_update()
     game_world.update()
+
+
 
 
 def draw():
@@ -103,3 +95,35 @@ def track_draw():
         arrow_image.clip_composite_draw(-100, 0, 620, 373, angle * math.pi / 180.0, '', player.x + 100 - 60 - player.camera_x - angle * 0.25,
                                         player.y + 80 - (90 - angle) * 0.1, 100, 50)
         angle_image.draw(player.x + 100 - 50 - player.camera_x, player.y + 100, 100, 100)
+
+def clock_update():
+    global clock
+    if not clock is None:
+        if clock.interval >= 3:
+            player.start = True
+            player.time = get_time()
+            # for i in range(0, 3):
+            #     ai[i].time = player.time
+            game_world.remove_object(clock)
+            clock = None
+
+def long_jump_update():
+    global player
+    global angle
+    global angle_flip
+    if player.stop:
+        if angle_flip:
+            angle -= 0.1
+        else:
+            angle += 0.1
+        if angle >= 90:
+            angle = 90
+            angle_flip = True
+        if angle <= 0:
+            angle = 0
+            angle_flip = False
+    if player.angle_check:
+        player.angle = angle * math.pi / 180.0
+        player.angle_check = False
+        player.stop = False
+        print(angle)

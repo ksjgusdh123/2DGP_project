@@ -4,6 +4,7 @@ from pico2d import *
 import game_framework
 import character_select_mode
 import game_world
+from clock import Clock
 from player import Player
 from AI_player import AI
 
@@ -18,6 +19,10 @@ def handle_events():
             game_framework.quit()
         elif event.type == SDL_KEYDOWN and event.key == SDLK_ESCAPE:
             game_framework.quit()
+        elif event.type == SDL_KEYDOWN and event.key == SDLK_SPACE:
+            player.ready = True
+            clock.start = True
+            print('clock spone')
         else:
             player.handle_event(event)
 
@@ -32,6 +37,8 @@ def init():
     global rectangle_image
     global command
     global command_timer
+    global clock
+
     track_image = load_image('image/swimming_track.png')
     people_image = load_image('image/running_track.png')
     rectangle_image = load_image('image/rectangle.png')
@@ -43,6 +50,8 @@ def init():
     running = True
     player = Player(character_select_mode.character_num)
     ai = [AI(player) for _ in range(3)]
+    clock = Clock()
+    game_world.add_object(clock, 0)
     game_world.add_objects(ai, 1)
     game_world.add_object(player, 1)
     basic_player_init(player)
@@ -69,6 +78,7 @@ def finish():
 
 
 def update():
+    clock_update()
     track_update()
     game_world.update()
 
@@ -104,6 +114,17 @@ def arrow_draw():
             arrow_image.clip_composite_draw(0, 0, 670, 373, math.pi / 2, 'h', player.x + i * 100 - 50 - player.camera_x,
                                             player.y + 100, 100, 100)
         rectangle_image.draw(player.x + i * 100 - 50 - player.camera_x, player.y + 100, 100 * command_timer[i] / 10, 100 * command_timer[i] / 10)
+
+def clock_update():
+    global clock
+    if not clock is None:
+        if clock.interval >= 3:
+            player.start = True
+            player.time = get_time()
+            for i in range(0, 3):
+                ai[i].time = player.time
+            game_world.remove_object(clock)
+            clock = None
 
 def track_update():
     global command
