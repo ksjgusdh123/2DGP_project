@@ -108,6 +108,7 @@ class Idle:
 
     @staticmethod
     def exit(player, e):
+        player.frame = 0
         player.dir = 0
 
     @staticmethod
@@ -116,7 +117,7 @@ class Idle:
             player.frame = (player.frame + 14 * ACTION_PER_TIME * game_framework.frame_time) % 14
         else:
             player.frame = (player.frame + 10 * ACTION_PER_TIME * game_framework.frame_time) % 10
-        if player.start and player.game_mode == 'swim':
+        if player.start and player.game_mode == 'swim' and not player.finish:
             player.state_machine.handle_event(('GO_SWIM', 0))
         if player.start and player.game_mode == 'jump' and not player.jump_ok:
             player.state_machine.handle_event(('WIDE_JUMP_RUN', 0))
@@ -292,8 +293,9 @@ class Swim:
             player.state_machine.handle_event(('STUN', 0))
 
         if player.x >= 5000 and player.finish == False:
-            player.finish = True
             player.next_map = 'long-jump'
+            player.state_machine.handle_event(('TIME_OUT', 0))
+            player.finish = True
             player.record = get_time() - player.time
 
     @staticmethod
@@ -376,7 +378,6 @@ class Wide_Jump:
 class Run:
     @staticmethod
     def enter(player, e):
-        player.frame = 0
         if player.game_mode == 'run':
             if shift_down(e):
                 player.shift = True
@@ -418,9 +419,11 @@ class Run:
         player.frame = (player.frame + 10 * ACTION_PER_TIME * game_framework.frame_time) % 10
         if player.game_mode == 'run':
             if player.x >= 5000 or player.finish:
+                player.state_machine.handle_event(('TIME_OUT', 0))
                 player.finish = True
                 player.next_map = 'swim'
                 player.record = get_time() - player.time
+
             if player.shift and player.dir != 0:
                 add_speed = get_time() - player.wait_time
                 if player.x <= 5150:
@@ -497,8 +500,8 @@ class StateMachine:
                    game_start: Idle, go_swim: Swim, wide_jump_run: Run},
             Run: {a_down: Run, d_down: Run, a_up: Idle, d_up: Idle, left_down: Run, right_down: Run, fail_out: Slip,
                   down_down: Run, up_down: Run, go_jump: Jump, shift_down: Run, shift_up: Run,
-                  wait_wide_jump: Wait_Wide_Jump},
-            Swim: {left_down: Swim, right_down: Swim, down_down: Swim, up_down: Swim, stun: Stun},
+                  wait_wide_jump: Wait_Wide_Jump, time_out: Idle},
+            Swim: {left_down: Swim, right_down: Swim, down_down: Swim, up_down: Swim, stun: Stun, time_out: Idle},
             Stun: {time_out: Swim},
             Slip: {time_out: Idle},
             Jump: {time_out: Idle},
@@ -549,7 +552,7 @@ class Player:
         self.camera_x = 0
         self.next_map = None
         self.time = 0
-        self.record = 4
+        self.record = 0
         self.finish = False
         self.score = 0
         # running_track
@@ -570,6 +573,7 @@ class Player:
         self.jump_ok = False
         self.jump_finish = False
         self.start_pos = 1480
+
 
     def update(self):
         self.state_machine.update()

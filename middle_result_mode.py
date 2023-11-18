@@ -20,7 +20,6 @@ def handle_events():
             game_framework.quit()
         elif event.type == SDL_KEYDOWN and event.key == SDLK_SPACE:
             if now_map == 'long-jump' and long_jump_mode.jump_chance > 0:
-                mode[now_map].delete_object()
                 game_framework.change_mode(long_jump_mode)
             elif select_menu_mode.game_map == 'All':
                 if mode[now_map].player.next_map == 'swim':
@@ -48,8 +47,11 @@ def init():
     records = []
     timer = get_time()
 
-    fill_records(records)
-    records.sort()
+    fill_records()
+    if now_map == 'long-jump':
+        records.sort(reverse=True)
+    else:
+        records.sort()
 
     score_plus()
     fill_scores()
@@ -82,10 +84,11 @@ def draw():
     update_canvas()
 
 
-def fill_records(records):
+def fill_records():
         records.append([mode[now_map].player.record, mode[now_map].player.character_id])
         for i in range(3):
             records.append([mode[now_map].ai[i].record, mode[now_map].ai[i].ch_id])
+
 def fill_scores():
     scores.append([mode[now_map].player.score, mode[now_map].player.character_id])
     for i in range(3):

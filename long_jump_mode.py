@@ -4,6 +4,7 @@ import game_framework
 import character_select_mode
 import game_world
 import middle_result_mode
+import run_track_mode
 import select_menu_mode
 from clock import Clock
 from player import Player
@@ -11,6 +12,8 @@ from AI_player import AI
 
 jump_chance = 2
 
+player = None
+ai = [None, None, None]
 def handle_events():
     global running
     global character_num
@@ -43,15 +46,19 @@ def init():
     global angle_flip
     global clock
     global jump_chance
+    global font
+    global stop_time
     middle_result_mode.now_map = 'long-jump'
     track_image = load_image('image/running_track.png')
     line_image = load_image('image/finishline.png')
     angle_image = load_image('image/angle.png')
     arrow_image = load_image('image/arrow_flip.png')
+    font = load_font('font/ENCR10B.TTF', 50)
     print(jump_chance)
     command = []
     angle = 0
     angle_flip = False
+    stop_time = 0
     if not select_menu_mode.game_map == 'All':
         running = True
         player = Player(character_select_mode.character_num)
@@ -61,6 +68,10 @@ def init():
         game_world.add_object(player, 1)
         player.y = 240
         player.x = 100
+    else:
+        player = run_track_mode.player
+        for i in range(3):
+            ai[i] = run_track_mode.ai[i]
     default_start()
     player.game_mode = 'jump'
 
@@ -68,6 +79,7 @@ def default_start():
     global clock
     clock = Clock()
     game_world.add_object(clock, 0)
+    player.record = 0
     player.camera_x = 0
     player.start = False
     player.y = 240
@@ -113,6 +125,7 @@ def draw():
     clear_canvas()
     track_draw()
     game_world.render()
+    font.draw(300, 550, f"{player.record:.3f}m", (0, 0, 0))
     update_canvas()
 
 def result_mode_draw():
@@ -145,13 +158,16 @@ def clock_update():
             clock = None
 
 def long_jump_update():
-    global player, jump_chance
+    global player, jump_chance, stop_time
     global angle
     global angle_flip
 
     if player.jump_finish:
-        jump_chance -= 1
-        game_framework.change_mode(middle_result_mode)
+        if stop_time == 0:
+            jump_chance -= 1
+            stop_time = get_time()
+        if get_time() - stop_time >= 3:
+            game_framework.change_mode(middle_result_mode)
 
     if player.stop:
         if angle_flip:
