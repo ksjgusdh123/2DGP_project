@@ -155,7 +155,7 @@ class AI:
             self.swim_update()
 
     def swim_update(self):
-        if self.player.start:
+        if self.player.start and not self.finish:
             self.x += self.speed * RUN_SPEED_PPS * game_framework.frame_time
         self.basic_update()
 

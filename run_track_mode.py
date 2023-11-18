@@ -4,11 +4,13 @@ from pico2d import *
 import game_framework
 import character_select_mode
 import game_world
+import select_level_mode
 import swimming_mode
 from clock import Clock
 from player import Player
 from AI_player import AI
 
+level ={'easy': 2, 'normal': 3, 'hard': 4}
 
 def handle_events():
     global running
@@ -19,7 +21,7 @@ def handle_events():
         if event.type == SDL_QUIT:
             game_framework.quit()
         elif event.type == SDL_KEYDOWN and event.key == SDLK_ESCAPE:
-            game_framework.quit()
+            game_framework.change_mode(character_select_mode)
         elif event.type == SDL_KEYDOWN and event.key == SDLK_SPACE:
             player.ready = True
             clock.start = True
@@ -58,7 +60,8 @@ def init():
         ai[i].x = 100
         ai[i].y = 320 - 60 * i
         ai[i].mode = 'run'
-
+    if select_level_mode.game_level is None:
+        select_level_mode.game_level = 'easy'
 
 
 def basic_player_init(player):
@@ -145,7 +148,7 @@ def track_update():
     global player
     if player.x + 100 > player.exceed_point and player.success == False:
         if len(command) == 0:
-            command = [random.randint(0, 3) for _ in range(random.randint(3, 3))]
+            command = [random.randint(0, 3) for _ in range(level[select_level_mode.game_level])]
     elif player.x < player.exceed_point - 100:
         command.clear()
         player.input_command.clear()
