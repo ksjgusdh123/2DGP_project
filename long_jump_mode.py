@@ -48,30 +48,31 @@ def init():
     global jump_chance
     global font
     global stop_time
-    middle_result_mode.now_map = 'long-jump'
-    track_image = load_image('image/running_track.png')
-    line_image = load_image('image/finishline.png')
-    angle_image = load_image('image/angle.png')
-    arrow_image = load_image('image/arrow_flip.png')
-    font = load_font('font/ENCR10B.TTF', 50)
-    print(jump_chance)
-    command = []
-    angle = 0
-    angle_flip = False
-    stop_time = 0
-    if not select_menu_mode.game_map == 'All':
-        running = True
-        player = Player(character_select_mode.character_num)
-        # player = Player(0)
-        ai = [AI(player) for _ in range(3)]
-        game_world.add_objects(ai, 1)
-        game_world.add_object(player, 1)
-        player.y = 240
-        player.x = 100
-    else:
-        player = run_track_mode.player
-        for i in range(3):
-            ai[i] = run_track_mode.ai[i]
+    if jump_chance > 1:
+        middle_result_mode.now_map = 'long-jump'
+        track_image = load_image('image/running_track.png')
+        line_image = load_image('image/finishline.png')
+        angle_image = load_image('image/angle.png')
+        arrow_image = load_image('image/arrow_flip.png')
+        font = load_font('font/ENCR10B.TTF', 50)
+        print(jump_chance)
+        command = []
+        angle = 0
+        angle_flip = False
+        stop_time = 0
+        if not select_menu_mode.game_map == 'All':
+            running = True
+            player = Player(character_select_mode.character_num)
+            # player = Player(0)
+            ai = [AI(player) for _ in range(3)]
+            game_world.add_objects(ai, 1)
+            game_world.add_object(player, 1)
+            player.y = 240
+            player.x = 100
+        else:
+            player = run_track_mode.player
+            for i in range(3):
+                ai[i] = run_track_mode.ai[i]
     default_start()
     player.game_mode = 'jump'
 
@@ -81,6 +82,7 @@ def default_start():
     game_world.add_object(clock, 0)
     player.record = 0
     player.camera_x = 0
+    player.speed = 1
     player.start = False
     player.y = 240
     player.x = 100
@@ -96,6 +98,7 @@ def delete_object():
         game_world.remove_object(ai[i])
     game_world.remove_object(player)
     player = None
+    del player
 
 
 def finish():
@@ -165,8 +168,14 @@ def long_jump_update():
     if player.jump_finish:
         if stop_time == 0:
             jump_chance -= 1
+            if jump_chance == 1:
+                player.first_record = player.record
+            elif jump_chance == 0:
+                player.sceond_record = player.record
+                player.record = max(player.first_record, player.sceond_record)
             stop_time = get_time()
         if get_time() - stop_time >= 3:
+            stop_time = 0
             game_framework.change_mode(middle_result_mode)
 
     if player.stop:

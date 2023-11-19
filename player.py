@@ -573,6 +573,8 @@ class Player:
         self.jump_ok = False
         self.jump_finish = False
         self.start_pos = 1480
+        self.first_record = 0
+        self.sceond_record = 0
 
 
     def update(self):

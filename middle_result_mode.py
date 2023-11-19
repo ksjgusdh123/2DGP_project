@@ -52,8 +52,8 @@ def init():
         records.sort(reverse=True)
     else:
         records.sort()
-
-    score_plus()
+    if not now_map == 'long-jump' or long_jump_mode.jump_chance < 1:
+        score_plus()
     fill_scores()
     scores.sort(reverse=True)
 
