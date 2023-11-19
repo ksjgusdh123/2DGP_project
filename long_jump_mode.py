@@ -6,6 +6,7 @@ import character_select_mode
 import game_world
 import middle_result_mode
 import run_track_mode
+import select_level_mode
 import select_menu_mode
 from clock import Clock
 from player import Player
@@ -51,6 +52,7 @@ def init():
     global clock
     global jump_chance
     global font
+    global angle_speed
     global stop_time
     if jump_chance > 1:
         middle_result_mode.now_map = 'long-jump'
@@ -64,6 +66,7 @@ def init():
         command = []
         angle = 0
         angle_flip = False
+        angle_speed = 1
         stop_time = 0
         if not select_menu_mode.game_map == 'All':
             running = True
@@ -85,6 +88,7 @@ def init():
 
 def default_start():
     global clock
+    global angle_speed
     clock = Clock()
     game_world.add_object(clock, 0)
     player.record = 0
@@ -100,6 +104,13 @@ def default_start():
     player.angle_check = False
     for i in range (3):
         ai[i].x = -100
+    if select_level_mode.game_level == 'hard':
+        angle_speed = 20
+    elif select_level_mode.game_level == 'normal':
+        angle_speed = 15
+    elif select_level_mode.game_level == 'easy':
+        angle_speed = 10
+
 
 def delete_object():
     global player
@@ -216,9 +227,9 @@ def long_jump_update():
 
     if player.stop:
         if angle_flip:
-            angle -= 0.1
+            angle -= 0.1 * angle_speed
         else:
-            angle += 0.1
+            angle += 0.1 * angle_speed
         if angle >= 90:
             angle = 90
             angle_flip = True
