@@ -19,9 +19,6 @@ SHADOW = 2
 ECHDNA = 3
 
 
-def a_down(e):
-    return e[0] == 'INPUT' and e[1].type == SDL_KEYDOWN and e[1].key == SDLK_a
-
 
 def a_up(e):
     return e[0] == 'INPUT' and e[1].type == SDL_KEYUP and e[1].key == SDLK_a
@@ -402,8 +399,6 @@ class Run:
 
             if d_down(e):
                 player.dir, player.action = 1, 1
-            elif a_down(e):
-                player.dir, player.action = -1, 0
 
             if left_down(e):
                 player.input_command.insert(0, 0)
@@ -513,9 +508,9 @@ class StateMachine:
         self.player = player
         self.cur_state = Idle
         self.transitions = {
-            Idle: {a_down: Run, d_down: Run, left_down: Run, right_down: Run, down_down: Run, up_down: Run,
+            Idle: {d_down: Run, left_down: Run, right_down: Run, down_down: Run, up_down: Run,
                    game_start: Idle, go_swim: Swim, wide_jump_run: Run},
-            Run: {a_down: Run, d_down: Run, a_up: Idle, d_up: Idle, left_down: Run, right_down: Run, fail_out: Slip,
+            Run: {d_down: Run, a_up: Idle, d_up: Idle, left_down: Run, right_down: Run, fail_out: Slip,
                   down_down: Run, up_down: Run, go_jump: Jump, shift_down: Run, shift_up: Run,
                   wait_wide_jump: Wait_Wide_Jump, time_out: Idle},
             Swim: {left_down: Swim, right_down: Swim, down_down: Swim, up_down: Swim, stun: Stun, time_out: Idle},
