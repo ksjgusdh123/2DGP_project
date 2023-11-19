@@ -335,6 +335,13 @@ class Wait_Wide_Jump:
     def draw(player):
         if player.character_id == SONIC:
             player.image.clip_draw(333, 149, 26, 25, player.x - player.camera_x, player.y, 50, 100)
+        elif player.character_id == 1:
+            player.image.clip_draw(104, 736, 32, 32, player.x - player.camera_x, player.y, 50, 100)
+        elif player.character_id == 2:
+            player.image.clip_draw(146, 317, 19, 39, player.x - player.camera_x, player.y, 50, 100)
+        elif player.character_id == 3:
+            player.image.clip_draw(301, 214, 27, 45, player.x - player.camera_x, player.y, 50, 100)
+
 
 
 class Wide_Jump:
@@ -369,10 +376,18 @@ class Wide_Jump:
 
     @staticmethod
     def draw(player):
-
         if player.character_id == SONIC:
             player.image.clip_draw(sonic_wide_jump[int(player.frame)], 149, 26, 28, player.x - player.camera_x,
                                    player.y, 50, 100)
+        elif player.character_id == 1:
+            player.image.clip_draw(tails_jump[int(player.frame)], 736, tails_jump_w[int(player.frame)], 32,
+                                   player.x - player.camera_x, player.y, 50, 100)
+        elif player.character_id == 2:
+            player.image.clip_draw(shadow_jump[int(player.frame)], 317, shadow_jump_w[int(player.frame)], 39,
+                                   player.x - player.camera_x, player.y, 50, 100)
+        elif player.character_id == 3:
+            player.image.clip_draw(ech_jump[int(player.frame)], 214, ech_jump_w[int(player.frame)], 45,
+                                   player.x - player.camera_x, player.y, 50, 100)
 
 
 class Run:

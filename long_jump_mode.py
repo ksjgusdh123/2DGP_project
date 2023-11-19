@@ -1,3 +1,5 @@
+import random
+
 from pico2d import *
 import game_framework
 import character_select_mode
@@ -16,6 +18,7 @@ ai = [None, None, None]
 def handle_events():
     global running
     global character_num
+    global jump_chance
 
     events = get_events()
     for event in events:
@@ -23,6 +26,7 @@ def handle_events():
             game_framework.quit()
         elif event.type == SDL_KEYDOWN and event.key == SDLK_ESCAPE:
             game_framework.change_mode(select_menu_mode)
+            jump_chance = 2
             delete_object()
         elif not clock is None and event.type == SDL_KEYDOWN and event.key == SDLK_SPACE:
             player.ready = True
@@ -74,6 +78,8 @@ def init():
             player = run_track_mode.player
             for i in range(3):
                 ai[i] = run_track_mode.ai[i]
+    for i in range(3):
+        ai[i].record = random.randint(100, 330)
     player.game_mode = 'jump'
     default_start()
 
