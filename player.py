@@ -450,8 +450,9 @@ class Run:
                 player.x += RUN_SPEED_PPS * game_framework.frame_time * max(player.speed, 0.5)
             if 400 <= player.x <= 4800:
                 player.camera_x += RUN_SPEED_PPS * game_framework.frame_time * max(player.speed, 0.5)
-            if player.stop == False and player.x >= 1480:
-                print('fail')
+            if not player.stop and player.x >= 1480:
+                player.fail = True
+
     @staticmethod
     def draw(player):
         Run.run_track_draw(player)
@@ -574,7 +575,8 @@ class Player:
         self.jump_finish = False
         self.start_pos = 1480
         self.first_record = 0
-        self.sceond_record = 0
+        self.second_record = 0
+        self.fail = False
 
 
     def update(self):

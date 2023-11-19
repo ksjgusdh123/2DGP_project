@@ -26,8 +26,12 @@ def handle_events():
                     game_framework.change_mode(swimming_mode)
                 elif mode[now_map].player.next_map == ('long-jump'):
                     game_framework.change_mode(long_jump_mode)
+                elif mode[now_map].player.next_map == ('shooting'):
+                    long_jump_mode.jump_chance = 2
+                    pass
             else:
                 mode[now_map].delete_object()
+                long_jump_mode.jump_chance = 2
                 game_framework.change_mode(select_menu_mode)
 
 map_num = 0
@@ -37,6 +41,8 @@ def init():
     global character_result_image
     global font
     global records
+    global first_records
+    global second_records
     global timer
     global show_score
     show_score = False
@@ -45,10 +51,14 @@ def init():
     font = load_font('font/ENCR10B.TTF', 50)
 
     records = []
+    first_records = []
+    second_records = [[0, 0], [0, 0], [0, 0], [0, 0]]
     timer = get_time()
 
     fill_records()
     if now_map == 'long-jump':
+        first_records.sort(reverse=True)
+        second_records.sort(reverse=True)
         records.sort(reverse=True)
     else:
         records.sort()
@@ -72,15 +82,20 @@ def update():
 
 
 
+
+
 def draw():
     clear_canvas()
     mode[now_map].result_mode_draw()
     main_background_image.opacify(200/255)
     main_background_image.clip_draw(510, 620, 90, 350, 400, 300, 600, 300)
     if show_score:
-        scores_up_sort_print()
+            scores_up_sort_print()
     else:
-        records_down_sort_print()
+        if now_map == 'long-jump':
+            jump_records_down_sort_print()
+        else:
+            records_down_sort_print()
     update_canvas()
 
 
@@ -88,11 +103,26 @@ def fill_records():
         records.append([mode[now_map].player.record, mode[now_map].player.character_id])
         for i in range(3):
             records.append([mode[now_map].ai[i].record, mode[now_map].ai[i].ch_id])
+        if now_map == 'long-jump':
+            if long_jump_mode.jump_chance == 1:
+                first_records.append([mode[now_map].player.record, mode[now_map].player.character_id])
+                for i in range(3):
+                    first_records.append([mode[now_map].ai[i].record, mode[now_map].ai[i].ch_id])
+            elif long_jump_mode.jump_chance == 0:
+                first_records.clear()
+                second_records.clear()
+                first_records.append([mode[now_map].player.first_record, mode[now_map].player.character_id])
+                second_records.append([mode[now_map].player.second_record, mode[now_map].player.character_id])
+                for i in range(3):
+                    first_records.append([mode[now_map].ai[i].record, mode[now_map].ai[i].ch_id])
+                    second_records.append([mode[now_map].ai[i].record, mode[now_map].ai[i].ch_id])
 
 def fill_scores():
     scores.append([mode[now_map].player.score, mode[now_map].player.character_id])
     for i in range(3):
         scores.append([mode[now_map].ai[i].score, mode[now_map].ai[i].ch_id])
+
+
 
 def scores_up_sort_print():
     for i in range(0, 3 + 1):
@@ -106,6 +136,17 @@ def scores_up_sort_print():
         elif scores[i][1] == 3:
             character_result_image.clip_draw(80, 276, 81, 26, 170, 400 - 66 * i, 100, 50)
 
+def jump_records_down_sort_print():
+    for i in range(0, 3 + 1):
+        font.draw(300, 400 - 66 * i, f"{first_records[i][0]:.0f}, {second_records[i][0]:.0f}", (0, 0, 0))
+        if records[i][1] == 0:
+            character_result_image.clip_draw(80, 326, 81, 26, 170, 400 - 66 * i, 100, 50)
+        elif records[i][1] == 1:
+            character_result_image.clip_draw(80, 301, 81, 26, 170, 400 - 66 * i, 100, 50)
+        elif records[i][1] == 2:
+            character_result_image.clip_draw(80, 201, 81, 26, 170, 400 - 66 * i, 100, 50)
+        elif records[i][1] == 3:
+            character_result_image.clip_draw(80, 276, 81, 26, 170, 400 - 66 * i, 100, 50)
 
 def records_down_sort_print():
     for i in range(0, 3 + 1):

@@ -96,6 +96,8 @@ def delete_object():
     ai[0].delete_ai()
     for i in range(3):
         game_world.remove_object(ai[i])
+    for i in range(3):
+        del ai[0]
     game_world.remove_object(player)
     player = None
     del player
@@ -170,9 +172,14 @@ def long_jump_update():
             jump_chance -= 1
             if jump_chance == 1:
                 player.first_record = player.record
+                if player.first_record <= 0:
+                    player.first_record = 0
+                    player.record = 0
             elif jump_chance == 0:
-                player.sceond_record = player.record
-                player.record = max(player.first_record, player.sceond_record)
+                player.second_record = player.record
+                if player.second_record <= 0:
+                    player.second_record = 0
+                player.record = max(player.first_record, player.second_record)
             stop_time = get_time()
         if get_time() - stop_time >= 3:
             stop_time = 0
@@ -194,3 +201,4 @@ def long_jump_update():
         player.angle_check = False
         player.stop = False
         print(angle)
+
