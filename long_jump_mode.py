@@ -40,6 +40,7 @@ def init():
     global line_image
     global angle_image
     global arrow_image
+    global effect_image
     global command
     global angle
     global angle_flip
@@ -53,6 +54,7 @@ def init():
         line_image = load_image('image/finishline.png')
         angle_image = load_image('image/angle.png')
         arrow_image = load_image('image/arrow_flip.png')
+        effect_image = load_image('image/effect.png')
         font = load_font('font/ENCR10B.TTF', 50)
         print(jump_chance)
         command = []
@@ -149,6 +151,8 @@ def track_draw():
                                         player.y + 80 - (90 - angle) * 0.1, 100, 50)
         angle_image.draw(player.x + 100 - 50 - player.camera_x, player.y + 100, 100, 100)
 
+    if not player.stop and player.x > 1480:
+        effect_image.clip_draw(3, 1178, 480, 100, 400, 300)
 
 def clock_update():
     global clock
