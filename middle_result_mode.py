@@ -105,16 +105,16 @@ def fill_records():
             records.append([mode[now_map].ai[i].record, mode[now_map].ai[i].ch_id])
         if now_map == 'long-jump':
             if long_jump_mode.jump_chance == 1:
-                first_records.append([mode[now_map].player.record, mode[now_map].player.character_id])
+                first_records.append([mode[now_map].player.first_record, 0, mode[now_map].player.character_id])
                 for i in range(3):
-                    first_records.append([mode[now_map].ai[i].record, mode[now_map].ai[i].ch_id])
+                    first_records.append([mode[now_map].ai[i].record, 0, mode[now_map].ai[i].ch_id])
             elif long_jump_mode.jump_chance == 0:
                 first_records.clear()
                 second_records.clear()
-                first_records.append([mode[now_map].player.first_record, mode[now_map].player.character_id])
+                first_records.append([mode[now_map].player.first_record, mode[now_map].player.second_record, mode[now_map].player.character_id])
                 second_records.append([mode[now_map].player.second_record, mode[now_map].player.character_id])
                 for i in range(3):
-                    first_records.append([mode[now_map].ai[i].record, mode[now_map].ai[i].ch_id])
+                    first_records.append([mode[now_map].ai[i].record, mode[now_map].ai[i].record, mode[now_map].ai[i].ch_id])
                     second_records.append([mode[now_map].ai[i].record, mode[now_map].ai[i].ch_id])
 
 def fill_scores():
@@ -139,14 +139,14 @@ def scores_up_sort_print():
 def jump_records_down_sort_print():
     for i in range(0, 3 + 1):
         font.draw(300, 500, f"first second", (0, 0, 0))
-        font.draw(300, 400 - 66 * i, f"  {first_records[i][0]:.0f}m     {second_records[i][0]:.0f}m", (0, 0, 0))
-        if records[i][1] == 0:
+        font.draw(300, 400 - 66 * i, f"  {first_records[i][0]:.0f}m     {first_records[i][1]:.0f}m", (0, 0, 0))
+        if first_records[i][2] == 0:
             character_result_image.clip_draw(80, 326, 81, 26, 170, 400 - 66 * i, 100, 50)
-        elif records[i][1] == 1:
+        elif first_records[i][2] == 1:
             character_result_image.clip_draw(80, 301, 81, 26, 170, 400 - 66 * i, 100, 50)
-        elif records[i][1] == 2:
+        elif first_records[i][2] == 2:
             character_result_image.clip_draw(80, 201, 81, 26, 170, 400 - 66 * i, 100, 50)
-        elif records[i][1] == 3:
+        elif first_records[i][2] == 3:
             character_result_image.clip_draw(80, 276, 81, 26, 170, 400 - 66 * i, 100, 50)
 
 def records_down_sort_print():
