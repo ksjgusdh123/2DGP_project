@@ -92,6 +92,8 @@ def default_start():
     player.jump_ok = False
     player.jump_finish = False
     player.angle_check = False
+    for i in range (3):
+        ai[i].x = -100
 
 def delete_object():
     global player

@@ -48,7 +48,7 @@ def init():
     show_score = False
     main_background_image = load_image('image/main_background.png')
     character_result_image = load_image('image/result.png')
-    font = load_font('font/ENCR10B.TTF', 50)
+    font = load_font('font/ENCR10B.TTF', 40)
 
     records = []
     first_records = []
@@ -79,9 +79,6 @@ def update():
     global show_score
     if get_time() - timer >= 5:
         show_score = True
-
-
-
 
 
 def draw():
@@ -139,7 +136,7 @@ def scores_up_sort_print():
 def jump_records_down_sort_print():
     for i in range(0, 3 + 1):
         font.draw(300, 500, f"first second", (0, 0, 0))
-        font.draw(300, 400 - 66 * i, f"  {first_records[i][0]:.0f}m     {first_records[i][1]:.0f}m", (0, 0, 0))
+        font.draw(300, 400 - 66 * i, f"{first_records[i][0]:.0f}m    {first_records[i][1]:.0f}m", (0, 0, 0))
         if first_records[i][2] == 0:
             character_result_image.clip_draw(80, 326, 81, 26, 170, 400 - 66 * i, 100, 50)
         elif first_records[i][2] == 1:
