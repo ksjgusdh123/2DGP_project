@@ -119,7 +119,7 @@ class Idle:
             player.frame = (player.frame + 10 * ACTION_PER_TIME * game_framework.frame_time) % 10
         if player.start and player.game_mode == 'swim' and not player.finish:
             player.state_machine.handle_event(('GO_SWIM', 0))
-        if player.start and player.game_mode == 'jump' and not player.jump_ok:
+        if player.start and player.game_mode == 'jump' and not player.jump_ok and not player.fail:
             player.state_machine.handle_event(('WIDE_JUMP_RUN', 0))
 
     @staticmethod
@@ -452,6 +452,7 @@ class Run:
                 player.camera_x += RUN_SPEED_PPS * game_framework.frame_time * max(player.speed, 0.5)
             if not player.stop and player.x >= 1480:
                 player.fail = True
+                player.state_machine.handle_event(('TIME_OUT', 0))
 
     @staticmethod
     def draw(player):

@@ -88,6 +88,7 @@ def default_start():
     player.y = 240
     player.x = 100
     player.stop = False
+    player.fail = False
     player.jump_ok = False
     player.jump_finish = False
     player.angle_check = False
@@ -151,8 +152,8 @@ def track_draw():
                                         player.y + 80 - (90 - angle) * 0.1, 100, 50)
         angle_image.draw(player.x + 100 - 50 - player.camera_x, player.y + 100, 100, 100)
 
-    if not player.stop and player.x > 1480:
-        effect_image.clip_draw(3, 1178, 480, 100, 400, 300)
+    if player.fail:
+        effect_image.clip_draw(3, 1178, 470, 100, 400, 300)
 
 def clock_update():
     global clock
@@ -180,6 +181,23 @@ def long_jump_update():
                     player.record = 0
             elif jump_chance == 0:
                 player.second_record = player.record
+                if player.second_record <= 0:
+                    player.second_record = 0
+                player.record = max(player.first_record, player.second_record)
+            stop_time = get_time()
+        if get_time() - stop_time >= 3:
+            stop_time = 0
+            game_framework.change_mode(middle_result_mode)
+
+    if player.fail:
+        if stop_time == 0:
+            jump_chance -= 1
+            if jump_chance == 1:
+                player.first_record = player.record
+                player.first_record = 0
+                player.record = 0
+            elif jump_chance == 0:
+                player.second_record = 0
                 if player.second_record <= 0:
                     player.second_record = 0
                 player.record = max(player.first_record, player.second_record)
