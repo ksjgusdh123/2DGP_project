@@ -81,7 +81,7 @@ class AI:
 
     def draw_character(self):
         if self.ch_id == SONIC:
-            if not self.player.start or self.finish:
+            if (not self.player.start or self.finish) and not self.mode == 'swim':
                 self.image.clip_draw(int(self.frame) // 2 * 22 + 5, 249, 18, 30, self.x - self.player.camera_x, self.y,
                                      50, 100)
             else:
@@ -98,7 +98,7 @@ class AI:
                                                 self.y, 50, 100)
 
         elif self.ch_id == TAILS:
-            if not self.player.start or self.finish:
+            if (not self.player.start or self.finish) and not self.mode == 'swim':
                 self.image.clip_draw(int(self.frame) // 2 * 32 + 107, 960, 21, 35, self.x - self.player.camera_x,
                                      self.y, 50, 100)
             else:
@@ -115,7 +115,7 @@ class AI:
 
 
         elif self.ch_id == SHADOW:
-            if not self.player.start or self.finish:
+            if (not self.player.start or self.finish) and not self.mode == 'swim':
                 self.image.clip_draw(int(self.frame) // 2 * 26 + 6, 467, 23, 33, self.x - self.player.camera_x, self.y,
                                      50, 100)
             else:
@@ -131,7 +131,7 @@ class AI:
                                                           self.x - self.player.camera_x, self.y, 50, 100)
 
         if self.ch_id == ECHDNA:
-            if not self.player.start or self.finish:
+            if (not self.player.start or self.finish) and not self.mode == 'swim':
                 self.image.clip_draw(int(self.frame) // 2 * 31 + 117, 262, 29, 42, self.x - self.player.camera_x,
                                      self.y, 50, 100)
             else:
@@ -185,7 +185,7 @@ class AI:
 
 
     def basic_update(self):
-        if (self.ch_id == 1 and not self.player.start) or (self.finish and self.ch_id == 1):
+        if self.ch_id == 1 and (self.player.start or self.finish) and not self.mode == 'swim':
             self.frame = (self.frame + 14 * ACTION_PER_TIME * game_framework.frame_time) % 14
         else:
             self.frame = (self.frame + 10 * ACTION_PER_TIME * game_framework.frame_time) % 10

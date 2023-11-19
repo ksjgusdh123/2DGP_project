@@ -110,7 +110,7 @@ class Idle:
 
     @staticmethod
     def do(player):
-        if player.character_id == 1:
+        if player.character_id == 1 and not player.game_mode == 'swim':
             player.frame = (player.frame + 14 * ACTION_PER_TIME * game_framework.frame_time) % 14
         else:
             player.frame = (player.frame + 10 * ACTION_PER_TIME * game_framework.frame_time) % 10
@@ -124,7 +124,22 @@ class Idle:
         if player.game_mode == 'run' or player.game_mode == 'jump':
             Idle.running_track_idle_draw(player)
         elif player.game_mode == 'swim':
-            Idle.running_track_idle_draw(player)
+            Idle.swimming_track_idle_draw(player)
+
+    @staticmethod
+    def swimming_track_idle_draw(player):
+        if player.character_id == SONIC:
+            player.image.clip_draw(sonic_swim[int(player.frame)], 57, 36, 20, player.x - player.camera_x, player.y, 50,
+                                   100)
+        elif player.character_id == TAILS:
+            player.image.clip_composite_draw(tails_swim[int(player.frame)], 264, 40, 30, 3.14 * 30, 'h',
+                                             player.x - player.camera_x, player.y, 50, 100)
+        elif player.character_id == SHADOW:
+            player.image.clip_composite_draw(shadow_swim[int(player.frame)], 284, 38, 30, 3.14 * 30, 'h',
+                                             player.x - player.camera_x, player.y, 50, 100)
+        elif player.character_id == ECHDNA:
+            player.image.clip_draw(ech_swim[int(player.frame)], 51, 50, 25, player.x - player.camera_x, player.y, 50,
+                                   100)
 
     @staticmethod
     def running_track_idle_draw(player):
