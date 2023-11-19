@@ -127,6 +127,7 @@ def draw():
     clear_canvas()
     draw_swimming_track()
     game_world.render()
+    rectangle_draw()
     map_timer_draw()
     update_canvas()
 
@@ -166,12 +167,17 @@ def arrow_draw():
         elif command[i] == 3:
             arrow_image.clip_composite_draw(0, 0, 670, 373, math.pi / 2, 'h', player.x + i * 100 - 50 - player.camera_x,
                                             player.y + 100, 100, 100)
+
+
+def rectangle_draw():
+    for i in range(0, len(command)):
         if command_timer[i] <= 3 - level[select_level_mode.game_level] + 1.5:
             red_rectangle_image.draw(player.x + i * 100 - 50 - player.camera_x, player.y + 100, 100 * command_timer[i] / 10,
-                                 100 * command_timer[i] / 10)
+                                     100 * command_timer[i] / 10)
         else:
             rectangle_image.draw(player.x + i * 100 - 50 - player.camera_x, player.y + 100, 100 * command_timer[i] / 10,
                                  100 * command_timer[i] / 10)
+
 
 def track_update():
     global command, show_result_mode
@@ -199,7 +205,7 @@ def track_update():
     if len(command) != 0 and len(player.input_command) != 0:
         if command[0] == player.input_command[0]:
             if command_timer[0] <= 3 - level[select_level_mode.game_level] + 1.5:
-                player.speed += 0.01 * (10 - command_timer[0])
+                player.speed += 0.01 * ((10 - 2 * level[select_level_mode.game_level]) - command_timer[0])
             else:
                 if player.speed > 1:
                     player.speed = 1
@@ -239,6 +245,10 @@ def track_update():
     for i in range(3):
         if ai[i].finish and finish_game[i + 1] == False:
             finish_game[i + 1] = True
+
+    if player.x >= 5000:
+        command.clear()
+        command_timer.clear()
 
     if show_result_mode:
         middle_result_mode.map_num += 1
