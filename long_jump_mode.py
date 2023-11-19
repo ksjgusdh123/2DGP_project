@@ -1,4 +1,3 @@
-
 from pico2d import *
 import game_framework
 import character_select_mode
@@ -73,8 +72,8 @@ def init():
             player = run_track_mode.player
             for i in range(3):
                 ai[i] = run_track_mode.ai[i]
-    default_start()
     player.game_mode = 'jump'
+    default_start()
 
 def default_start():
     global clock

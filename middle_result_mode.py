@@ -138,7 +138,8 @@ def scores_up_sort_print():
 
 def jump_records_down_sort_print():
     for i in range(0, 3 + 1):
-        font.draw(300, 400 - 66 * i, f"{first_records[i][0]:.0f}, {second_records[i][0]:.0f}", (0, 0, 0))
+        font.draw(300, 500, f"first second", (0, 0, 0))
+        font.draw(300, 400 - 66 * i, f"  {first_records[i][0]:.0f}m     {second_records[i][0]:.0f}m", (0, 0, 0))
         if records[i][1] == 0:
             character_result_image.clip_draw(80, 326, 81, 26, 170, 400 - 66 * i, 100, 50)
         elif records[i][1] == 1:
