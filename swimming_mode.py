@@ -6,6 +6,7 @@ import character_select_mode
 import game_world
 import middle_result_mode
 import run_track_mode
+import select_level_mode
 import select_menu_mode
 from clock import Clock
 from player import Player
@@ -13,6 +14,8 @@ from AI_player import AI
 
 player = None
 ai = [None, None, None]
+level = {'easy': 2, 'normal': 3, 'hard': 4}
+
 def handle_events():
     global running
     global character_num
@@ -40,6 +43,7 @@ def init():
     global people_image
     global arrow_image
     global rectangle_image
+    global red_rectangle_image
     global command
     global command_timer
     global clock
@@ -50,6 +54,7 @@ def init():
     track_image = load_image('image/swimming_track.png')
     people_image = load_image('image/running_track.png')
     rectangle_image = load_image('image/rectangle.png')
+    red_rectangle_image = load_image('image/red_rectangle1.png')
     arrow_image = load_image('image/arrow.png')
     middle_result_mode.now_map = 'Swim'
 
@@ -161,7 +166,12 @@ def arrow_draw():
         elif command[i] == 3:
             arrow_image.clip_composite_draw(0, 0, 670, 373, math.pi / 2, 'h', player.x + i * 100 - 50 - player.camera_x,
                                             player.y + 100, 100, 100)
-        rectangle_image.draw(player.x + i * 100 - 50 - player.camera_x, player.y + 100, 100 * command_timer[i] / 10, 100 * command_timer[i] / 10)
+        if command_timer[i] <= 3 - level[select_level_mode.game_level] + 1.5:
+            red_rectangle_image.draw(player.x + i * 100 - 50 - player.camera_x, player.y + 100, 100 * command_timer[i] / 10,
+                                 100 * command_timer[i] / 10)
+        else:
+            rectangle_image.draw(player.x + i * 100 - 50 - player.camera_x, player.y + 100, 100 * command_timer[i] / 10,
+                                 100 * command_timer[i] / 10)
 
 def track_update():
     global command, show_result_mode
@@ -188,10 +198,24 @@ def track_update():
 
     if len(command) != 0 and len(player.input_command) != 0:
         if command[0] == player.input_command[0]:
-            player.speed += 0.01 * (10 - command_timer[0])
+            if command_timer[0] <= 3 - level[select_level_mode.game_level] + 1.5:
+                player.speed += 0.01 * (10 - command_timer[0])
+            else:
+                if player.speed > 1:
+                    player.speed = 1
+                else:
+                    player.life -= 0.3
+                    if player.life <= 0:
+                        player.stun = True
+                        command.clear()
+                        command_timer.clear()
+                        print('stun')
+                    else:
+                        player.speed = player.life
             player.input_command.clear()
-            del command_timer[0]
-            del command[0]
+            if len(command) >= 1:
+                del command_timer[0]
+                del command[0]
         elif command[0] != player.input_command[0]:
             player.input_command.clear()
             player.life -= 0.3
