@@ -97,12 +97,13 @@ def basic_player_init(player):
 
 def delete_object():
     global player
+    global ai
     ai[0].delete_ai()
     for i in range(3):
         game_world.remove_object(ai[i])
     for i in range(3):
         del ai[0]
-
+    ai = [None, None, None]
     game_world.remove_object(player)
     player = None
 

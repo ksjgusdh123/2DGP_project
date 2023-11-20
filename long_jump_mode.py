@@ -115,12 +115,14 @@ def default_start():
 
 def delete_object():
     global player
+    global ai
     ai[0].delete_ai()
     for i in range(3):
         game_world.remove_object(ai[i])
     for i in range(3):
         del ai[0]
     game_world.remove_object(player)
+    ai = [None, None, None]
     player = None
     del player
 

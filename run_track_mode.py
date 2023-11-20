@@ -95,6 +95,7 @@ def delete_object():
         del ai[0]
     game_world.remove_object(player)
     player = None
+    ai = [None, None, None]
     del player
 
 def finish():
