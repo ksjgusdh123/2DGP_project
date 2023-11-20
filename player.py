@@ -608,6 +608,7 @@ class Player:
         # shooting_mode
         self.shooting_pos = [1, 1]
         self.shoot_ok = False
+        self.bullet_count = 20
 
     def update(self):
         self.state_machine.update()

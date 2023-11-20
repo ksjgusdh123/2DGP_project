@@ -74,6 +74,7 @@ class AI:
         self.mode = None
         self.record = self.ch_id
         self.score = 0
+        self.left_bullet = 20
 
     def delete_ai(self):
         AI.num = -1
@@ -167,6 +168,11 @@ class AI:
         num = random.randint(1, 2)
         if num == 1:
             self.record += 1
+            self.left_bullet -= 1
+        else:
+            num = random.randint(1, 2)
+            if num == 1:
+                self.left_bullet -= 1
 
     def swim_update(self):
         if self.player.start and not self.finish:

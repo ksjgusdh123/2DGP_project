@@ -29,9 +29,9 @@ def handle_events():
         elif event.type == SDL_KEYDOWN and event.key == SDLK_ESCAPE:
             game_framework.change_mode(select_menu_mode)
             delete_object()
-        elif event.type == SDL_KEYDOWN and event.key == SDLK_r and shot_count > 0:
+        elif event.type == SDL_KEYDOWN and event.key == SDLK_r and player.bullet_count > 0:
             if player.start:
-                shot_count -= 1
+                player.bullet_count -= 1
                 if not clay == None:
                     if player.shooting_pos[0] == clay.pos[0] and player.shooting_pos[1] == clay.pos[1]:
                         player.shoot_ok = True
@@ -65,12 +65,14 @@ def init():
     global shooting_target_image
     global clock
     global font
+    global mini_font
     global clay
     global timer
     global random_gen
     global shot_count
     global clay_count
     font = load_font('font/ENCR10B.TTF', 50)
+    mini_font = load_font('font/ENCR10B.TTF', 10)
     track_image = load_image('image/shooting_background_image.png')
     rectangle_image = load_image('image/rectangle.png')
     red_rectangle_image = load_image('image/red_rectangle1.png')
@@ -169,8 +171,9 @@ def draw():
     font.draw(50, 50, f"{player.record}/{20 - clay_count}", (0, 0, 0))
     for i in range(3):
         font.draw(50 + 200 * (i + 1), 50, f"{ai[i].record}/{20 - clay_count}", (0, 0, 0))
+        mini_font.draw(150 + 200 * (i + 1), 50, f"{ai[i].left_bullet}/20", (0, 0, 0))
 
-    font.draw(30, 230, f"{shot_count}/20", (0, 0, 0))
+    font.draw(30, 230, f"{player.bullet_count}/20", (0, 0, 0))
     update_canvas()
 
 
