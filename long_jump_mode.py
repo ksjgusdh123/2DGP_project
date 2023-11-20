@@ -84,6 +84,7 @@ def init():
     for i in range(3):
         ai[i].record = random.randint(100, 330)
     player.game_mode = 'jump'
+    player.next_map = 'shooting'
     default_start()
 
 def default_start():

@@ -1,5 +1,6 @@
 from pico2d import *
 
+import final_result_mode
 import game_framework
 import long_jump_mode
 import run_track_mode
@@ -28,7 +29,7 @@ def handle_events():
                     game_framework.change_mode(long_jump_mode)
                 elif mode[now_map].player.next_map == ('shooting'):
                     long_jump_mode.jump_chance = 2
-                    pass
+                    game_framework.change_mode(final_result_mode)
             else:
                 mode[now_map].delete_object()
                 long_jump_mode.jump_chance = 2

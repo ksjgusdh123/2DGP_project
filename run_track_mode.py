@@ -180,6 +180,7 @@ def clock_update():
             player.time = get_time()
             for i in range(0, 3):
                 ai[i].time = player.time
+                ai[i].frame = 0
             game_world.remove_object(clock)
             clock = None
 
