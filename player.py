@@ -114,14 +114,16 @@ class Idle:
             player.frame = (player.frame + 14 * ACTION_PER_TIME * game_framework.frame_time) % 14
         else:
             player.frame = (player.frame + 10 * ACTION_PER_TIME * game_framework.frame_time) % 10
-        if player.start and player.game_mode == 'swim' and not player.finish:
+        if player.game_mode == 'shooting':
+            pass
+        elif player.start and player.game_mode == 'swim' and not player.finish:
             player.state_machine.handle_event(('GO_SWIM', 0))
-        if player.start and player.game_mode == 'jump' and not player.jump_ok and not player.fail:
+        elif player.start and player.game_mode == 'jump' and not player.jump_ok and not player.fail:
             player.state_machine.handle_event(('WIDE_JUMP_RUN', 0))
 
     @staticmethod
     def draw(player):
-        if player.game_mode == 'run' or player.game_mode == 'jump':
+        if player.game_mode == 'run' or player.game_mode == 'jump' or player.game_mode == 'shooting':
             Idle.running_track_idle_draw(player)
         elif player.game_mode == 'swim':
             Idle.swimming_track_idle_draw(player)
@@ -603,7 +605,8 @@ class Player:
         self.first_record = 0
         self.second_record = 0
         self.fail = False
-
+        # shooting_mode
+        self.shooting_pos = [1, 1]
 
     def update(self):
         self.state_machine.update()

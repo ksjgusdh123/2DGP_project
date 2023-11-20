@@ -81,8 +81,8 @@ def init():
             player = run_track_mode.player
             for i in range(3):
                 ai[i] = run_track_mode.ai[i]
-    for i in range(3):
-        ai[i].record = random.randint(100, 330)
+        for i in range(3):
+            ai[i].record = random.randint(100, 330)
     player.game_mode = 'jump'
     player.next_map = 'shooting'
     default_start()
