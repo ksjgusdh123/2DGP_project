@@ -59,6 +59,7 @@ class AI:
                 self.image = load_image('image/shadow.png')
         AI.ai_num += 1
         AI.num += 1
+        self.temp_num = AI.num
         self.ch_id = AI.ai_num - 1
         self.frame = 0
         self.x, self.y = 100, 320 - AI.num * 60
@@ -185,8 +186,11 @@ class AI:
 
 
     def basic_update(self):
-        if self.ch_id == 1 and (self.player.start or self.finish) and not self.mode == 'swim':
-            self.frame = (self.frame + 14 * ACTION_PER_TIME * game_framework.frame_time) % 14
+        if self.ch_id == 1 and not self.mode == 'swim':
+            if not self.player.start or self.finish:
+                self.frame = (self.frame + 14 * ACTION_PER_TIME * game_framework.frame_time) % 14
+            else:
+                self.frame = (self.frame + 10 * ACTION_PER_TIME * game_framework.frame_time) % 10
         else:
             self.frame = (self.frame + 10 * ACTION_PER_TIME * game_framework.frame_time) % 10
         if self.x >= 5000 and self.finish == False:
