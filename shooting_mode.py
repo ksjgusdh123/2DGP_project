@@ -8,6 +8,7 @@ import middle_result_mode
 import run_track_mode
 import select_level_mode
 import select_menu_mode
+from clay_target import Target
 from clock import Clock
 from player import Player
 from AI_player import AI
@@ -57,6 +58,9 @@ def init():
     global shooting_target_image
     global clock
     global font
+    global clay
+    global timer
+    global random_gen
     font = load_font('font/ENCR10B.TTF', 50)
     track_image = load_image('image/shooting_background_image.png')
     rectangle_image = load_image('image/rectangle.png')
@@ -84,7 +88,10 @@ def init():
             ai[i].y = -100
             ai[i].x = -100
             ai[i].finish = False
+    clay = Target()
     player.game_mode = 'shooting'
+    timer = get_time()
+    random_gen = random.randint(1, 5)
 
 
 def delete_object():
@@ -108,7 +115,25 @@ def finish():
     pass
 
 def update():
+    global clay
+    global timer
+    global random_gen
     clock_update()
+
+    if clay == None:
+        if get_time() - timer >= random_gen:
+            clay = Target()
+
+    if not clay == None:
+        clay.update()
+        if clay.delete:
+            del clay
+            print('del')
+            clay = None
+            timer = get_time()
+            random_gen = random.randint(2, 5)
+        # clay = Target()
+
     game_world.update()
 
 
@@ -117,7 +142,8 @@ def draw():
     track_image.clip_draw(110, 0, 550, 135, 400, 300, 800, 600)
     game_world.render()
     rectangle_draw()
-    shooting_target_image.draw(400, 300, 100, 100)
+    if not clay == None:
+        clay.draw()
     update_canvas()
 
 
@@ -133,9 +159,9 @@ def rectangle_draw():
     for i in range(3):
         for j in range(3):
             if player.shooting_pos[0] == j and player.shooting_pos[1] == i:
-                red_rectangle_image.clip_draw(34, 11, 170, 189, (i + 1) * 150 + 100, (j + 1) * 150 + 80, 120, 120)
+                red_rectangle_image.clip_draw(33, 10, 172, 191, (i + 1) * 150 + 100, (j + 1) * 150 + 80, 80, 80)
             else:
-                rectangle_image.draw((i + 1) * 150 + 100, (j + 1) * 150 + 80, 150, 150)
+                rectangle_image.draw((i + 1) * 150 + 100, (j + 1) * 150 + 80, 100, 100)
 
 def track_update():
     pass
