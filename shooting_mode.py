@@ -28,6 +28,10 @@ def handle_events():
         elif event.type == SDL_KEYDOWN and event.key == SDLK_ESCAPE:
             game_framework.change_mode(select_menu_mode)
             delete_object()
+        elif event.type == SDL_KEYDOWN and event.key == SDLK_r:
+            if not clay == None and player.start:
+                if player.shooting_pos[0] == clay.pos[0] and player.shooting_pos[1] == clay.pos[1]:
+                    player.shoot_ok = True
         elif event.type == SDL_KEYDOWN and event.key == SDLK_RIGHT:
             if player.shooting_pos[1] <= 1:
                 player.shooting_pos[1] += 1
@@ -89,6 +93,9 @@ def init():
             ai[i].x = -100
             ai[i].finish = False
     player.game_mode = 'shooting'
+    player.record = 0
+    for i in range(3):
+        ai[i].record = 0
     timer = get_time()
     random_gen = random.randint(1, 5)
 
@@ -119,21 +126,27 @@ def update():
     global random_gen
     clock_update()
 
+    clay_update()
+
+    game_world.update()
+
+
+def clay_update():
+    global clay, timer, random_gen
     if clay == None and player.start:
         if get_time() - timer >= random_gen:
             clay = Target()
-
     if not clay == None:
         clay.update()
         if clay.delete:
-            del clay
-            print('del')
-            clay = None
-            timer = get_time()
-            random_gen = random.randint(2, 5)
-        # clay = Target()
+            del_clay()
 
-    game_world.update()
+    if player.shoot_ok:
+        player.record += 1
+        player.shoot_ok = False
+        print(player.record)
+        del_clay()
+
 
 
 def draw():
@@ -175,3 +188,11 @@ def clock_update():
                 ai[i].time = player.time
             game_world.remove_object(clock)
             clock = None
+
+
+def del_clay():
+    global clay, timer, random_gen
+    del clay
+    clay = None
+    timer = get_time()
+    random_gen = random.randint(2, 5)

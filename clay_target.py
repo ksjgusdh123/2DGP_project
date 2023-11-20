@@ -47,7 +47,6 @@ class Target:
                         and (i + 1) * 150 + 30 < self.y < (i + 1) * 150 + 130):
                             self.pos[0] = j
                             self.pos[1] = i
-                            print(self.x)
 
         if self.is_left:
             if self.x >= 800:
@@ -55,3 +54,5 @@ class Target:
         else:
             if self.x <= 0:
                 self.delete = True
+        if self.y <= 0:
+            self.delete = True
