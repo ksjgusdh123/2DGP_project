@@ -85,8 +85,8 @@ def init():
     clay = None
     # clay = Target()
     if not select_menu_mode.game_map == 'All':
-        # player = Player(character_select_mode.character_num)
-        player = Player(0)
+        player = Player(character_select_mode.character_num)
+        # player = Player(0)
         ai = [AI(player) for _ in range(3)]
         game_world.add_objects(ai, 1)
         game_world.add_object(player, 1)
@@ -102,6 +102,11 @@ def init():
             ai[i].y = 140
             ai[i].x = 100 + 200 * (i + 1)
             ai[i].finish = False
+    basic_setting(ai, player)
+
+
+def basic_setting(ai, player):
+    global timer, random_gen, shot_count, clay_count
     player.game_mode = 'shooting'
     player.record = 0
     for i in range(3):
@@ -112,6 +117,8 @@ def init():
     clay_count = 20
     player.x = 100
     player.y = 140
+    player.next_map = 'final'
+
 
 def delete_object():
     global player

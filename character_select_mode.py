@@ -5,6 +5,7 @@ import long_jump_mode
 import run_track_mode
 import select_level_mode
 import select_menu_mode
+import shooting_mode
 import swimming_mode
 
 HEIGHT = 600
@@ -14,7 +15,8 @@ TAILS = 1
 SHADOW = 2
 ECHDNA = 3
 
-MAP = {'All': run_track_mode, 'hurdle race': run_track_mode, 'swimming': swimming_mode, 'long-jump': long_jump_mode}
+MAP = {'All': run_track_mode, 'hurdle race': run_track_mode, 'swimming': swimming_mode, 'long-jump': long_jump_mode
+       , 'shooting': shooting_mode}
 
 
 def handle_events():
