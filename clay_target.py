@@ -23,7 +23,7 @@ class Target:
             self.is_left = False
         self.y = random.randint(500, 600)
         # self.y = 230 + 90
-        self.speed = random.randint(1, 5)
+        self.speed = random.randint(3, 7)
         self.down_speed = random.randint(1, 3)
         self.pos = [-1, -1]
         self.delete = False
