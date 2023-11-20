@@ -29,6 +29,8 @@ def handle_events():
         elif event.type == SDL_KEYDOWN and event.key == SDLK_ESCAPE:
             game_framework.change_mode(select_menu_mode)
             delete_object()
+        elif event.type == SDL_KEYDOWN and event.key == SDLK_i:
+            game_framework.change_mode(middle_result_mode)
         elif event.type == SDL_KEYDOWN and event.key == SDLK_r and player.bullet_count > 0:
             if player.start:
                 player.bullet_count -= 1
@@ -168,13 +170,16 @@ def draw():
     rectangle_draw()
     if not clay == None:
         clay.draw()
+    font_draw()
+    update_canvas()
+
+
+def font_draw():
     font.draw(50, 50, f"{player.record}/{20 - clay_count}", (0, 0, 0))
     for i in range(3):
         font.draw(50 + 200 * (i + 1), 50, f"{ai[i].record}/{20 - clay_count}", (0, 0, 0))
         mini_font.draw(150 + 200 * (i + 1), 50, f"{ai[i].left_bullet}/20", (0, 0, 0))
-
     font.draw(30, 230, f"{player.bullet_count}/20", (0, 0, 0))
-    update_canvas()
 
 
 def map_timer_draw():
@@ -217,3 +222,14 @@ def del_clay():
     random_gen = random.randint(2, 5)
     for i in range(3):
         ai[i].get_record()
+    if clay_count <= 0:
+        game_framework.change_mode(middle_result_mode)
+
+def result_mode_draw():
+    clear_canvas()
+    track_image.clip_draw(110, 0, 550, 135, 400, 300, 800, 600)
+    game_world.render()
+    rectangle_draw()
+    if not clay == None:
+        clay.draw()
+    font_draw()

@@ -132,7 +132,6 @@ def draw():
     map_timer_draw()
     update_canvas()
 
-
 def map_timer_draw():
     if player.start == False:
         font.draw(300, 550, f"0:000", (0, 0, 0))
