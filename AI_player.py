@@ -1,3 +1,5 @@
+import random
+
 from pico2d import *
 
 import game_framework
@@ -82,7 +84,7 @@ class AI:
 
     def draw_character(self):
         if self.ch_id == SONIC:
-            if (not self.player.start or self.finish) and not self.mode == 'swim':
+            if ((not self.player.start or self.finish) and not self.mode == 'swim') or self.mode == 'shooting':
                 self.image.clip_draw(int(self.frame) // 2 * 22 + 5, 249, 18, 30, self.x - self.player.camera_x, self.y,
                                      50, 100)
             else:
@@ -95,11 +97,10 @@ class AI:
                                              self.y, 50, 100)
                 elif self.mode == 'swim':
                     self.image.clip_draw(sonic_swim[int(self.frame)], 57, 36, 20,
-                                                self.x - self.player.camera_x,
-                                                self.y, 50, 100)
+                                                self.x - self.player.camera_x, self.y, 50, 100)
 
         elif self.ch_id == TAILS:
-            if (not self.player.start or self.finish) and not self.mode == 'swim':
+            if ((not self.player.start or self.finish) and not self.mode == 'swim') or self.mode == 'shooting':
                 self.image.clip_draw(int(self.frame) // 2 * 32 + 107, 960, 21, 35, self.x - self.player.camera_x,
                                      self.y, 50, 100)
             else:
@@ -116,7 +117,7 @@ class AI:
 
 
         elif self.ch_id == SHADOW:
-            if (not self.player.start or self.finish) and not self.mode == 'swim':
+            if ((not self.player.start or self.finish) and not self.mode == 'swim') or self.mode == 'shooting':
                 self.image.clip_draw(int(self.frame) // 2 * 26 + 6, 467, 23, 33, self.x - self.player.camera_x, self.y,
                                      50, 100)
             else:
@@ -132,7 +133,7 @@ class AI:
                                                           self.x - self.player.camera_x, self.y, 50, 100)
 
         if self.ch_id == ECHDNA:
-            if (not self.player.start or self.finish) and not self.mode == 'swim':
+            if ((not self.player.start or self.finish) and not self.mode == 'swim') or self.mode == 'shooting':
                 self.image.clip_draw(int(self.frame) // 2 * 31 + 117, 262, 29, 42, self.x - self.player.camera_x,
                                      self.y, 50, 100)
             else:
@@ -156,6 +157,16 @@ class AI:
             self.running_track_update()
         elif self.mode == 'swim':
             self.swim_update()
+        elif self.mode == 'shooting':
+            self.shooting_update()
+
+    def shooting_update(self):
+        self.basic_update()
+
+    def get_record(self):
+        num = random.randint(1, 2)
+        if num == 1:
+            self.record += 1
 
     def swim_update(self):
         if self.player.start and not self.finish:

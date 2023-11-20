@@ -69,6 +69,7 @@ def init():
     global timer
     global random_gen
     global shot_count
+    global clay_count
     font = load_font('font/ENCR10B.TTF', 50)
     track_image = load_image('image/shooting_background_image.png')
     rectangle_image = load_image('image/rectangle.png')
@@ -86,16 +87,16 @@ def init():
         game_world.add_objects(ai, 1)
         game_world.add_object(player, 1)
         for i in range(0, 3):
-            ai[i].y = -100
-            ai[i].x = -100
+            ai[i].y = 140
+            ai[i].x = 100 + 200 * (i + 1)
             ai[i].mode = 'shooting'
     else:
         player = run_track_mode.player
         for i in range(3):
             ai[i] = run_track_mode.ai[i]
             ai[i].mode = 'shooting'
-            ai[i].y = -100
-            ai[i].x = -100
+            ai[i].y = 140
+            ai[i].x = 100 + 200 * (i + 1)
             ai[i].finish = False
     player.game_mode = 'shooting'
     player.record = 0
@@ -104,7 +105,9 @@ def init():
     timer = get_time()
     random_gen = random.randint(1, 5)
     shot_count = 20
-
+    clay_count = 20
+    player.x = 100
+    player.y = 140
 
 def delete_object():
     global player
@@ -139,7 +142,7 @@ def update():
 
 def clay_update():
     global clay, timer, random_gen
-    if clay == None and player.start:
+    if clay == None and player.start and clay_count > 0:
     # if clay == None:
         if get_time() - timer >= random_gen:
             clay = Target()
@@ -163,7 +166,11 @@ def draw():
     rectangle_draw()
     if not clay == None:
         clay.draw()
-    font.draw(30, 50, f"{shot_count}/20", (0, 0, 0))
+    font.draw(50, 50, f"{player.record}/{20 - clay_count}", (0, 0, 0))
+    for i in range(3):
+        font.draw(50 + 200 * (i + 1), 50, f"{ai[i].record}/{20 - clay_count}", (0, 0, 0))
+
+    font.draw(30, 230, f"{shot_count}/20", (0, 0, 0))
     update_canvas()
 
 
@@ -199,8 +206,11 @@ def clock_update():
 
 
 def del_clay():
-    global clay, timer, random_gen
+    global clay, timer, random_gen, clay_count
     del clay
+    clay_count -= 1
     clay = None
     timer = get_time()
     random_gen = random.randint(2, 5)
+    for i in range(3):
+        ai[i].get_record()
