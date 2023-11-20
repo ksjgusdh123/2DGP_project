@@ -38,15 +38,18 @@ class Target:
     def update(self):
         if self.is_left:
             self.x += self.speed * 1 * RUN_SPEED_PPS * game_framework.frame_time
+            # self.x = 351
         else:
+            # self.x = 351
             self.x -= self.speed * 1 * RUN_SPEED_PPS * game_framework.frame_time
+        # self.y = 179
         self.y -= self.down_speed * 1 * RUN_SPEED_PPS * game_framework.frame_time
         for i in range(3):
             for j in range(3):
                 if ((j + 1) * 150 + 50 < self.x < (j + 1) * 150 + 150
                         and (i + 1) * 150 + 30 < self.y < (i + 1) * 150 + 130):
-                            self.pos[0] = j
-                            self.pos[1] = i
+                            self.pos[0] = i
+                            self.pos[1] = j
 
         if self.is_left:
             if self.x >= 800:

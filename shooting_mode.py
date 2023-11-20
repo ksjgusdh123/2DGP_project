@@ -20,6 +20,7 @@ level = {'easy': 2, 'normal': 3, 'hard': 4}
 def handle_events():
     global running
     global character_num
+    global shot_count
 
     events = get_events()
     for event in events:
@@ -28,10 +29,12 @@ def handle_events():
         elif event.type == SDL_KEYDOWN and event.key == SDLK_ESCAPE:
             game_framework.change_mode(select_menu_mode)
             delete_object()
-        elif event.type == SDL_KEYDOWN and event.key == SDLK_r:
-            if not clay == None and player.start:
-                if player.shooting_pos[0] == clay.pos[0] and player.shooting_pos[1] == clay.pos[1]:
-                    player.shoot_ok = True
+        elif event.type == SDL_KEYDOWN and event.key == SDLK_r and shot_count > 0:
+            if player.start:
+                shot_count -= 1
+                if not clay == None:
+                    if player.shooting_pos[0] == clay.pos[0] and player.shooting_pos[1] == clay.pos[1]:
+                        player.shoot_ok = True
         elif event.type == SDL_KEYDOWN and event.key == SDLK_RIGHT:
             if player.shooting_pos[1] <= 1:
                 player.shooting_pos[1] += 1
@@ -65,6 +68,7 @@ def init():
     global clay
     global timer
     global random_gen
+    global shot_count
     font = load_font('font/ENCR10B.TTF', 50)
     track_image = load_image('image/shooting_background_image.png')
     rectangle_image = load_image('image/rectangle.png')
@@ -74,6 +78,7 @@ def init():
     clock = Clock()
     game_world.add_object(clock, 0)
     clay = None
+    # clay = Target()
     if not select_menu_mode.game_map == 'All':
         # player = Player(character_select_mode.character_num)
         player = Player(0)
@@ -98,6 +103,7 @@ def init():
         ai[i].record = 0
     timer = get_time()
     random_gen = random.randint(1, 5)
+    shot_count = 20
 
 
 def delete_object():
@@ -134,6 +140,7 @@ def update():
 def clay_update():
     global clay, timer, random_gen
     if clay == None and player.start:
+    # if clay == None:
         if get_time() - timer >= random_gen:
             clay = Target()
     if not clay == None:
@@ -156,6 +163,7 @@ def draw():
     rectangle_draw()
     if not clay == None:
         clay.draw()
+    font.draw(30, 50, f"{shot_count}/20", (0, 0, 0))
     update_canvas()
 
 
