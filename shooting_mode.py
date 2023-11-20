@@ -69,7 +69,7 @@ def init():
     middle_result_mode.now_map = 'Shooting'
     clock = Clock()
     game_world.add_object(clock, 0)
-
+    clay = None
     if not select_menu_mode.game_map == 'All':
         # player = Player(character_select_mode.character_num)
         player = Player(0)
@@ -88,7 +88,6 @@ def init():
             ai[i].y = -100
             ai[i].x = -100
             ai[i].finish = False
-    clay = Target()
     player.game_mode = 'shooting'
     timer = get_time()
     random_gen = random.randint(1, 5)
@@ -120,7 +119,7 @@ def update():
     global random_gen
     clock_update()
 
-    if clay == None:
+    if clay == None and player.start:
         if get_time() - timer >= random_gen:
             clay = Target()
 
