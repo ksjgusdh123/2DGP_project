@@ -445,11 +445,14 @@ class Run:
     def do(player):
         player.frame = (player.frame + 10 * ACTION_PER_TIME * game_framework.frame_time) % 10
         if player.game_mode == 'run':
-            if player.x >= 5000 or player.finish:
+            if player.x >= 5000 and not player.finish:
                 player.state_machine.handle_event(('TIME_OUT', 0))
                 player.finish = True
                 player.next_map = 'swim'
                 player.record = get_time() - player.time
+
+            if player.finish:
+                player.state_machine.handle_event(('TIME_OUT', 0))
 
             if player.shift and player.dir != 0:
                 add_speed = get_time() - player.wait_time
