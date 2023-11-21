@@ -608,6 +608,7 @@ class Player:
         self.first_record = 0
         self.second_record = 0
         self.fail = False
+        self.high_record = 0
         # shooting_mode
         self.shooting_pos = [1, 1]
         self.shoot_ok = False

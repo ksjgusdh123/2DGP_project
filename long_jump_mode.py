@@ -154,7 +154,7 @@ def draw():
     clear_canvas()
     track_draw()
     game_world.render()
-    font.draw(300, 550, f"{player.record:.3f}m", (0, 0, 0))
+    font.draw(300, 550, f"{player.record:.3f}cm", (0, 0, 0))
     update_canvas()
 
 def result_mode_draw():
@@ -204,8 +204,9 @@ def long_jump_update():
             elif jump_chance == 0:
                 player.second_record = player.record
                 if player.second_record <= 0:
+                    player.record = 0
                     player.second_record = 0
-                player.record = max(player.first_record, player.second_record)
+                player.high_record = max(player.first_record, player.second_record)
             stop_time = get_time()
         if get_time() - stop_time >= 3:
             stop_time = 0
@@ -220,9 +221,7 @@ def long_jump_update():
                 player.record = 0
             elif jump_chance == 0:
                 player.second_record = 0
-                if player.second_record <= 0:
-                    player.second_record = 0
-                player.record = max(player.first_record, player.second_record)
+                player.high_record = max(player.first_record, player.second_record)
             stop_time = get_time()
         if get_time() - stop_time >= 3:
             stop_time = 0
