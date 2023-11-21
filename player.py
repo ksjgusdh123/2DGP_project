@@ -476,13 +476,15 @@ class Run:
 
         elif player.game_mode == 'jump':
             player.speed -= 0.0005
-            if player.x <= 5150:
-                player.x += RUN_SPEED_PPS * game_framework.frame_time * max(player.speed, 0.5)
-            if 400 <= player.x <= 4800:
-                player.camera_x += RUN_SPEED_PPS * game_framework.frame_time * max(player.speed, 0.5)
             if not player.stop and player.x >= 1480:
                 player.fail = True
                 player.state_machine.handle_event(('TIME_OUT', 0))
+            elif player.jump_ok or player.fail:
+                player.state_machine.handle_event(('TIME_OUT', 0))
+            elif player.x <= 5150:
+                player.x += RUN_SPEED_PPS * game_framework.frame_time * max(player.speed, 0.5)
+                if 400 <= player.x <= 4800:
+                    player.camera_x += RUN_SPEED_PPS * game_framework.frame_time * max(player.speed, 0.5)
 
     @staticmethod
     def draw(player):
