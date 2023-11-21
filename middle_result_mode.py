@@ -106,7 +106,7 @@ def fill_records():
         if long_jump_mode.jump_chance == 1:
             first_records.append([mode[now_map].player.first_record, 0, mode[now_map].player.character_id])
             for i in range(3):
-                first_records.append([mode[now_map].ai[i].record, 0, mode[now_map].ai[i].ch_id])
+                first_records.append([mode[now_map].ai[i].first_record, 0, mode[now_map].ai[i].ch_id])
         elif long_jump_mode.jump_chance == 0:
             first_records.clear()
             second_records.clear()
@@ -115,8 +115,8 @@ def fill_records():
             second_records.append([mode[now_map].player.second_record, mode[now_map].player.character_id])
             for i in range(3):
                 first_records.append(
-                    [mode[now_map].ai[i].record, mode[now_map].ai[i].record, mode[now_map].ai[i].ch_id])
-                second_records.append([mode[now_map].ai[i].record, mode[now_map].ai[i].ch_id])
+                    [mode[now_map].ai[i].first_record, mode[now_map].ai[i].second_record, mode[now_map].ai[i].ch_id])
+                second_records.append([mode[now_map].ai[i].second_record, mode[now_map].ai[i].ch_id])
 
     if now_map == 'Shooting':
         records.append([mode[now_map].player.record, mode[now_map].player.bullet_count, mode[now_map].player.character_id])

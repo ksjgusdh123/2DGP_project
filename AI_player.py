@@ -72,6 +72,8 @@ class AI:
         self.time = get_time()
         self.finish = False
         self.mode = None
+        self.first_record = 0
+        self.second_record = 0
         self.record = self.ch_id
         self.score = 0
         self.left_bullet = 20

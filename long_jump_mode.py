@@ -77,13 +77,18 @@ def init():
             game_world.add_object(player, 1)
             player.y = 240
             player.x = 100
+            for i in range(3):
+                ai[i].first_record = random.randint(100, 330)
         else:
             player = run_track_mode.player
             for i in range(3):
                 ai[i] = run_track_mode.ai[i]
+        player.game_mode = 'jump'
+    else:
         for i in range(3):
-            ai[i].record = random.randint(100, 330)
-    player.game_mode = 'jump'
+            ai[i].second_record = random.randint(100, 330)
+            ai[i].record = max(ai[i].first_record, ai[i].second_record)
+
     player.next_map = 'shooting'
     default_start()
 
