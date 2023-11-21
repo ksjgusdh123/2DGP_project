@@ -107,6 +107,7 @@ def init():
 
 def basic_setting(ai, player):
     global timer, random_gen, shot_count, clay_count
+
     player.game_mode = 'shooting'
     player.record = 0
     for i in range(3):
