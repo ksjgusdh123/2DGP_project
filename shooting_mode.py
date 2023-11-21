@@ -117,6 +117,7 @@ def basic_setting(ai, player):
     clay_count = 20
     player.x = 100
     player.y = 140
+    player.camera_x = 0
     player.next_map = 'final'
 
 
@@ -138,7 +139,6 @@ def finish():
     player.ready = False
     if clock:
         game_world.remove_object(clock)
-    pass
 
 def update():
     global clay
