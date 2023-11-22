@@ -85,8 +85,8 @@ def init():
     clay = None
     # clay = Target()
     if not select_menu_mode.game_map == 'All':
-        player = Player(character_select_mode.character_num)
-        # player = Player(0)
+        # player = Player(character_select_mode.character_num)
+        player = Player(0)
         ai = [AI(player) for _ in range(3)]
         game_world.add_objects(ai, 1)
         game_world.add_object(player, 1)
@@ -183,18 +183,13 @@ def draw():
 
 
 def font_draw():
-    font.draw(50, 50, f"{player.record}/{20 - clay_count}", (0, 0, 0))
+    font.draw(30, 50, f"{player.record:>2}/{20 - clay_count:<2}", (0, 0, 0))
     for i in range(3):
-        font.draw(50 + 200 * (i + 1), 50, f"{ai[i].record}/{20 - clay_count}", (0, 0, 0))
-        mini_font.draw(150 + 200 * (i + 1), 50, f"{ai[i].left_bullet}/20", (0, 0, 0))
-    font.draw(30, 230, f"{player.bullet_count}/20", (0, 0, 0))
+        font.draw(30 + 200 * (i + 1), 50, f"{ai[i].record:>2}/{20 - clay_count:<2}", (0, 0, 0))
+        mini_font.draw(150 + 200 * (i + 1), 150, f"{ai[i].left_bullet:>2}/20", (0, 0, 0))
+    font.draw(30, 230, f"{player.bullet_count:>2}/20", (0, 0, 0))
 
 
-def map_timer_draw():
-    if player.start == False:
-        font.draw(300, 550, f"0:000", (0, 0, 0))
-    else:
-        font.draw(300, 550, f"{get_time() - player.time:.3f}", (0, 0, 0))
 
 
 
