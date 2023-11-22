@@ -1,15 +1,18 @@
 import random
 
 from pico2d import load_image
-
+import select_level_mode
 import game_framework
+import select_menu_mode
 
+level = {'easy': 2, 'normal': 4, 'hard': 6}
 PIXEL_PER_METER = 10 / 0.3
 RUN_SPEED_KMPH = 20
 RUN_SPEED_MPM = RUN_SPEED_KMPH * 1000 / 60
 RUN_SPEED_MPS = RUN_SPEED_MPM / 60
 RUN_SPEED_PPS = RUN_SPEED_MPS * PIXEL_PER_METER
-
+if select_level_mode.game_level == None:
+    select_level_mode.game_level = 'hard'
 
 class Target:
     image = None
@@ -23,7 +26,7 @@ class Target:
             self.is_left = False
         self.y = random.randint(500, 600)
         # self.y = 230 + 90
-        self.speed = random.randint(3, 7)
+        self.speed = random.randint(1 + level[select_level_mode.game_level], 5 + level[select_level_mode.game_level])
         self.down_speed = random.randint(1, 3)
         self.pos = [-1, -1]
         self.delete = False
