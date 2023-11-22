@@ -27,6 +27,7 @@ class Target:
         self.down_speed = random.randint(1, 3)
         self.pos = [-1, -1]
         self.delete = False
+        self.skip = False
 
         if Target.image == None:
             Target.image = load_image('image/target.png')
@@ -59,3 +60,9 @@ class Target:
                 self.delete = True
         if self.y <= 0:
             self.delete = True
+
+        if self.delete:
+            if self.pos[0] == -1 and self.pos[1] == -1:
+                self.skip = True
+
+

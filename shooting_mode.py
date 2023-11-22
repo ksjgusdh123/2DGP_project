@@ -218,11 +218,18 @@ def clock_update():
 
 def del_clay():
     global clay, timer, random_gen, clay_count
+    round_skip = False
+    if clay.skip:
+        round_skip = True
+
     del clay
-    clay_count -= 1
     clay = None
     timer = get_time()
     random_gen = random.randint(2, 5)
+
+    if round_skip:
+        pass
+    clay_count -= 1
     for i in range(3):
         ai[i].get_record()
     if clay_count <= 0:
