@@ -32,14 +32,22 @@ def handle_events():
 def init():
     global main_background_image
     global sports_pictogram
+    global run_screenshot
+    global long_jump_screenshot
+    global shooting_screenshot
     global level_box
     global running
     global font
+    global mini_font
     main_background_image = load_image('image/main_background.png')
     sports_pictogram = load_image('image/pictogram.png')
     level_box = load_image('image/rectangle.png')
+    run_screenshot = load_image('image/run_screen_shot.png')
+    long_jump_screenshot = load_image('image/long_jump_screen_shot.png')
+    shooting_screenshot = load_image('image/shooting_screen_shot.png')
     running = True
     font = load_font('font/ENCR10B.TTF', 50)
+    mini_font = load_font('font/ENCR10B.TTF', 20)
     if select_menu_mode.game_map == None:
         select_menu_mode.game_map = 'All'
 def finish():
@@ -67,16 +75,25 @@ def draw_UI():
         font.draw(400, 550, f'All', (0, 0, 0))
     elif select_menu_mode.game_map == 'hurdle race':
         sports_pictogram.clip_draw(260, 65, 65, 65, pictogram_start_x - 150, 550, picture_size, picture_size)
+        run_screenshot.draw(250, 350, 400, 200)
         font.draw(300, 550, f'hurdle race', (0, 0, 0))
+        mini_font.draw(50, 200, f'', (0, 0, 0))
     elif select_menu_mode.game_map == 'swimming':
         sports_pictogram.clip_draw(260, 260, 65, 65, pictogram_start_x - 150, 550, picture_size, picture_size)
         font.draw(300, 550, f'swimming', (0, 0, 0))
+        mini_font.draw(50, 200, f'', (0, 0, 0))
     elif select_menu_mode.game_map == 'long-jump':
         sports_pictogram.clip_draw(0, 65, 65, 65, pictogram_start_x - 150, 550, picture_size, picture_size)
+        long_jump_screenshot.draw(250, 350, 400, 200)
         font.draw(300, 550, f'long-jump', (0, 0, 0))
+        mini_font.draw(50, 200, f'', (0, 0, 0))
     elif select_menu_mode.game_map == 'shooting':
         sports_pictogram.clip_draw(130, 130, 65, 65, pictogram_start_x - 150, 550, picture_size, picture_size)
+        shooting_screenshot.draw(250, 350, 400, 200)
         font.draw(300, 550, f'shooting', (0, 0, 0))
+        mini_font.draw(50, 200, f'', (0, 0, 0))
+
+    level_box.draw(250, 130, 600, 300)
 
     level_box.draw(650, 400, 250, 70)
     level_box.draw(650, 250, 250, 70)
