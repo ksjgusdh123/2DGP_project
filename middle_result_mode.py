@@ -49,11 +49,14 @@ def init():
     global second_records
     global timer
     global show_score
+    global middle_result_sound
     show_score = False
     main_background_image = load_image('image/main_background.png')
     character_result_image = load_image('image/result.png')
     font = load_font('font/ENCR10B.TTF', 40)
+    middle_result_sound = load_music('sound/middle_result.mp3')
 
+    middle_result_sound.play(1)
     records = []
     first_records = []
     second_records = [[0, 0], [0, 0], [0, 0], [0, 0]]
@@ -76,6 +79,7 @@ def init():
 def finish():
     global records
     global scores
+    middle_result_sound.stop()
     records.clear()
     scores.clear()
 

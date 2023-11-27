@@ -221,6 +221,7 @@ def track_update():
     if player.x >= 5000:
         print(get_time() - player.time)
 
+
     if player.finish and finish_game[0] == False:
         finish_game[0] = True
     for i in range(3):
@@ -239,3 +240,8 @@ def track_update():
         game_framework.change_mode(middle_result_mode)
         if select_menu_mode.game_map == 'All':
             player.next_map = 'swim'
+
+
+    if player.x >= 4600 and not player.sound_ok:
+        player.people_sound.play(1)
+        player.sound_ok = True

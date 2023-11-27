@@ -33,11 +33,16 @@ def init():
     global temp_ai
     global ai
     global player
+    global win_sound
+    global lose_sound
+    global else_sound
     main_background_image = load_image('image/ending_background.png')
     effect_image = load_image('image/effect.png')
     character_result_image = load_image('image/result.png')
     font = load_font('font/ENCR10B.TTF', 40)
-
+    win_sound = load_music('sound/final_win.mp3')
+    lose_sound = load_music('sound/final_lose.mp3')
+    else_sound = load_music('sound/final_else.mp3')
 
     # temp_player = Player(0)
     # temp_ai = [AI(temp_player) for _ in range(3)]
@@ -56,6 +61,7 @@ def init():
         ai[i].mode = 'run'
     fill_scores()
     scores.sort(reverse=True)
+    player.sound_ok = False
 
 def delete_object():
     global player
@@ -118,7 +124,14 @@ def scores_down_sort_print():
             character_rank_draw(ai[2], i)
         elif scores[i][2] == 100:
             character_rank_draw(player, i)
-
+            if not player.sound_ok:
+                if i == 0:
+                    win_sound.play(1)
+                elif i == 3:
+                    lose_sound.play(1)
+                else:
+                    else_sound.play(1)
+                player.sound_ok = True
 
 def character_rank_draw(obj, i):
     if i == 0:

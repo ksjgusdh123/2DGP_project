@@ -611,6 +611,8 @@ class Player:
         self.fail_sound = load_music('sound/fail.mp3')
         self.success_sound = load_music('sound/success.mp3')
         self.running_sound = load_music('sound/run_sound.mp3')
+        self.people_sound = load_music('sound/people_sound.mp3')
+        self.sound_ok = False
         # running_track
         self.input_command = []
         self.jump_music = load_music('sound/jump.mp3')
