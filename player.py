@@ -165,6 +165,8 @@ class Slip:
     def enter(player, e):
         player.frame = 0
         player.wait_time = get_time()
+        player.slip_music.play(1)
+
 
     @staticmethod
     def exit(player, e):
@@ -204,6 +206,7 @@ class Jump:
     def enter(player, e):
         player.frame = 0
         player.wait_time = get_time()
+        player.jump_music.play(1)
 
     @staticmethod
     def exit(player, e):
@@ -242,6 +245,8 @@ class Stun:
     @staticmethod
     def enter(player, e):
         player.wait_time = get_time()
+        player.stun_music.play(1)
+
 
     @staticmethod
     def exit(player, e):
@@ -331,11 +336,15 @@ class Swim:
 class Wait_Wide_Jump:
     @staticmethod
     def enter(player, e):
-        if wait_wide_jump(e):
-            player.stop = True
+        if player.game_mode == 'jump':
+            if wait_wide_jump(e):
+                player.stop = True
 
-        if wide_jump_go(e):
-            player.stop = False
+            if wide_jump_go(e):
+                player.stop = False
+
+        if player.game_mode == 'run':
+            player.state_machine.handle_event(('TIME_OUT', 0))
 
     @staticmethod
     def exit(player, e):
@@ -539,7 +548,7 @@ class StateMachine:
             Stun: {time_out: Swim},
             Slip: {time_out: Idle},
             Jump: {time_out: Idle},
-            Wait_Wide_Jump: {wide_jump_go: Wide_Jump},
+            Wait_Wide_Jump: {wide_jump_go: Wide_Jump, time_out: Run},
             Wide_Jump: {time_out: Idle}
         }
 
@@ -591,12 +600,15 @@ class Player:
         self.score = 0
         # running_track
         self.input_command = []
+        self.jump_music = load_music('sound/jump.mp3')
+        self.slip_music = load_music('sound/slip.mp3')
         self.success = False
         self.exceed_point = 950
         self.perfect = True
         self.shift = False
         # swimming_mode
         self.timing_ok = False
+        self.stun_music = load_music('sound/stun.mp3')
         self.speed = 1  # wide_jump_mode
         self.stun = False
         self.life = 1

@@ -24,7 +24,7 @@ def handle_events():
             game_framework.quit()
         elif event.type == SDL_KEYDOWN and event.key == SDLK_ESCAPE:
 
-            game_framework.change_mode(character_select_mode)
+            game_framework.change_mode(select_menu_mode)
             delete_object()
         elif event.type == SDL_KEYDOWN and event.key == SDLK_i:
             game_framework.change_mode(swimming_mode)
