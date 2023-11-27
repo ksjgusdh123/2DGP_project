@@ -15,10 +15,11 @@ from AI_player import AI
 player = None
 ai = [None, None, None]
 level = {'easy': 2, 'normal': 3, 'hard': 4}
-
+move_right = True
 def handle_events():
     global running
     global character_num
+    global click_ok
 
     events = get_events()
     for event in events:
@@ -27,6 +28,8 @@ def handle_events():
         elif event.type == SDL_KEYDOWN and event.key == SDLK_ESCAPE:
             game_framework.change_mode(select_menu_mode)
             delete_object()
+        elif event.type == SDL_KEYDOWN and event.key == SDLK_f and player.start:
+            click_ok = True
         elif not clock is None and event.type == SDL_KEYDOWN and event.key == SDLK_SPACE:
             player.ready = True
             clock.start = True
@@ -44,12 +47,16 @@ def init():
     global arrow_image
     global rectangle_image
     global red_rectangle_image
+    global temp
     global command
     global command_timer
     global clock
     global font
     global finish_game
     global show_result_mode
+    global move_amount
+    global move_right
+    global click_ok
     font = load_font('font/ENCR10B.TTF', 50)
     track_image = load_image('image/swimming_track.png')
     people_image = load_image('image/running_track.png')
@@ -57,7 +64,9 @@ def init():
     red_rectangle_image = load_image('image/red_rectangle1.png')
     arrow_image = load_image('image/arrow.png')
     middle_result_mode.now_map = 'Swim'
-
+    temp = load_image('image/perfect_bar.png')
+    click_ok = False
+    move_right = True
     command = []
     command_timer = []
     clock = Clock()
@@ -65,6 +74,7 @@ def init():
     running = True
     finish_game = [False, False, False, False]
     show_result_mode = False
+    move_amount = 0
     if not select_menu_mode.game_map == 'All':
         player = Player(character_select_mode.character_num)
         ai = [AI(player) for _ in range(3)]
@@ -72,7 +82,7 @@ def init():
         game_world.add_object(player, 1)
         basic_player_init(player)
         for i in range(0, 3):
-            ai[i].y = 380 - 100 * i
+            ai[i].y = 410 - 100 * i
             ai[i].x = 100
             ai[i].mode = 'swim'
     else:
@@ -81,11 +91,11 @@ def init():
         for i in range(3):
             ai[i] = run_track_mode.ai[i]
             ai[i].mode = 'swim'
-            ai[i].y = 380 - 100 * i
+            ai[i].y = 410 - 100 * i
             ai[i].x = 100
             ai[i].finish = False
 def basic_player_init(player):
-    player.y = 80
+    player.y = 110
     player.x = 100
     player.start = False
     player.ready = False
@@ -140,12 +150,16 @@ def map_timer_draw():
 
 
 def draw_swimming_track():
-    track_image.clip_composite_draw(0, 650, 870, 1300, math.pi / 2, '', 250 - player.camera_x, 205, 400, 500)
+    track_image.clip_composite_draw(0, 650, 870, 1300, math.pi / 2, '', 250 - player.camera_x, 230, 400, 500)
     for i in range(1, 20 + 1):
-        track_image.clip_composite_draw(0, 400, 870, 550, math.pi / 2, '', 500 * i - player.camera_x, 205, 400, 500)
-        people_image.clip_draw(28, 236, 208, 64, 1024 * (i // 4) - player.camera_x, 500, 1024, 200)
-    track_image.clip_composite_draw(0, 0, 870, 300, math.pi / 2, '', 5100 - player.camera_x, 205, 400, 300)
+        track_image.clip_composite_draw(0, 400, 870, 550, math.pi / 2, '', 500 * i - player.camera_x, 230, 400, 500)
+        people_image.clip_draw(28, 236, 208, 64, 1024 * (i // 4) - player.camera_x, 530, 1024, 200)
+    track_image.clip_composite_draw(0, 0, 870, 300, math.pi / 2, '', 5100 - player.camera_x, 230, 400, 300)
     arrow_draw()
+    temp.draw(400, 20, 800, 40)
+    if not player.stun:
+        arrow_image.clip_composite_draw(0, 0, 670, 373, math.pi / 2, '', move_amount, 50, 50, 50)
+
 
 def result_mode_draw():
     clear_canvas()
@@ -183,55 +197,78 @@ def track_update():
     global command, show_result_mode
     global player
     global command_timer
+    global move_amount
+    global move_right
+    global click_ok
+    if player.start and not player.stun and not player.finish:
+        if move_right:
+            move_amount += 1 * level[select_level_mode.game_level] * 2
+        else:
+            move_amount -= 1 * level[select_level_mode.game_level] * 2
 
-    if len(command_timer) != 0:
-        for i in range(0, len(command_timer)):
-            command_timer[i] -= 0.01
-            if command_timer[i] <= 0:
-                player.stun = True
-                command.clear()
-                command_timer.clear()
-                print('stun')
-                break
+    if move_amount >= 800:
+        move_right = False
+    elif move_amount <= 0:
+        move_right = True
 
-    if player.timing_ok:
-        command.append(random.randint(0, 3))
-        command_timer.append(10.0)
-        player.timing_ok = False
+    if click_ok:
+        if 263 <= move_amount <= 337 or 419 <= move_amount <= 490:
+            player.speed += 0.01
+        elif 338 <= move_amount <= 418:
+            player.speed += 0.05
+        else:
+            player.stun = True
+        click_ok = False
+        move_amount = 0
 
-    if len(command) == 0 and len(player.input_command) != 0:
-        player.input_command.clear()
-
-    if len(command) != 0 and len(player.input_command) != 0:
-        if command[0] == player.input_command[0]:
-            if command_timer[0] <= 3 - level[select_level_mode.game_level] + 1.5:
-                player.speed += 0.01 * ((10 - 2 * level[select_level_mode.game_level]) - command_timer[0])
-            else:
-                if player.speed > 1:
-                    player.speed = 1
-                else:
-                    player.life -= 0.3
-                    if player.life <= 0:
-                        player.stun = True
-                        command.clear()
-                        command_timer.clear()
-                        print('stun')
-                    else:
-                        player.speed = player.life
-            player.input_command.clear()
-            if len(command) >= 1:
-                del command_timer[0]
-                del command[0]
-        elif command[0] != player.input_command[0]:
-            player.input_command.clear()
-            player.life -= 0.3
-            if player.life <= 0:
-                player.stun = True
-                command.clear()
-                command_timer.clear()
-                print('stun')
-            else:
-                player.speed = player.life
+    # if len(command_timer) != 0:
+    #     for i in range(0, len(command_timer)):
+    #         command_timer[i] -= 0.01
+    #         if command_timer[i] <= 0:
+    #             player.stun = True
+    #             command.clear()
+    #             command_timer.clear()
+    #             print('stun')
+    #             break
+    #
+    # if player.timing_ok:
+    #     command.append(random.randint(0, 3))
+    #     command_timer.append(10.0)
+    #     player.timing_ok = False
+    #
+    # if len(command) == 0 and len(player.input_command) != 0:
+    #     player.input_command.clear()
+    #
+    # if len(command) != 0 and len(player.input_command) != 0:
+    #     if command[0] == player.input_command[0]:
+    #         if command_timer[0] <= 3 - level[select_level_mode.game_level] + 1.5:
+    #             player.speed += 0.01 * ((10 - 2 * level[select_level_mode.game_level]) - command_timer[0])
+    #         else:
+    #             if player.speed > 1:
+    #                 player.speed = 1
+    #             else:
+    #                 player.life -= 0.3
+    #                 if player.life <= 0:
+    #                     player.stun = True
+    #                     command.clear()
+    #                     command_timer.clear()
+    #                     print('stun')
+    #                 else:
+    #                     player.speed = player.life
+    #         player.input_command.clear()
+    #         if len(command) >= 1:
+    #             del command_timer[0]
+    #             del command[0]
+    #     elif command[0] != player.input_command[0]:
+    #         player.input_command.clear()
+    #         player.life -= 0.3
+    #         if player.life <= 0:
+    #             player.stun = True
+    #             command.clear()
+    #             command_timer.clear()
+    #             print('stun')
+    #         else:
+    #             player.speed = player.life
 
     finish_num = 0
     for i in range(4):
