@@ -77,7 +77,6 @@ def init():
 def finish():
     global banner_image
     start_game_mode.main_bgm.play()
-
     start_game_mode.main_bgm.pause()
     del banner_image
 

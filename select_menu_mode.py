@@ -29,7 +29,6 @@ def handle_events():
                     game_map = game_maps[i - 1]
                     game_framework.change_mode(select_level_mode)
                     print(game_map)
-        start_game_mode.main_bgm.resume()
 
 
 
@@ -42,6 +41,9 @@ def init():
     sports_pictogram = load_image('image/pictogram.png')
     running = True
     font = load_font('font/ENCR10B.TTF', 30)
+    start_game_mode.main_bgm.stop()
+    start_game_mode.main_bgm.play(1)
+
 def finish():
     global main_background_image
     global sports_pictogram
