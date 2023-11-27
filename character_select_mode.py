@@ -6,6 +6,7 @@ import run_track_mode
 import select_level_mode
 import select_menu_mode
 import shooting_mode
+import start_game_mode
 import swimming_mode
 
 HEIGHT = 600
@@ -75,6 +76,9 @@ def init():
 
 def finish():
     global banner_image
+    start_game_mode.main_bgm.play()
+
+    start_game_mode.main_bgm.pause()
     del banner_image
 
 
