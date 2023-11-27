@@ -33,6 +33,7 @@ def init():
     global main_background_image
     global sports_pictogram
     global run_screenshot
+    global swim_screenshot
     global long_jump_screenshot
     global shooting_screenshot
     global level_box
@@ -43,6 +44,7 @@ def init():
     sports_pictogram = load_image('image/pictogram.png')
     level_box = load_image('image/rectangle.png')
     run_screenshot = load_image('image/run_screen_shot.png')
+    swim_screenshot = load_image('image/swim_screen_shot.png')
     long_jump_screenshot = load_image('image/long_jump_screen_shot.png')
     shooting_screenshot = load_image('image/shooting_screen_shot.png')
     running = True
@@ -89,8 +91,15 @@ def draw_UI():
         mini_font.draw(50, 60, f'뒤로가는 키 없음!', (0, 0, 0))
     elif select_menu_mode.game_map == 'swimming':
         sports_pictogram.clip_draw(260, 260, 65, 65, pictogram_start_x - 150, 550, picture_size, picture_size)
+        swim_screenshot.draw(250, 350, 400, 200)
         font.draw(300, 550, f'swimming', (0, 0, 0))
-        mini_font.draw(50, 200, f'', (0, 0, 0))
+        mini_font.draw(50, 220, f'f: 화살표 클릭', (0, 0, 0))
+        mini_font.draw(50, 200, f'타이밍에 맞추어 키입력을 성공시키자', (0, 0, 0))
+        mini_font.draw(50, 180, f'색깔별로 추가 속도 부여', (0, 0, 0))
+        mini_font.draw(50, 160, f'검은색을 맞출 시 스턴에 빠짐', (0, 0, 0))
+        mini_font.draw(50, 140, f'화살표가 왕복할 때까지 키입력이 없으면', (0, 0, 0))
+        mini_font.draw(50, 120, f'스턴상태에 빠짐', (0, 0, 0))
+        mini_font.draw(50, 100, f'난이도가 올라갈 수 록 화살표의 속도가 증가', (0, 0, 0))
     elif select_menu_mode.game_map == 'long-jump':
         sports_pictogram.clip_draw(0, 65, 65, 65, pictogram_start_x - 150, 550, picture_size, picture_size)
         long_jump_screenshot.draw(250, 350, 400, 200)
