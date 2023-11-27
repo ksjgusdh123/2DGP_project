@@ -23,11 +23,12 @@ def handle_events():
             if 550 <= event.x <= 745:
                 if 70 <= HEIGHT - event.y <= 130:
                     game_level = 'hard'
+                    game_framework.change_mode(character_select_mode)
                 elif 220 <= HEIGHT - event.y <= 280:
                     game_level = 'normal'
+                    game_framework.change_mode(character_select_mode)
                 elif 370 <= HEIGHT - event.y <= 430:
                     game_level = 'easy'
-                if not game_level is None:
                     game_framework.change_mode(character_select_mode)
 
 def init():
