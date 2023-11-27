@@ -70,6 +70,7 @@ def init():
         ai[i].x = 100
         ai[i].y = 320 - 60 * i
         ai[i].mode = 'run'
+        ai[i].speed = random.randint(175, 225) * 0.005
     if select_level_mode.game_level is None:
         select_level_mode.game_level = 'easy'
 
