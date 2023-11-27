@@ -416,7 +416,9 @@ class Wide_Jump:
 class Run:
     @staticmethod
     def enter(player, e):
+
         if player.game_mode == 'run':
+            player.running_sound.repeat_play()
             if shift_down(e):
                 player.shift = True
                 player.wait_time = get_time()
@@ -435,12 +437,15 @@ class Run:
             elif up_down(e):
                 player.input_command.insert(0, 3)
         elif player.game_mode == 'jump':
+            if not d_down(e):
+                player.running_sound.repeat_play()
             player.dir, player.action = 1, 1
             if d_down(e):
                 player.speed += 0.1
     @staticmethod
     def exit(player, e):
         if player.game_mode == 'run':
+            player.running_sound.stop()
             if left_down(e):
                 player.input_command.insert(0, 0)
             elif right_down(e):
@@ -449,6 +454,11 @@ class Run:
                 player.input_command.insert(0, 2)
             elif up_down(e):
                 player.input_command.insert(0, 3)
+        elif player.game_mode == 'jump':
+            if d_down(e):
+                pass
+            else:
+                player.running_sound.stop()
 
     @staticmethod
     def do(player):
@@ -598,6 +608,9 @@ class Player:
         self.record = 0
         self.finish = False
         self.score = 0
+        self.fail_sound = load_music('sound/fail.mp3')
+        self.success_sound = load_music('sound/success.mp3')
+        self.running_sound = load_music('sound/run_sound.mp3')
         # running_track
         self.input_command = []
         self.jump_music = load_music('sound/jump.mp3')

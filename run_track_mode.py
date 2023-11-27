@@ -208,6 +208,11 @@ def track_update():
         if command[0] == player.input_command[0] and player.perfect:
             del command[0]
             player.input_command.clear()
+            player.success_sound.play(1)
+        elif command[0] != player.input_command[0] and player.perfect:
+            player.perfect = False
+            player.fail_sound.play(1)
+            pass
         else:
             player.perfect = False
         if len(command) == 0 and player.perfect == True:
