@@ -223,8 +223,10 @@ def track_update():
         once = True
         if 263 <= move_amount <= 337 or 419 <= move_amount <= 490:
             player.speed += 0.01
+            player.success_sound.play(1)
         elif 338 <= move_amount <= 418:
             player.speed += 0.05
+            player.success_sound.play(1)
         else:
             player.stun = True
         click_ok = False
