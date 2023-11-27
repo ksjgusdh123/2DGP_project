@@ -33,6 +33,7 @@ def handle_events():
             game_framework.change_mode(middle_result_mode)
         elif event.type == SDL_KEYDOWN and event.key == SDLK_r and player.bullet_count > 0:
             if player.start:
+                gun_sound.play(1)
                 player.bullet_count -= 1
                 if not clay == None:
                     if player.shooting_pos[0] == clay.pos[0] and player.shooting_pos[1] == clay.pos[1]:
@@ -52,6 +53,7 @@ def handle_events():
         elif not clock is None and event.type == SDL_KEYDOWN and event.key == SDLK_SPACE:
             player.ready = True
             clock.start = True
+            now_music.play(1)
             print('clock spone')
         else:
             player.handle_event(event)
@@ -73,13 +75,18 @@ def init():
     global random_gen
     global shot_count
     global clay_count
+    global gun_sound
+    global now_music
+
     font = load_font('font/ENCR10B.TTF', 50)
     mini_font = load_font('font/ENCR10B.TTF', 10)
     track_image = load_image('image/shooting_background_image.png')
     rectangle_image = load_image('image/rectangle.png')
     red_rectangle_image = load_image('image/red_rectangle1.png')
     shooting_target_image = load_image('image/target.png')
+    gun_sound = load_music('sound/gun.mp3')
     middle_result_mode.now_map = 'Shooting'
+
     clock = Clock()
     game_world.add_object(clock, 0)
     clay = None
@@ -103,6 +110,8 @@ def init():
             ai[i].x = 100 + 200 * (i + 1)
             ai[i].finish = False
     basic_setting(ai, player)
+    now_music = clock.music
+
 
 
 def basic_setting(ai, player):

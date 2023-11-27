@@ -23,6 +23,7 @@ def handle_events():
         if event.type == SDL_QUIT:
             game_framework.quit()
         elif event.type == SDL_KEYDOWN and event.key == SDLK_ESCAPE:
+
             game_framework.change_mode(character_select_mode)
             delete_object()
         elif event.type == SDL_KEYDOWN and event.key == SDLK_i:
@@ -30,6 +31,7 @@ def handle_events():
         elif not clock is None and event.type == SDL_KEYDOWN and event.key == SDLK_SPACE:
             player.ready = True
             clock.start = True
+            now_music.play(1)
             print('clock spone')
         else:
             player.handle_event(event)
@@ -48,6 +50,7 @@ def init():
     global font
     global finish_game
     global show_result_mode
+    global now_music
     middle_result_mode.now_map = 'Run'
     track_image = load_image('image/running_track.png')
     line_image = load_image('image/finishline.png')
@@ -76,6 +79,7 @@ def init():
 
     finish_game = [False, False, False, False]
     show_result_mode = False
+    now_music = clock.music
 
 def basic_player_init(player):
     player.y = 140

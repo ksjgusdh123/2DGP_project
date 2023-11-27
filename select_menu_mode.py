@@ -29,6 +29,9 @@ def handle_events():
                     game_map = game_maps[i - 1]
                     game_framework.change_mode(select_level_mode)
                     print(game_map)
+    if not game_map == None:
+        start_game_mode.main_bgm.play()
+
 
 
 

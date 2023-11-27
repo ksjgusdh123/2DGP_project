@@ -30,6 +30,7 @@ def handle_events():
             jump_chance = 2
             delete_object()
         elif not clock is None and event.type == SDL_KEYDOWN and event.key == SDLK_SPACE:
+            now_music.play(1)
             player.ready = True
             clock.start = True
             print('clock spone')
@@ -54,6 +55,7 @@ def init():
     global font
     global angle_speed
     global stop_time
+    global now_music
     if jump_chance > 1:
         middle_result_mode.now_map = 'long-jump'
         track_image = load_image('image/running_track.png')
@@ -91,6 +93,7 @@ def init():
 
     player.next_map = 'shooting'
     default_start()
+    now_music = clock.music
 
 def default_start():
     global clock

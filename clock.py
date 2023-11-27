@@ -1,5 +1,5 @@
 import math
-from pico2d import load_image, get_time
+from pico2d import load_image, get_time, load_music
 
 import game_world
 
@@ -12,6 +12,8 @@ class Clock:
         self.interval = 0
         self.start = False
         self.init = False
+        self.music = load_music('sound/start_bgm.mp3')
+
     def draw(self):
         if self.idx <= 3 and self.start:
             self.number.clip_composite_draw(21, 157 - self.idx * 65, 44, 43, -math.pi / 2, '', 400, 400, 100, 100)

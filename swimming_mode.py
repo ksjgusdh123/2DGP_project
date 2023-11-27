@@ -31,6 +31,7 @@ def handle_events():
         elif event.type == SDL_KEYDOWN and event.key == SDLK_f and player.start:
             click_ok = True
         elif not clock is None and event.type == SDL_KEYDOWN and event.key == SDLK_SPACE:
+            now_music.play(1)
             player.ready = True
             clock.start = True
             print('clock spone')
@@ -58,6 +59,8 @@ def init():
     global move_right
     global click_ok
     global once
+    global now_music
+
     font = load_font('font/ENCR10B.TTF', 50)
     track_image = load_image('image/swimming_track.png')
     people_image = load_image('image/running_track.png')
@@ -99,6 +102,8 @@ def init():
             ai[i].finish = False
     for i in range(3):
         ai[i].speed = random.randint(150, 200) * 0.005
+    now_music = clock.music
+
 
 def basic_player_init(player):
     player.y = 110

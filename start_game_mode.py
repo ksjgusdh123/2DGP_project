@@ -6,7 +6,7 @@ import select_menu_mode
 
 HEIGHT = 600
 character_num = 100
-
+main_bgm = None
 def handle_events():
     global running
 
@@ -23,9 +23,14 @@ def init():
     global main_background_image
     global running
     global font
+    global main_bgm
+
+    main_bgm = load_music('sound/main_bgm.mp3')
+    main_bgm.repeat_play()
     main_background_image = load_image('image/main_background.png')
     running = True
     font = load_font('font/ENCR10B.TTF', 30)
+
 
 def finish():
     global main_background_image
