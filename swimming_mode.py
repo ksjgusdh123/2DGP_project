@@ -57,6 +57,7 @@ def init():
     global move_amount
     global move_right
     global click_ok
+    global once
     font = load_font('font/ENCR10B.TTF', 50)
     track_image = load_image('image/swimming_track.png')
     people_image = load_image('image/running_track.png')
@@ -65,6 +66,8 @@ def init():
     arrow_image = load_image('image/arrow.png')
     middle_result_mode.now_map = 'Swim'
     temp = load_image('image/perfect_bar.png')
+
+    once = False
     click_ok = False
     move_right = True
     command = []
@@ -74,7 +77,7 @@ def init():
     running = True
     finish_game = [False, False, False, False]
     show_result_mode = False
-    move_amount = 0
+    move_amount = 10
     if not select_menu_mode.game_map == 'All':
         player = Player(character_select_mode.character_num)
         ai = [AI(player) for _ in range(3)]
@@ -94,6 +97,9 @@ def init():
             ai[i].y = 410 - 100 * i
             ai[i].x = 100
             ai[i].finish = False
+    for i in range(3):
+        ai[i].speed = random.randint(150, 200) * 0.005
+
 def basic_player_init(player):
     player.y = 110
     player.x = 100
@@ -200,18 +206,16 @@ def track_update():
     global move_amount
     global move_right
     global click_ok
+    global once
+    print(select_level_mode.game_level)
     if player.start and not player.stun and not player.finish:
         if move_right:
             move_amount += 1 * level[select_level_mode.game_level] * 2
         else:
             move_amount -= 1 * level[select_level_mode.game_level] * 2
 
-    if move_amount >= 800:
-        move_right = False
-    elif move_amount <= 0:
-        move_right = True
-
     if click_ok:
+        once = True
         if 263 <= move_amount <= 337 or 419 <= move_amount <= 490:
             player.speed += 0.01
         elif 338 <= move_amount <= 418:
@@ -220,6 +224,18 @@ def track_update():
             player.stun = True
         click_ok = False
         move_amount = 0
+
+    if move_amount >= 800:
+        move_right = False
+    elif move_amount <= 0 and once:
+        move_right = True
+    elif move_amount <= 0 and not once:
+        move_right = True
+        move_amount = 0
+        player.stun = True
+
+    once = False
+
 
     # if len(command_timer) != 0:
     #     for i in range(0, len(command_timer)):
