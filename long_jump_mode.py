@@ -85,6 +85,7 @@ def init():
             player = run_track_mode.player
             for i in range(3):
                 ai[i] = run_track_mode.ai[i]
+                ai[i].first_record = random.randint(100, 330)
         player.game_mode = 'jump'
     else:
         for i in range(3):
@@ -204,6 +205,8 @@ def long_jump_update():
     if player.jump_finish:
         if stop_time == 0:
             jump_chance -= 1
+            if player.record <=0:
+                player.jump_fail.play(1)
             if jump_chance == 1:
                 player.first_record = player.record
                 if player.first_record <= 0:
@@ -222,6 +225,7 @@ def long_jump_update():
 
     if player.fail:
         if stop_time == 0:
+            player.jump_fail.play(1)
             jump_chance -= 1
             if jump_chance == 1:
                 player.first_record = player.record

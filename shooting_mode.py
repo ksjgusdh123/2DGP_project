@@ -84,7 +84,7 @@ def init():
     rectangle_image = load_image('image/rectangle.png')
     red_rectangle_image = load_image('image/red_rectangle1.png')
     shooting_target_image = load_image('image/target.png')
-    gun_sound = load_music('sound/gun.mp3')
+    gun_sound = load_wav('sound/gun.wav')
     middle_result_mode.now_map = 'Shooting'
 
     clock = Clock()

@@ -638,6 +638,7 @@ class Player:
         self.life = 1
         # wide_jump_mode
         self.slid_sound = load_wav('sound/sliding.wav')
+        self.jump_fail = load_wav('sound/people_fail.wav')
         self.stop = False
         self.angle = 0
         self.angle_check = False
