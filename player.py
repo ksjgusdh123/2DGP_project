@@ -608,22 +608,22 @@ class Player:
         self.record = 0
         self.finish = False
         self.score = 0
-        self.fail_sound = load_music('sound/fail.mp3')
-        self.success_sound = load_music('sound/success.mp3')
+        self.fail_sound = load_wav('sound/fail.wav')
+        self.success_sound = load_wav('sound/success.wav')
         self.running_sound = load_music('sound/run_sound.mp3')
-        self.people_sound = load_music('sound/people_sound.mp3')
+        self.people_sound = load_wav('sound/people_sound.wav')
         self.sound_ok = False
         # running_track
         self.input_command = []
-        self.jump_music = load_music('sound/jump.mp3')
-        self.slip_music = load_music('sound/slip.mp3')
+        self.jump_music = load_wav('sound/jump.wav')
+        self.slip_music = load_wav('sound/slip.wav')
         self.success = False
         self.exceed_point = 950
         self.perfect = True
         self.shift = False
         # swimming_mode
         self.timing_ok = False
-        self.stun_music = load_music('sound/stun.mp3')
+        self.stun_music = load_wav('sound/stun.mp3')
         self.speed = 1  # wide_jump_mode
         self.stun = False
         self.life = 1

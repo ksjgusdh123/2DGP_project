@@ -1,5 +1,5 @@
 import math
-from pico2d import load_image, get_time, load_music
+from pico2d import load_image, get_time, load_music, load_wav
 
 import game_world
 
@@ -12,7 +12,7 @@ class Clock:
         self.interval = 0
         self.start = False
         self.init = False
-        self.music = load_music('sound/start_bgm.mp3')
+        self.music = load_wav('sound/start_bgm.wav')
 
     def draw(self):
         if self.idx <= 3 and self.start:
