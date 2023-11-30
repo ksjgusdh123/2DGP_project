@@ -279,6 +279,7 @@ class Stun:
 class Swim:
     @staticmethod
     def enter(player, e):
+        player.swim_sound.repeat_play()
         player.frame = 0
         player.dir, player.action = 1, 1
         player.wait_time = get_time()
@@ -294,6 +295,7 @@ class Swim:
 
     @staticmethod
     def exit(player, e):
+        player.swim_sound.stop()
         pass
 
     @staticmethod
@@ -316,6 +318,9 @@ class Swim:
             player.state_machine.handle_event(('TIME_OUT', 0))
             player.finish = True
             player.record = get_time() - player.time
+
+        if player.x >= 4000:
+            player.people_sound.play(1)
 
     @staticmethod
     def draw(player):
@@ -442,6 +447,9 @@ class Run:
             player.dir, player.action = 1, 1
             if d_down(e):
                 player.speed += 0.1
+        elif player.game_mode == 'swim':
+            player.state_machine.handle_event(('TIME_OUT', 0))
+
     @staticmethod
     def exit(player, e):
         if player.game_mode == 'run':
@@ -623,7 +631,8 @@ class Player:
         self.shift = False
         # swimming_mode
         self.timing_ok = False
-        self.stun_music = load_wav('sound/stun.mp3')
+        self.stun_music = load_wav('sound/stun.wav')
+        self.swim_sound = load_music('sound/swimming_sound.mp3')
         self.speed = 1  # wide_jump_mode
         self.stun = False
         self.life = 1
