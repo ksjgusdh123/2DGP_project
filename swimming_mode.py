@@ -60,6 +60,8 @@ def init():
     global click_ok
     global once
     global now_music
+    global delay_time
+    global go_delay
 
     font = load_font('font/ENCR10B.TTF', 50)
     track_image = load_image('image/swimming_track.png')
@@ -70,6 +72,7 @@ def init():
     middle_result_mode.now_map = 'Swim'
     temp = load_image('image/perfect_bar.png')
 
+    go_delay = True
     once = False
     click_ok = False
     move_right = True
@@ -81,6 +84,7 @@ def init():
     finish_game = [False, False, False, False]
     show_result_mode = False
     move_amount = 10
+    delay_time = 0
     if not select_menu_mode.game_map == 'All':
         player = Player(character_select_mode.character_num)
         ai = [AI(player) for _ in range(3)]
@@ -106,6 +110,7 @@ def init():
 
 
 def basic_player_init(player):
+    player.sound_ok = False
     player.y = 110
     player.x = 100
     player.start = False
@@ -212,25 +217,38 @@ def track_update():
     global move_right
     global click_ok
     global once
+    global delay_time
+    global go_delay
+
     print(select_level_mode.game_level)
-    if player.start and not player.stun and not player.finish:
-        if move_right:
-            move_amount += 1 * level[select_level_mode.game_level] * 2
-        else:
-            move_amount -= 1 * level[select_level_mode.game_level] * 2
+    if go_delay:
+        if player.start and not player.stun and not player.finish:
+            if move_right:
+                move_amount += 0.1 * random.randint(level[select_level_mode.game_level],
+                                                  level[select_level_mode.game_level] * 40)
+            else:
+                move_amount -= 0.1 * random.randint(level[select_level_mode.game_level],
+                                                  level[select_level_mode.game_level] * 40)
 
     if click_ok:
         once = True
         if 263 <= move_amount <= 337 or 419 <= move_amount <= 490:
             player.speed += 0.01
             player.success_sound.play(1)
-        elif 338 <= move_amount <= 418:
+        elif 336 <= move_amount <= 420:
             player.speed += 0.05
             player.success_sound.play(1)
         else:
             player.stun = True
+        delay_time = get_time()
         click_ok = False
-        move_amount = 0
+        move_amount = 1
+        move_right = True
+        go_delay = False
+
+    if get_time() - delay_time >= random.randint(1, 100) * 0.1:
+        go_delay = True
+        delay_time = 0
 
     if move_amount >= 800:
         move_right = False
@@ -242,6 +260,10 @@ def track_update():
         player.stun = True
 
     once = False
+
+    if player.x >= 4600 and not player.sound_ok:
+        player.people_sound.play(1)
+        player.sound_ok = True
 
 
     # if len(command_timer) != 0:

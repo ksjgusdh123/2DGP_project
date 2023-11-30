@@ -319,8 +319,6 @@ class Swim:
             player.finish = True
             player.record = get_time() - player.time
 
-        if player.x >= 4000:
-            player.people_sound.play(1)
 
     @staticmethod
     def draw(player):
