@@ -28,7 +28,7 @@ def handle_events():
             delete_object()
         elif event.type == SDL_KEYDOWN and event.key == SDLK_i:
             game_framework.change_mode(swimming_mode)
-        elif not clock is None and event.type == SDL_KEYDOWN and event.key == SDLK_SPACE:
+        elif not clock is None and event.type == SDL_KEYDOWN and event.key == SDLK_SPACE and not player.ready:
             player.ready = True
             clock.start = True
             now_music.play(1)

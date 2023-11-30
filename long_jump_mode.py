@@ -29,7 +29,7 @@ def handle_events():
             game_framework.change_mode(select_menu_mode)
             jump_chance = 2
             delete_object()
-        elif not clock is None and event.type == SDL_KEYDOWN and event.key == SDLK_SPACE:
+        elif not clock is None and event.type == SDL_KEYDOWN and event.key == SDLK_SPACE and not player.ready:
             now_music.play(1)
             player.ready = True
             clock.start = True

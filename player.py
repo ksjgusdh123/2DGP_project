@@ -374,11 +374,13 @@ class Wide_Jump:
     @staticmethod
     def enter(player, e):
         if wide_jump_go(e):
+            player.jump_music.play(1)
             player.angle_check = True
             player.wait_time = get_time()
     @staticmethod
     def exit(player, e):
         player.jump_ok = True
+        player.slid_sound.play(1)
         player.record = player.x - player.start_pos
         print(player.x - player.start_pos)
         player.jump_finish = True
@@ -635,6 +637,7 @@ class Player:
         self.stun = False
         self.life = 1
         # wide_jump_mode
+        self.slid_sound = load_wav('sound/sliding.wav')
         self.stop = False
         self.angle = 0
         self.angle_check = False

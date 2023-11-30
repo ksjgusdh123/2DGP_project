@@ -50,7 +50,7 @@ def handle_events():
         elif event.type == SDL_KEYDOWN and event.key == SDLK_UP:
             if player.shooting_pos[0] <= 1:
                 player.shooting_pos[0] += 1
-        elif not clock is None and event.type == SDL_KEYDOWN and event.key == SDLK_SPACE:
+        elif not clock is None and event.type == SDL_KEYDOWN and event.key == SDLK_SPACE and not player.ready:
             player.ready = True
             clock.start = True
             now_music.play(1)

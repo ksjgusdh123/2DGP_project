@@ -30,7 +30,7 @@ def handle_events():
             delete_object()
         elif event.type == SDL_KEYDOWN and event.key == SDLK_f and player.start:
             click_ok = True
-        elif not clock is None and event.type == SDL_KEYDOWN and event.key == SDLK_SPACE:
+        elif not clock is None and event.type == SDL_KEYDOWN and event.key == SDLK_SPACE and not player.ready:
             now_music.play(1)
             player.ready = True
             clock.start = True
