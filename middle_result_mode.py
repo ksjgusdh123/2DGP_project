@@ -25,13 +25,17 @@ def handle_events():
                 game_framework.change_mode(long_jump_mode)
             elif select_menu_mode.game_map == 'All':
                 if mode[now_map].player.next_map == 'swim':
+                    mode[now_map].delete_object_all()
                     game_framework.change_mode(swimming_mode)
                 elif mode[now_map].player.next_map == 'long-jump':
+                    mode[now_map].delete_object_all()
                     game_framework.change_mode(long_jump_mode)
                 elif mode[now_map].player.next_map == 'shooting':
                     long_jump_mode.jump_chance = 2
+                    mode[now_map].delete_object_all()
                     game_framework.change_mode(shooting_mode)
                 elif mode[now_map].player.next_map == 'final':
+                    mode[now_map].delete_object_all()
                     game_framework.change_mode(final_result_mode)
             else:
                 mode[now_map].delete_object()

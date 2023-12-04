@@ -92,8 +92,8 @@ def init():
     clay = None
     # clay = Target()
     if not select_menu_mode.game_map == 'All':
-        # player = Player(character_select_mode.character_num)
-        player = Player(0)
+        player = Player(character_select_mode.character_num)
+        # player = Player(0)
         ai = [AI(player) for _ in range(3)]
         game_world.add_objects(ai, 1)
         game_world.add_object(player, 1)
@@ -130,6 +130,22 @@ def basic_setting(ai, player):
     player.camera_x = 0
     player.next_map = 'final'
 
+def delete_object_all():
+    global track_image
+    global rectangle_image
+    global red_rectangle_image
+    global shooting_target_image
+    global font
+    global mini_font
+    global gun_sound
+
+    del track_image
+    del rectangle_image
+    del red_rectangle_image
+    del shooting_target_image
+    del font
+    del mini_font
+    del gun_sound
 
 def delete_object():
     global player
@@ -142,6 +158,7 @@ def delete_object():
     ai = [None, None, None]
     game_world.remove_object(player)
     player = None
+    delete_object_all()
 
 def finish():
     global clock

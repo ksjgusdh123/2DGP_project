@@ -121,6 +121,23 @@ def basic_player_init(player):
     player.finish = False
     player.game_mode = 'swim'
 
+def delete_object_all():
+    global track_image
+    global people_image
+    global arrow_image
+    global rectangle_image
+    global red_rectangle_image
+    global temp
+    global font
+
+    del track_image
+    del people_image
+    del arrow_image
+    del rectangle_image
+    del red_rectangle_image
+    del temp
+    del font
+
 def delete_object():
     global player
     global ai
@@ -132,6 +149,7 @@ def delete_object():
     ai = [None, None, None]
     game_world.remove_object(player)
     player = None
+    delete_object_all()
 
 def finish():
     global clock

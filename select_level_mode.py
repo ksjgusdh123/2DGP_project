@@ -58,9 +58,22 @@ def finish():
     global main_background_image
     global sports_pictogram
     global font
+    global run_screenshot
+    global swim_screenshot
+    global long_jump_screenshot
+    global shooting_screenshot
+    global level_box
+    global mini_font
+
     del font
+    del mini_font
     del main_background_image
     del sports_pictogram
+    del run_screenshot
+    del swim_screenshot
+    del long_jump_screenshot
+    del shooting_screenshot
+    del level_box
 
 def update():
     pass

@@ -76,10 +76,11 @@ def init():
 
 def finish():
     global banner_image
+    global alpha
     start_game_mode.main_bgm.play()
     start_game_mode.main_bgm.pause()
     del banner_image
-
+    del alpha
 
 def update():
     pass

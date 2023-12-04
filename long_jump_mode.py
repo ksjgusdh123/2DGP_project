@@ -121,6 +121,20 @@ def default_start():
     elif select_level_mode.game_level == 'easy':
         angle_speed = 10
 
+def delete_object_all():
+    global track_image
+    global line_image
+    global angle_image
+    global arrow_image
+    global effect_image
+    global font
+
+    del track_image
+    del line_image
+    del angle_image
+    del arrow_image
+    del effect_image
+    del font
 
 def delete_object():
     global player
@@ -134,6 +148,7 @@ def delete_object():
     ai = [None, None, None]
     player = None
     del player
+    delete_object_all()
 
 
 def finish():

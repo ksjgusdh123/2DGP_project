@@ -23,7 +23,6 @@ def handle_events():
         if event.type == SDL_QUIT:
             game_framework.quit()
         elif event.type == SDL_KEYDOWN and event.key == SDLK_ESCAPE:
-
             game_framework.change_mode(select_menu_mode)
             delete_object()
         elif event.type == SDL_KEYDOWN and event.key == SDLK_i:
@@ -90,9 +89,23 @@ def basic_player_init(player):
     player.input_command = []
     player.game_mode = 'run'
 
+def delete_object_all():
+    global track_image
+    global line_image
+    global arrow_image
+    global obstacle_image
+    del track_image
+    del line_image
+    del arrow_image
+    del obstacle_image
+
 def delete_object():
     global player
     global ai
+    global track_image
+    global line_image
+    global arrow_image
+    global obstacle_image
     ai[0].delete_ai()
     for i in range(3):
         game_world.remove_object(ai[i])
@@ -102,6 +115,10 @@ def delete_object():
     player = None
     ai = [None, None, None]
     del player
+    del track_image
+    del line_image
+    del arrow_image
+    del obstacle_image
 
 def finish():
     global clock
